@@ -1,0 +1,140 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Manage Departments{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fas fa-building"></i> Manage Departments</h2>
+</div>
+
+<div class="card">
+
+    <div class="table-toolbar">
+
+        <div class="table-search">
+            <input type="text" id="departmentSearch" placeholder="Search departments...">
+        </div>
+
+        <div class="table-actions">
+            <button class="btn btn-primary" onclick="openDepartmentModal()">
+                <i class="fas fa-plus"></i> Add Department
+            </button>
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+        <table class="table" id="departmentTable">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Department Name</th>
+                    <th>Code</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for dept in departments %}
+                <tr>
+                    <td>{{ dept.id }}</td>
+                    <td>{{ dept.name }}</td>
+                    <td>{{ dept.code }}</td>
+                    <td>
+                        <button class="btn btn-edit" onclick="editDepartment({{ dept.id }})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <a href="{{ url_for('department.delete_department', id=dept.id) }}"
+                           onclick="return confirmDelete('Delete this department?')"
+                           class="btn btn-delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+
+<!-- ================= MODAL ================= -->
+<div id="departmentModal" class="modal" style="display:none;">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3 id="deptModalTitle">Add Department</h3>
+            <span class="close" onclick="closeDepartmentModal()">&times;</span>
+        </div>
+
+        <form id="departmentForm" method="POST" action="{{ url_for('department.add_department') }}">
+
+            <input type="hidden" name="id" id="dept_id">
+
+            <div class="form-group">
+                <label>Department Name</label>
+                <input type="text" name="name" id="dept_name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Department Code</label>
+                <input type="text" name="code" id="dept_code" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" onclick="closeDepartmentModal()">Cancel</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const input = document.getElementById("departmentSearch");
+    const table = document.getElementById("departmentTable");
+
+    input.addEventListener("keyup", function () {
+        const filter = input.value.toLowerCase();
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) {
+            const text = rows[i].textContent.toLowerCase();
+            rows[i].style.display = text.includes(filter) ? "" : "none";
+        }
+    });
+
+});
+
+function openDepartmentModal() {
+    document.getElementById("departmentForm").reset();
+    document.getElementById("dept_id").value = "";
+    document.getElementById("deptModalTitle").innerText = "Add Department";
+    document.getElementById("departmentModal").style.display = "block";
+}
+
+function closeDepartmentModal() {
+    document.getElementById("departmentModal").style.display = "none";
+}
+
+function editDepartment(id) {
+    document.getElementById("dept_id").value = id;
+    document.getElementById("deptModalTitle").innerText = "Edit Department";
+    document.getElementById("departmentModal").style.display = "block";
+}
+</script>
+{% endblock %}

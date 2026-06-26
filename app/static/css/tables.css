@@ -1,0 +1,229 @@
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+}
+
+/* Table head */
+.table thead {
+    background: linear-gradient(90deg, #2c3e50, #34495e);
+    color: #ffffff;
+}
+
+.table thead th {
+    padding: 14px 12px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Table body */
+.table tbody tr {
+    border-bottom: 1px solid #eaeaea;
+    transition: all 0.2s ease-in-out;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tbody tr:hover {
+    background-color: #eef6ff;
+    transform: scale(1.001);
+}
+
+/* Table cells */
+.table td {
+    padding: 12px;
+    font-size: 14px;
+    color: #333;
+    vertical-align: middle;
+}
+
+/* Links inside table */
+.table td a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.table td a:hover {
+    text-decoration: underline;
+}
+
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Status colors */
+.badge-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+
+.table .btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+    margin-right: 5px;
+}
+
+/* Edit button */
+.btn-edit {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-edit:hover {
+    background-color: #0056b3;
+}
+
+/* Delete button */
+.btn-delete {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-delete:hover {
+    background-color: #a71d2a;
+}
+
+/* View button */
+.btn-view {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.btn-view:hover {
+    background-color: #117a8b;
+}
+
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.table-search input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    width: 250px;
+}
+
+.table-search input:focus {
+    border-color: #007bff;
+}
+
+/* Filter dropdown */
+.table-filter select {
+    padding: 8px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination a {
+    display: block;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: #007bff;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.pagination a:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.pagination .active a {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.table-empty {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+
+    .table thead {
+        font-size: 12px;
+    }
+
+    .table td {
+        font-size: 13px;
+        padding: 10px;
+    }
+
+    .table-search input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .table .btn {
+        margin-bottom: 5px;
+    }
+}

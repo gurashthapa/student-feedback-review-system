@@ -1,0 +1,110 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fas fa-user-graduate"></i> Student Dashboard</h2>
+</div>
+
+<!-- ================= STATS CARDS ================= -->
+<div class="dashboard-cards">
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-comments"></i></div>
+        <div class="card-info">
+            <h3>{{ total_feedback or 0 }}</h3>
+            <p>My Feedbacks</p>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-star"></i></div>
+        <div class="card-info">
+            <h3>{{ avg_rating or 0 }}</h3>
+            <p>Average Rating Given</p>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-book"></i></div>
+        <div class="card-info">
+            <h3>{{ total_courses or 0 }}</h3>
+            <p>Courses Enrolled</p>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-user-tie"></i></div>
+        <div class="card-info">
+            <h3>{{ total_faculty or 0 }}</h3>
+            <p>Faculty Interactions</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= QUICK ACTIONS ================= -->
+<div class="card">
+
+    <h3>Quick Actions</h3>
+
+    <div class="quick-actions">
+
+        <a href="{{ url_for('student.feedback') }}" class="btn btn-primary">
+            <i class="fas fa-comment-dots"></i> Give Feedback
+        </a>
+
+        <a href="{{ url_for('student.history') }}" class="btn btn-secondary">
+            <i class="fas fa-history"></i> View History
+        </a>
+
+        <a href="{{ url_for('student.profile') }}" class="btn btn-dark">
+            <i class="fas fa-user"></i> My Profile
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ================= RECENT FEEDBACK ================= -->
+<div class="card">
+
+    <div class="table-toolbar">
+        <h3>Recent Feedback Given</h3>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Faculty</th>
+                    <th>Course</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for fb in recent_feedback %}
+                <tr>
+                    <td>{{ fb.faculty_name }}</td>
+                    <td>{{ fb.course_name }}</td>
+                    <td>{{ fb.rating }}</td>
+                    <td>{{ fb.comment }}</td>
+                    <td>{{ fb.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

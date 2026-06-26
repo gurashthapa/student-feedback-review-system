@@ -1,0 +1,123 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+</div>
+
+<!-- ================= STATS CARDS ================= -->
+<div class="dashboard-cards">
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-user-graduate"></i></div>
+        <div class="card-info">
+            <h3>{{ total_students or 0 }}</h3>
+            <p>Students</p>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-user-tie"></i></div>
+        <div class="card-info">
+            <h3>{{ total_faculty or 0 }}</h3>
+            <p>Faculty</p>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-book"></i></div>
+        <div class="card-info">
+            <h3>{{ total_courses or 0 }}</h3>
+            <p>Courses</p>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-comments"></i></div>
+        <div class="card-info">
+            <h3>{{ total_feedback or 0 }}</h3>
+            <p>Feedbacks</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= CHARTS SECTION ================= -->
+<div class="dashboard-charts">
+
+    <div class="card chart-card">
+        <h3>Feedback Ratings Overview</h3>
+        <canvas id="ratingChart"></canvas>
+    </div>
+
+    <div class="card chart-card">
+        <h3>Feedback Distribution</h3>
+        <canvas id="distributionChart"></canvas>
+    </div>
+
+</div>
+
+<!-- ================= RECENT ACTIVITY ================= -->
+<div class="card">
+    <h3>Recent Feedback</h3>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Faculty</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for fb in recent_feedback %}
+                <tr>
+                    <td>{{ fb.student_name }}</td>
+                    <td>{{ fb.faculty_name }}</td>
+                    <td>{{ fb.rating }}</td>
+                    <td>{{ fb.comment }}</td>
+                    <td>{{ fb.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Example data from backend (replace with Flask data)
+    const ratingData = {
+        labels: {{ rating_labels | tojson | safe }},
+        values: {{ rating_values | tojson | safe }}
+    };
+
+    const distributionData = {
+        labels: {{ distribution_labels | tojson | safe }},
+        values: {{ distribution_values | tojson | safe }}
+    };
+
+    // Initialize charts (from charts.js)
+    if (typeof initCharts === "function") {
+        initCharts({
+            ratings: ratingData,
+            distribution: distributionData
+        });
+    }
+
+});
+</script>
+{% endblock %}

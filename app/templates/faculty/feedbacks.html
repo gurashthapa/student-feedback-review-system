@@ -1,0 +1,75 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Faculty Feedbacks{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fas fa-comments"></i> Student Feedbacks</h2>
+</div>
+
+<div class="card">
+
+    <div class="table-toolbar">
+
+        <div class="table-search">
+            <input type="text" id="feedbackSearch" placeholder="Search feedback...">
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table" id="feedbackTable">
+
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for fb in feedbacks %}
+                <tr>
+                    <td>{{ fb.student_name }}</td>
+                    <td>{{ fb.course_name }}</td>
+                    <td>{{ fb.rating }}</td>
+                    <td>{{ fb.comment }}</td>
+                    <td>{{ fb.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const input = document.getElementById("feedbackSearch");
+    const table = document.getElementById("feedbackTable");
+
+    input.addEventListener("keyup", function () {
+        const filter = input.value.toLowerCase();
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) {
+            const text = rows[i].textContent.toLowerCase();
+            rows[i].style.display = text.includes(filter) ? "" : "none";
+        }
+    });
+
+});
+</script>
+{% endblock %}

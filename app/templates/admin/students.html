@@ -1,0 +1,157 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Manage Students{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fas fa-user-graduate"></i> Manage Students</h2>
+</div>
+
+<div class="card">
+
+    <div class="table-toolbar">
+
+        <div class="table-search">
+            <input type="text" id="studentSearch" placeholder="Search students...">
+        </div>
+
+        <div class="table-actions">
+            <button class="btn btn-primary" onclick="openStudentModal()">
+                <i class="fas fa-plus"></i> Add Student
+            </button>
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table" id="studentTable">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Semester</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.name }}</td>
+                    <td>{{ s.email }}</td>
+                    <td>{{ s.department }}</td>
+                    <td>{{ s.semester }}</td>
+                    <td>
+                        <button class="btn btn-edit" onclick="editStudent({{ s.id }})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <a href="{{ url_for('student.delete_student', id=s.id) }}"
+                           onclick="return confirmDelete('Delete this student?')"
+                           class="btn btn-delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- ================= MODAL ================= -->
+<div id="studentModal" class="modal" style="display:none;">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3 id="studentModalTitle">Add Student</h3>
+            <span class="close" onclick="closeStudentModal()">&times;</span>
+        </div>
+
+        <form id="studentForm" method="POST" action="{{ url_for('student.add_student') }}">
+
+            <input type="hidden" name="id" id="student_id">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" id="student_name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" id="student_email" required>
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" name="department" id="student_department" required>
+            </div>
+
+            <div class="form-group">
+                <label>Semester</label>
+                <input type="number" name="semester" id="student_semester" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" onclick="closeStudentModal()">Cancel</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const input = document.getElementById("studentSearch");
+    const table = document.getElementById("studentTable");
+
+    input.addEventListener("keyup", function () {
+        const filter = input.value.toLowerCase();
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) {
+            const text = rows[i].textContent.toLowerCase();
+            rows[i].style.display = text.includes(filter) ? "" : "none";
+        }
+    });
+
+});
+
+
+function openStudentModal() {
+    document.getElementById("studentForm").reset();
+    document.getElementById("student_id").value = "";
+    document.getElementById("studentModalTitle").innerText = "Add Student";
+    document.getElementById("studentModal").style.display = "block";
+}
+
+function closeStudentModal() {
+    document.getElementById("studentModal").style.display = "none";
+}
+
+function editStudent(id) {
+    document.getElementById("student_id").value = id;
+    document.getElementById("studentModalTitle").innerText = "Edit Student";
+    document.getElementById("studentModal").style.display = "block";
+}
+</script>
+{% endblock %}

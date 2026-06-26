@@ -1,0 +1,150 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Faculty Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fas fa-chalkboard-teacher"></i> Faculty Dashboard</h2>
+</div>
+
+<!-- ================= STATS CARDS ================= -->
+<div class="dashboard-cards">
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-comments"></i></div>
+        <div class="card-info">
+            <h3>{{ total_feedback or 0 }}</h3>
+            <p>Total Feedback Received</p>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-star"></i></div>
+        <div class="card-info">
+            <h3>{{ avg_rating or 0 }}</h3>
+            <p>Average Rating</p>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-user-graduate"></i></div>
+        <div class="card-info">
+            <h3>{{ total_students or 0 }}</h3>
+            <p>Students Engaged</p>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="card-icon"><i class="fas fa-book"></i></div>
+        <div class="card-info">
+            <h3>{{ total_courses or 0 }}</h3>
+            <p>Courses Assigned</p>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ================= CHART SECTION ================= -->
+<div class="dashboard-charts">
+
+    <div class="card chart-card">
+        <h3>Rating Overview</h3>
+        <canvas id="facultyRatingChart"></canvas>
+    </div>
+
+    <div class="card chart-card">
+        <h3>Feedback Trend</h3>
+        <canvas id="facultyTrendChart"></canvas>
+    </div>
+
+</div>
+
+
+<!-- ================= RECENT FEEDBACK ================= -->
+<div class="card">
+
+    <div class="table-toolbar">
+        <h3>Recent Feedback</h3>
+
+        <div class="table-actions">
+            <a href="{{ url_for('faculty.feedbacks') }}" class="btn btn-primary">
+                <i class="fas fa-eye"></i> View All
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for fb in recent_feedback %}
+                <tr>
+                    <td>{{ fb.student_name }}</td>
+                    <td>{{ fb.course_name }}</td>
+                    <td>{{ fb.rating }}</td>
+                    <td>{{ fb.comment }}</td>
+                    <td>{{ fb.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const ratingLabels = {{ rating_labels | tojson | safe }};
+    const ratingValues = {{ rating_values | tojson | safe }};
+
+    const trendLabels = {{ trend_labels | tojson | safe }};
+    const trendValues = {{ trend_values | tojson | safe }};
+
+    new Chart(document.getElementById("facultyRatingChart"), {
+        type: "bar",
+        data: {
+            labels: ratingLabels,
+            datasets: [{
+                label: "Ratings",
+                data: ratingValues
+            }]
+        }
+    });
+
+    new Chart(document.getElementById("facultyTrendChart"), {
+        type: "line",
+        data: {
+            labels: trendLabels,
+            datasets: [{
+                label: "Feedback Trend",
+                data: trendValues
+            }]
+        }
+    });
+
+});
+</script>
+
+{% endblock %}
