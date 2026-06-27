@@ -1,31 +1,173 @@
-<div class="card">
+{% extends "layout/base.html" %}
 
-<form method="POST" action="{{ url_for('student.feedback') }}">
+{% block title %}Give Feedback{% endblock %}
 
-    <div class="form-group">
-        <label>Faculty</label>
-        ...
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-comment-dots"></i>
+                        Submit Course Feedback
+                    </h3>
+                </div>
+
+                <div class="card-body">
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST">
+
+                        <!-- Course -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Course
+                            </label>
+
+                            <select
+                                name="course_id"
+                                class="form-select"
+                                required>
+
+                                <option value="">
+                                    Select Course
+                                </option>
+
+                                {% for course in courses %}
+
+                                <option value="{{ course.id }}">
+                                    {{ course.course_code }} -
+                                    {{ course.course_name }}
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                            <small class="text-muted">
+                                The faculty member will automatically be selected based on the chosen course.
+                            </small>
+
+                        </div>
+
+                        <!-- Rating -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Rating
+                            </label>
+
+                            <select
+                                name="rating"
+                                class="form-select"
+                                required>
+
+                                <option value="">
+                                    Select Rating
+                                </option>
+
+                                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                                <option value="4">⭐⭐⭐⭐ Very Good</option>
+                                <option value="3">⭐⭐⭐ Good</option>
+                                <option value="2">⭐⭐ Fair</option>
+                                <option value="1">⭐ Poor</option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- Review -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Review
+                            </label>
+
+                            <textarea
+                                name="review"
+                                class="form-control"
+                                rows="5"
+                                placeholder="Write your feedback here..."
+                                required></textarea>
+
+                        </div>
+
+                        <!-- Anonymous -->
+
+                        <div class="form-check mb-4">
+
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="anonymous"
+                                name="anonymous">
+
+                            <label
+                                class="form-check-label"
+                                for="anonymous">
+
+                                Submit anonymously
+
+                            </label>
+
+                        </div>
+
+                        <!-- Buttons -->
+
+                        <div class="d-grid gap-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-success">
+
+                                <i class="fas fa-paper-plane"></i>
+
+                                Submit Feedback
+
+                            </button>
+
+                            <a
+                                href="{{ url_for('student.dashboard') }}"
+                                class="btn btn-secondary">
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-
-    <div class="form-group">
-        <label>Course</label>
-        ...
-    </div>
-
-    <div class="form-group">
-        <label>Rating (1 - 5)</label>
-        ...
-    </div>
-
-    <div class="form-group">
-        <label>Comment</label>
-        <textarea name="comment" rows="5" required></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        Submit Feedback
-    </button>
-
-</form>
 
 </div>
+
+{% endblock %}

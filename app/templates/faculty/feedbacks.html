@@ -4,47 +4,194 @@
 
 {% block content %}
 
-<div class="page-header">
-    <h2><i class="fas fa-comments"></i> Student Feedbacks</h2>
-</div>
+<div class="container-fluid">
 
-<div class="card">
+    <div class="row mb-4">
 
-    <div class="table-toolbar">
+        <div class="col-md-6">
+            <h2>
+                <i class="fas fa-comments"></i>
+                Faculty Feedbacks
+            </h2>
+            <p class="text-muted">
+                View feedback submitted by students.
+            </p>
+        </div>
 
-        <div class="table-search">
-            <input type="text" id="feedbackSearch" placeholder="Search feedback...">
+        <div class="col-md-6 text-end">
+
+            <input
+                type="text"
+                id="feedbackSearch"
+                class="form-control"
+                placeholder="Search feedback..."
+            >
+
         </div>
 
     </div>
 
-    <div class="table-responsive">
+    <div class="card shadow">
 
-        <table class="table" id="feedbackTable">
+        <div class="card-header">
 
-            <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Course</th>
-                    <th>Rating</th>
-                    <th>Comment</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
+            <h5 class="mb-0">
+                Feedback List
+            </h5>
 
-            <tbody>
-                {% for fb in feedbacks %}
-                <tr>
-                    <td>{{ fb.student_name }}</td>
-                    <td>{{ fb.course_name }}</td>
-                    <td>{{ fb.rating }}</td>
-                    <td>{{ fb.comment }}</td>
-                    <td>{{ fb.created_at }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+        </div>
 
-        </table>
+        <div class="card-body">
+
+            {% if feedbacks %}
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover" id="feedbackTable">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Student</th>
+
+                            <th>Course</th>
+
+                            <th>Rating</th>
+
+                            <th>Review</th>
+
+                            <th>Status</th>
+
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for fb in feedbacks %}
+
+                        <tr>
+
+                            <td>{{ loop.index }}</td>
+
+                            <td>
+
+                                {% if fb.anonymous %}
+
+                                    Anonymous
+
+                                {% else %}
+
+                                    {{ fb.student.full_name }}
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {{ fb.course.course_name }}
+
+                            </td>
+
+                            <td>
+
+                                {% if fb.rating == 5 %}
+
+                                    <span class="badge bg-success">
+                                        ⭐⭐⭐⭐⭐
+                                    </span>
+
+                                {% elif fb.rating == 4 %}
+
+                                    <span class="badge bg-primary">
+                                        ⭐⭐⭐⭐
+                                    </span>
+
+                                {% elif fb.rating == 3 %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        ⭐⭐⭐
+                                    </span>
+
+                                {% elif fb.rating == 2 %}
+
+                                    <span class="badge bg-orange">
+                                        ⭐⭐
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+                                        ⭐
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {{ fb.review }}
+
+                            </td>
+
+                            <td>
+
+                                {% if fb.status == "Approved" %}
+
+                                    <span class="badge bg-success">
+                                        Approved
+                                    </span>
+
+                                {% elif fb.status == "Rejected" %}
+
+                                    <span class="badge bg-danger">
+                                        Rejected
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {{ fb.created_at.strftime("%d-%m-%Y %I:%M %p") }}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="alert alert-info">
+
+                No feedback available.
+
+            </div>
+
+            {% endif %}
+
+        </div>
 
     </div>
 
@@ -52,24 +199,28 @@
 
 {% endblock %}
 
-
 {% block extra_js %}
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    const input = document.getElementById("feedbackSearch");
-    const table = document.getElementById("feedbackTable");
+const searchInput = document.getElementById("feedbackSearch");
 
-    input.addEventListener("keyup", function () {
-        const filter = input.value.toLowerCase();
-        const rows = table.getElementsByTagName("tr");
+searchInput.addEventListener("keyup", function () {
 
-        for (let i = 1; i < rows.length; i++) {
-            const text = rows[i].textContent.toLowerCase();
-            rows[i].style.display = text.includes(filter) ? "" : "none";
-        }
+    let value = this.value.toLowerCase();
+
+    let rows = document.querySelectorAll("#feedbackTable tbody tr");
+
+    rows.forEach(function(row){
+
+        let text = row.innerText.toLowerCase();
+
+        row.style.display = text.includes(value) ? "" : "none";
+
     });
 
 });
+
 </script>
+
 {% endblock %}

@@ -8,45 +8,50 @@
     <h2><i class="fas fa-chart-bar"></i> Feedback Statistics</h2>
 </div>
 
-<!-- ================= SUMMARY CARDS ================= -->
 <div class="dashboard-cards">
 
     <div class="card stat-card">
-        <div class="card-icon"><i class="fas fa-star"></i></div>
+        <div class="card-icon">
+            <i class="fas fa-star"></i>
+        </div>
         <div class="card-info">
-            <h3>{{ avg_rating or 0 }}</h3>
+            <h3>{{ "%.2f"|format(avg_rating or 0) }}</h3>
             <p>Average Rating</p>
         </div>
     </div>
 
     <div class="card stat-card">
-        <div class="card-icon"><i class="fas fa-comments"></i></div>
+        <div class="card-icon">
+            <i class="fas fa-comments"></i>
+        </div>
         <div class="card-info">
-            <h3>{{ total_feedback or 0 }}</h3>
+            <h3>{{ total_feedback }}</h3>
             <p>Total Feedback</p>
         </div>
     </div>
 
     <div class="card stat-card">
-        <div class="card-icon"><i class="fas fa-thumbs-up"></i></div>
+        <div class="card-icon">
+            <i class="fas fa-thumbs-up"></i>
+        </div>
         <div class="card-info">
-            <h3>{{ positive_feedback or 0 }}</h3>
+            <h3>{{ positive_feedback }}</h3>
             <p>Positive Feedback</p>
         </div>
     </div>
 
     <div class="card stat-card">
-        <div class="card-icon"><i class="fas fa-thumbs-down"></i></div>
+        <div class="card-icon">
+            <i class="fas fa-thumbs-down"></i>
+        </div>
         <div class="card-info">
-            <h3>{{ negative_feedback or 0 }}</h3>
+            <h3>{{ negative_feedback }}</h3>
             <p>Negative Feedback</p>
         </div>
     </div>
 
 </div>
 
-
-<!-- ================= CHART SECTION ================= -->
 <div class="dashboard-charts">
 
     <div class="card chart-card">
@@ -61,16 +66,15 @@
 
 </div>
 
-
-<!-- ================= DETAILED TABLE ================= -->
 <div class="card">
 
     <div class="table-toolbar">
-
         <div class="table-search">
-            <input type="text" id="statSearch" placeholder="Search feedback...">
+            <input
+                type="text"
+                id="statSearch"
+                placeholder="Search feedback...">
         </div>
-
     </div>
 
     <div class="table-responsive">
@@ -88,15 +92,54 @@
             </thead>
 
             <tbody>
-                {% for fb in feedbacks %}
-                <tr>
-                    <td>{{ fb.student_name }}</td>
-                    <td>{{ fb.course_name }}</td>
-                    <td>{{ fb.rating }}</td>
-                    <td>{{ fb.comment }}</td>
-                    <td>{{ fb.created_at }}</td>
-                </tr>
-                {% endfor %}
+
+                {% if feedbacks %}
+
+                    {% for fb in feedbacks %}
+
+                    <tr>
+                        <td>
+                            {% if fb.student %}
+                                {{ fb.student.name }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if fb.course %}
+                                {{ fb.course.name }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>{{ fb.rating }}</td>
+
+                        <td>{{ fb.comment }}</td>
+
+                        <td>
+                            {% if fb.created_at %}
+                                {{ fb.created_at.strftime("%d-%m-%Y") }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            No feedback available.
+                        </td>
+                    </tr>
+
+                {% endif %}
+
             </tbody>
 
         </table>
@@ -107,59 +150,86 @@
 
 {% endblock %}
 
-
 {% block extra_js %}
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    // SEARCH FILTER
     const input = document.getElementById("statSearch");
     const table = document.getElementById("statTable");
 
     input.addEventListener("keyup", function () {
-        const filter = input.value.toLowerCase();
-        const rows = table.getElementsByTagName("tr");
 
-        for (let i = 1; i < rows.length; i++) {
-            const text = rows[i].textContent.toLowerCase();
-            rows[i].style.display = text.includes(filter) ? "" : "none";
-        }
+        const filter = input.value.toLowerCase();
+        const rows = table.querySelectorAll("tbody tr");
+
+        rows.forEach(function(row){
+
+            row.style.display =
+                row.textContent.toLowerCase().includes(filter)
+                ? ""
+                : "none";
+
+        });
+
     });
 
-    // CHART DATA
-    const ratingLabels = {{ rating_labels | tojson | safe }};
-    const ratingValues = {{ rating_values | tojson | safe }};
+    const ratingLabels = {{ rating_labels|tojson }};
+    const ratingValues = {{ rating_values|tojson }};
 
-    const trendLabels = {{ trend_labels | tojson | safe }};
-    const trendValues = {{ trend_values | tojson | safe }};
+    const trendLabels = {{ trend_labels|tojson }};
+    const trendValues = {{ trend_values|tojson }};
 
-    // RATING CHART
     new Chart(document.getElementById("ratingChart"), {
+
         type: "bar",
+
         data: {
+
             labels: ratingLabels,
+
             datasets: [{
                 label: "Ratings",
                 data: ratingValues
             }]
+
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
         }
+
     });
 
-    // TREND CHART
     new Chart(document.getElementById("trendChart"), {
+
         type: "line",
+
         data: {
+
             labels: trendLabels,
+
             datasets: [{
                 label: "Feedback Trend",
-                data: trendValues
+                data: trendValues,
+                fill: false
             }]
+
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
         }
+
     });
 
 });
+
 </script>
 
 {% endblock %}

@@ -1,50 +1,224 @@
 {% extends "layout/base.html" %}
 
-{% block title %}Feedback History{% endblock %}
+{% block title %}My Feedback History{% endblock %}
 
 {% block content %}
 
-<div class="page-header">
-    <h2><i class="fas fa-history"></i> My Feedback History</h2>
-</div>
+<div class="container mt-4">
 
-<div class="card">
+    <div class="card shadow">
 
-    <div class="table-toolbar">
+        <div class="card-header bg-primary text-white">
 
-        <div class="table-search">
-            <input type="text" id="historySearch" placeholder="Search history...">
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h3 class="mb-0">
+                    <i class="fas fa-history"></i>
+                    My Feedback History
+                </h3>
+
+                <a href="{{ url_for('student.feedback') }}"
+                   class="btn btn-light">
+
+                    <i class="fas fa-plus"></i>
+
+                    New Feedback
+
+                </a>
+
+            </div>
+
         </div>
 
-    </div>
+        <div class="card-body">
 
-    <div class="table-responsive">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
 
-        <table class="table" id="historyTable">
+                        <div class="alert alert-{{ category }} alert-dismissible fade show">
 
-            <thead>
-                <tr>
-                    <th>Faculty</th>
-                    <th>Course</th>
-                    <th>Rating</th>
-                    <th>Comment</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
+                            {{ message }}
 
-            <tbody>
-                {% for fb in feedbacks %}
-                <tr>
-                    <td>{{ fb.faculty_name }}</td>
-                    <td>{{ fb.course_name }}</td>
-                    <td>{{ fb.rating }}</td>
-                    <td>{{ fb.comment }}</td>
-                    <td>{{ fb.created_at }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert">
+                            </button>
 
-        </table>
+                        </div>
+
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="mb-3">
+
+                <input
+                    type="text"
+                    id="historySearch"
+                    class="form-control"
+                    placeholder="Search feedback...">
+
+            </div>
+
+            {% if feedbacks %}
+
+            <div class="table-responsive">
+
+                <table
+                    class="table table-bordered table-hover"
+                    id="historyTable">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Course</th>
+                            <th>Faculty</th>
+                            <th>Rating</th>
+                            <th>Review</th>
+                            <th>Status</th>
+                            <th>Anonymous</th>
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for fb in feedbacks %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ fb.course.course_code }}
+
+                                <br>
+
+                                <small class="text-muted">
+
+                                    {{ fb.course.course_name }}
+
+                                </small>
+
+                            </td>
+
+                            <td>
+
+                                {{ fb.faculty.full_name }}
+
+                            </td>
+
+                            <td>
+
+                                <span class="fw-bold">
+
+                                    {{ fb.rating }}/5
+
+                                </span>
+
+                                <br>
+
+                                <small class="text-muted">
+
+                                    {{ fb.rating_text }}
+
+                                </small>
+
+                            </td>
+
+                            <td>
+
+                                {{ fb.review }}
+
+                            </td>
+
+                            <td>
+
+                                {% if fb.status == "Approved" %}
+
+                                    <span class="badge bg-success">
+
+                                        Approved
+
+                                    </span>
+
+                                {% elif fb.status == "Rejected" %}
+
+                                    <span class="badge bg-danger">
+
+                                        Rejected
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Pending
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if fb.anonymous %}
+
+                                    Yes
+
+                                {% else %}
+
+                                    No
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {{ fb.created_at.strftime("%d %b %Y") }}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="alert alert-info text-center">
+
+                <h5>
+
+                    You haven't submitted any feedback yet.
+
+                </h5>
+
+                <a
+                    href="{{ url_for('student.feedback') }}"
+                    class="btn btn-primary mt-2">
+
+                    Submit Feedback
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
 
     </div>
 
@@ -52,24 +226,37 @@
 
 {% endblock %}
 
-
 {% block extra_js %}
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+
+document.addEventListener("DOMContentLoaded", function(){
 
     const input = document.getElementById("historySearch");
     const table = document.getElementById("historyTable");
 
-    input.addEventListener("keyup", function () {
-        const filter = input.value.toLowerCase();
-        const rows = table.getElementsByTagName("tr");
+    if(input && table){
 
-        for (let i = 1; i < rows.length; i++) {
-            const text = rows[i].textContent.toLowerCase();
-            rows[i].style.display = text.includes(filter) ? "" : "none";
-        }
-    });
+        input.addEventListener("keyup", function(){
+
+            const filter = input.value.toLowerCase();
+            const rows = table.getElementsByTagName("tbody")[0].rows;
+
+            for(let i = 0; i < rows.length; i++){
+
+                const text = rows[i].textContent.toLowerCase();
+
+                rows[i].style.display =
+                    text.includes(filter) ? "" : "none";
+
+            }
+
+        });
+
+    }
 
 });
+
 </script>
+
 {% endblock %}

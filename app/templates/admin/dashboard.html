@@ -4,120 +4,380 @@
 
 {% block content %}
 
-<div class="page-header">
-    <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
-</div>
+<div class="container mt-4">
 
-<!-- ================= STATS CARDS ================= -->
-<div class="dashboard-cards">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <div class="card stat-card">
-        <div class="card-icon"><i class="fas fa-user-graduate"></i></div>
-        <div class="card-info">
-            <h3>{{ total_students or 0 }}</h3>
-            <p>Students</p>
+        <h2>
+            <i class="fas fa-tachometer-alt"></i>
+            Admin Dashboard
+        </h2>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm text-center">
+
+                <div class="card-body">
+
+                    <i class="fas fa-user-graduate fa-2x text-primary mb-3"></i>
+
+                    <h2>{{ total_students }}</h2>
+
+                    <p class="mb-0">
+                        Total Students
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
-    </div>
 
-    <div class="card stat-card">
-        <div class="card-icon"><i class="fas fa-user-tie"></i></div>
-        <div class="card-info">
-            <h3>{{ total_faculty or 0 }}</h3>
-            <p>Faculty</p>
+        <div class="col-md-3">
+
+            <div class="card shadow-sm text-center">
+
+                <div class="card-body">
+
+                    <i class="fas fa-user-tie fa-2x text-success mb-3"></i>
+
+                    <h2>{{ total_faculty }}</h2>
+
+                    <p class="mb-0">
+                        Total Faculty
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
-    </div>
 
-    <div class="card stat-card">
-        <div class="card-icon"><i class="fas fa-book"></i></div>
-        <div class="card-info">
-            <h3>{{ total_courses or 0 }}</h3>
-            <p>Courses</p>
+        <div class="col-md-3">
+
+            <div class="card shadow-sm text-center">
+
+                <div class="card-body">
+
+                    <i class="fas fa-book fa-2x text-warning mb-3"></i>
+
+                    <h2>{{ total_courses }}</h2>
+
+                    <p class="mb-0">
+                        Total Courses
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
-    </div>
 
-    <div class="card stat-card">
-        <div class="card-icon"><i class="fas fa-comments"></i></div>
-        <div class="card-info">
-            <h3>{{ total_feedback or 0 }}</h3>
-            <p>Feedbacks</p>
+        <div class="col-md-3">
+
+            <div class="card shadow-sm text-center">
+
+                <div class="card-body">
+
+                    <i class="fas fa-comments fa-2x text-danger mb-3"></i>
+
+                    <h2>{{ total_feedback }}</h2>
+
+                    <p class="mb-0">
+                        Total Feedback
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
 
-</div>
+    <div class="row mt-4">
 
-<!-- ================= CHARTS SECTION ================= -->
-<div class="dashboard-charts">
+        <div class="col-lg-6">
 
-    <div class="card chart-card">
-        <h3>Feedback Ratings Overview</h3>
-        <canvas id="ratingChart"></canvas>
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    <h5 class="mb-0">
+                        Rating Overview
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="ratingChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-6">
+
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    <h5 class="mb-0">
+                        Feedback Distribution
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="distributionChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="card chart-card">
-        <h3>Feedback Distribution</h3>
-        <canvas id="distributionChart"></canvas>
-    </div>
+    <div class="card shadow mt-4">
 
-</div>
+        <div class="card-header bg-primary text-white">
 
-<!-- ================= RECENT ACTIVITY ================= -->
-<div class="card">
-    <h3>Recent Feedback</h3>
+            <h4 class="mb-0">
 
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Faculty</th>
-                    <th>Rating</th>
-                    <th>Comment</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
+                <i class="fas fa-history"></i>
 
-            <tbody>
-                {% for fb in recent_feedback %}
-                <tr>
-                    <td>{{ fb.student_name }}</td>
-                    <td>{{ fb.faculty_name }}</td>
-                    <td>{{ fb.rating }}</td>
-                    <td>{{ fb.comment }}</td>
-                    <td>{{ fb.created_at }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                Recent Feedback
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Student</th>
+
+                            <th>Faculty</th>
+
+                            <th>Course</th>
+
+                            <th>Rating</th>
+
+                            <th>Review</th>
+
+                            <th>Status</th>
+
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% if recent_feedback %}
+
+                            {% for fb in recent_feedback %}
+
+                            <tr>
+
+                                <td>
+
+                                    {% if fb.anonymous %}
+
+                                        Anonymous
+
+                                    {% else %}
+
+                                        {{ fb.student.full_name }}
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {{ fb.faculty.full_name }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ fb.course.course_name }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ fb.rating }}/5
+
+                                </td>
+
+                                <td>
+
+                                    {{ fb.review }}
+
+                                </td>
+
+                                <td>
+
+                                    {% if fb.status == "Approved" %}
+
+                                        <span class="badge bg-success">
+                                            Approved
+                                        </span>
+
+                                    {% elif fb.status == "Rejected" %}
+
+                                        <span class="badge bg-danger">
+                                            Rejected
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            Pending
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {{ fb.created_at.strftime("%d %b %Y") }}
+
+                                </td>
+
+                            </tr>
+                                                        {% endfor %}
+
+                        {% else %}
+
+                            <tr>
+
+                                <td colspan="7" class="text-center text-muted">
+
+                                    No feedback has been submitted yet.
+
+                                </td>
+
+                            </tr>
+
+                        {% endif %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
 
 {% endblock %}
 
-
 {% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Example data from backend (replace with Flask data)
-    const ratingData = {
-        labels: {{ rating_labels | tojson | safe }},
-        values: {{ rating_values | tojson | safe }}
-    };
+    const ratingLabels = {{ rating_labels | tojson | safe }};
+    const ratingValues = {{ rating_values | tojson | safe }};
 
-    const distributionData = {
-        labels: {{ distribution_labels | tojson | safe }},
-        values: {{ distribution_values | tojson | safe }}
-    };
+    const distributionLabels = {{ distribution_labels | tojson | safe }};
+    const distributionValues = {{ distribution_values | tojson | safe }};
 
-    // Initialize charts (from charts.js)
-    if (typeof initCharts === "function") {
-        initCharts({
-            ratings: ratingData,
-            distribution: distributionData
+    const ratingCanvas = document.getElementById("ratingChart");
+
+    if (ratingCanvas) {
+
+        new Chart(ratingCanvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels: ratingLabels,
+
+                datasets: [{
+
+                    label: "Ratings",
+
+                    data: ratingValues
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false
+
+            }
+
         });
+
+    }
+
+    const distributionCanvas = document.getElementById("distributionChart");
+
+    if (distributionCanvas) {
+
+        new Chart(distributionCanvas, {
+
+            type: "pie",
+
+            data: {
+
+                labels: distributionLabels,
+
+                datasets: [{
+
+                    data: distributionValues
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false
+
+            }
+
+        });
+
     }
 
 });
+
 </script>
+
 {% endblock %}

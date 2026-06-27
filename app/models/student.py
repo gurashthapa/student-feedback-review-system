@@ -115,9 +115,6 @@ class Student(db.Model):
         lazy=True
     )
 
-    # ======================================
-    # Helper Methods
-    # ======================================
 
     def __repr__(self):
 

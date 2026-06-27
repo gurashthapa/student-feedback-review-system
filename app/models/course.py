@@ -65,10 +65,6 @@ class Course(db.Model):
         onupdate=datetime.utcnow
     )
 
-    # ==========================
-    # Relationships
-    # ==========================
-
     department = db.relationship(
         "Department",
         back_populates="courses"
@@ -86,16 +82,24 @@ class Course(db.Model):
         lazy=True
     )
 
-    # ==========================
-    # Helper Methods
-    # ==========================
+    @property
+    def total_feedback(self):
+        return len(self.feedbacks)
+
+    @property
+    def average_rating(self):
+        if not self.feedbacks:
+            return 0
+
+        return round(
+            sum(f.rating for f in self.feedbacks) / len(self.feedbacks),
+            2
+        )
 
     def __repr__(self):
-
         return f"<Course {self.course_name}>"
 
     def to_dict(self):
-
         return {
             "id": self.id,
             "course_name": self.course_name,
@@ -107,5 +111,7 @@ class Course(db.Model):
             "description": self.description,
             "status": self.status,
             "created_at": self.created_at,
-            "updated_at": self.updated_at
+            "updated_at": self.updated_at,
+            "total_feedback": self.total_feedback,
+            "average_rating": self.average_rating
         }
