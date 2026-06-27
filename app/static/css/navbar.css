@@ -1,0 +1,65 @@
+.navbar-custom{
+    height:80px;
+    background:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 35px;
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+}
+
+.navbar-title h4{
+    font-size:28px;
+    font-weight:700;
+    color:#111827;
+    margin:0;
+}
+
+.navbar-right{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.icon-btn{
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:50%;
+    background:#eef4ff;
+    color:#2563eb;
+    font-size:18px;
+    transition:.3s;
+}
+
+.icon-btn:hover{
+    background:#2563eb;
+    color:#fff;
+}
+
+.profile-box{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#f8fafc;
+    padding:8px 15px;
+    border-radius:50px;
+}
+
+.profile-box img{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #2563eb;
+}
+
+.profile-box h6{
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+}
+
+.profile-box small{
+    color:#6b7280;
+}
