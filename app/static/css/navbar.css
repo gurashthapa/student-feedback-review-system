@@ -176,3 +176,17 @@
         display:none;
     }
 }
+.navbar-custom {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+}
+
+.navbar-right,
+.dropdown,
+.icon-btn,
+.profile-box {
+    position: relative;
+    z-index: 10000;
+    pointer-events: auto;
+}

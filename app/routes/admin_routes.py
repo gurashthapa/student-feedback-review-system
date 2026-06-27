@@ -152,9 +152,11 @@ def delete_student(student_id):
 @admin_bp.route("/faculty")
 @admin_required
 def faculty():
-    faculty_list = Faculty.query.order_by(Faculty.name).all()
-    return render_template("admin/faculty.html", faculty_list=faculty_list)
-
+    faculty_list = Faculty.query.order_by(Faculty.full_name).all()
+    return render_template(
+        "admin/faculty.html",
+        faculty_list=faculty_list
+    )
 
 @admin_bp.route("/faculty/add", methods=["GET", "POST"])
 @admin_required

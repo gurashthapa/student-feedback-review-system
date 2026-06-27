@@ -31,13 +31,13 @@ function toggleDropdown(id) {
     dropdown.classList.toggle("show");
 }
 
-window.addEventListener("click", function (e) {
-    document.querySelectorAll(".dropdown-menu").forEach(menu => {
-        if (!menu.contains(e.target)) {
-            menu.classList.remove("show");
-        }
-    });
-});
+// window.addEventListener("click", function (e) {
+//     document.querySelectorAll(".dropdown-menu").forEach(menu => {
+//         if (!menu.contains(e.target)) {
+//             menu.classList.remove("show");
+//         }
+//     });
+// });
 
 
 function autoHideAlerts() {

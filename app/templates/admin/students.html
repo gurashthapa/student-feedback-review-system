@@ -52,7 +52,7 @@
                             <i class="fas fa-edit"></i>
                         </button>
 
-                        <a href="{{ url_for('student.delete_student', id=s.id) }}"
+                        <a href="{{ url_for('admin.delete_student', id=s.id) }}"
                            onclick="return confirmDelete('Delete this student?')"
                            class="btn btn-delete">
                             <i class="fas fa-trash"></i>

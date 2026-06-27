@@ -92,10 +92,7 @@ class Faculty(db.Model):
         onupdate=datetime.utcnow
     )
 
-    # =====================================
-    # Relationships
-    # =====================================
-
+    
     user = db.relationship(
         "User",
         back_populates="faculty",
@@ -121,10 +118,7 @@ class Faculty(db.Model):
         lazy=True
     )
 
-    # =====================================
-    # Helper Methods
-    # =====================================
-
+    
     def __repr__(self):
 
         return f"<Faculty {self.full_name}>"

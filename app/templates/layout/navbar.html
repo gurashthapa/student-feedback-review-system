@@ -2,7 +2,7 @@
 
     <div class="navbar-left">
 
-        <button class="menu-toggle">
+        <button class="menu-toggle" type="button">
             <i class="fas fa-bars"></i>
         </button>
 
@@ -20,26 +20,137 @@
 
     <div class="navbar-right">
 
-        <button class="icon-btn">
-            <i class="fas fa-bell"></i>
-            <span class="badge-dot"></span>
-        </button>
+        <!-- Notifications -->
+        <div class="dropdown">
 
-        <button class="icon-btn">
-            <i class="fas fa-envelope"></i>
-            <span class="badge-dot"></span>
-        </button>
+            <button
+                class="icon-btn"
+                type="button"
+                id="notificationDropdown"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside"
+                aria-expanded="false">
 
-        <div class="profile-box">
+                <i class="fas fa-bell"></i>
+                <span class="badge-dot"></span>
 
-            <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="Profile">
+            </button>
 
-            <div class="profile-info">
-                <h6>{{ session.get('name','Student') }}</h6>
-                <small>Student</small>
+            <ul class="dropdown-menu dropdown-menu-end shadow"
+                aria-labelledby="notificationDropdown">
+
+                <li>
+                    <h6 class="dropdown-header">Notifications</h6>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Feedback submitted successfully
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        Your feedback was reviewed
+                    </a>
+                </li>
+
+                <li><hr class="dropdown-divider"></li>
+
+                <li>
+                    <a class="dropdown-item text-center" href="#">
+                        View All Notifications
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!-- Messages -->
+        <div class="dropdown">
+
+            <button
+                class="icon-btn"
+                type="button"
+                id="messageDropdown"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside"
+                aria-expanded="false">
+
+                <i class="fas fa-envelope"></i>
+                <span class="badge-dot"></span>
+
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow"
+                aria-labelledby="messageDropdown">
+
+                <li>
+                    <h6 class="dropdown-header">Messages</h6>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="#">
+                        No new messages
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!-- Profile -->
+        <div class="dropdown">
+
+            <div
+                class="profile-box"
+                id="profileDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+
+                <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="Profile">
+
+                <div class="profile-info">
+                    <h6>{{ session.get('name','Student') }}</h6>
+                    <small>Student</small>
+                </div>
+
+                <i class="fas fa-chevron-down"></i>
+
             </div>
 
-            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu dropdown-menu-end shadow"
+                aria-labelledby="profileDropdown">
+
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('student.profile') }}">
+                        <i class="fas fa-user me-2"></i>
+                        My Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('student.history') }}">
+                        <i class="fas fa-history me-2"></i>
+                        Feedback History
+                    </a>
+                </li>
+
+                <li><hr class="dropdown-divider"></li>
+
+                <li>
+                    <a class="dropdown-item text-danger"
+                       href="{{ url_for('auth.logout') }}">
+                        <i class="fas fa-sign-out-alt me-2"></i>
+                        Logout
+                    </a>
+                </li>
+
+            </ul>
 
         </div>
 
