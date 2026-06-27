@@ -2,47 +2,83 @@
 
 {% block title %}Give Feedback{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
+{% endblock %}
+
 {% block content %}
 
 <div class="container mt-4">
 
     <div class="row justify-content-center">
 
-        <div class="col-lg-8">
+        <div class="col-lg-10">
 
             <div class="card shadow">
 
                 <div class="card-header bg-primary text-white">
+
                     <h3 class="mb-0">
+
                         <i class="fas fa-comment-dots"></i>
+
                         Submit Course Feedback
+
                     </h3>
+
                 </div>
 
                 <div class="card-body">
 
                     {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            {% for category, message in messages %}
-                                <div class="alert alert-{{ category }} alert-dismissible fade show">
-                                    {{ message }}
-                                    <button type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="alert"></button>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+
+                    <div class="alert alert-{{ category }} alert-dismissible fade show">
+
+                        {{ message }}
+
+                        <button class="btn-close"
+                                data-bs-dismiss="alert"></button>
+
+                    </div>
+
+                    {% endfor %}
+                    {% endif %}
                     {% endwith %}
 
                     <form method="POST">
 
-                        <!-- Course -->
+                        <div class="feedback-header">
 
-                        <div class="mb-3">
+                            <div>
 
-                            <label class="form-label">
-                                Course
-                            </label>
+                                <h2>Course Evaluation</h2>
+
+                                <p>
+                                    Help us improve teaching quality by providing honest and constructive feedback.
+                                </p>
+
+                            </div>
+
+                            <div class="feedback-icon">
+
+                                <i class="fas fa-star"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="feedback-section">
+
+                            <h4>
+
+                                <i class="fas fa-book-open"></i>
+
+                                Select Course
+
+                            </h4>
 
                             <select
                                 name="course_id"
@@ -50,97 +86,175 @@
                                 required>
 
                                 <option value="">
-                                    Select Course
+                                    Choose a Course
                                 </option>
 
                                 {% for course in courses %}
 
                                 <option value="{{ course.id }}">
+
                                     {{ course.course_code }} -
                                     {{ course.course_name }}
+
                                 </option>
 
                                 {% endfor %}
 
                             </select>
 
-                            <small class="text-muted">
-                                The faculty member will automatically be selected based on the chosen course.
+                            <small>
+
+                                Faculty will automatically be selected based on the selected course.
+
                             </small>
 
                         </div>
 
-                        <!-- Rating -->
 
-                        <div class="mb-3">
+                        <div class="feedback-section">
 
-                            <label class="form-label">
-                                Rating
-                            </label>
+                            <h4>
 
-                            <select
-                                name="rating"
-                                class="form-select"
-                                required>
+                                <i class="fas fa-star"></i>
 
-                                <option value="">
-                                    Select Rating
-                                </option>
+                                Rate Your Experience
 
-                                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
-                                <option value="4">⭐⭐⭐⭐ Very Good</option>
-                                <option value="3">⭐⭐⭐ Good</option>
-                                <option value="2">⭐⭐ Fair</option>
-                                <option value="1">⭐ Poor</option>
+                            </h4>
 
-                            </select>
+                            <div class="rating-card">
+
+                                <div class="emoji-display">
+
+                                    😊
+
+                                </div>
+
+                                <div class="star-rating">
+
+                                    <i class="far fa-star star" data-value="1"></i>
+                                    <i class="far fa-star star" data-value="2"></i>
+                                    <i class="far fa-star star" data-value="3"></i>
+                                    <i class="far fa-star star" data-value="4"></i>
+                                    <i class="far fa-star star" data-value="5"></i>
+
+                                </div>
+
+                                <p class="rating-text">
+
+                                    Click a star to rate this course
+
+                                </p>
+
+                                <input
+                                    type="hidden"
+                                    name="rating"
+                                    id="rating"
+                                    required>
+
+                            </div>
 
                         </div>
 
-                        <!-- Review -->
 
-                        <div class="mb-3">
+                        <div class="feedback-section">
 
-                            <label class="form-label">
-                                Review
-                            </label>
+                            <h4>
+
+                                <i class="fas fa-comment-alt"></i>
+
+                                Share Your Experience
+
+                            </h4>
 
                             <textarea
+                                class="form-control review-box"
                                 name="review"
-                                class="form-control"
-                                rows="5"
-                                placeholder="Write your feedback here..."
+                                rows="6"
+                                placeholder="Tell us about the teaching quality, communication, course content and suggestions..."
                                 required></textarea>
 
                         </div>
 
-                        <!-- Anonymous -->
 
-                        <div class="form-check mb-4">
+                        <div class="feedback-section">
 
-                            <input
-                                class="form-check-input"
-                                type="checkbox"
-                                id="anonymous"
-                                name="anonymous">
+                            <h4>
 
-                            <label
-                                class="form-check-label"
-                                for="anonymous">
+                                <i class="fas fa-user-secret"></i>
 
-                                Submit anonymously
+                                Privacy
 
-                            </label>
+                            </h4>
+
+                            <div class="anonymous-card">
+
+                                <div>
+
+                                    <h5>Submit Anonymously</h5>
+
+                                    <p>
+                                        Your identity will not be visible to the faculty member.
+                                    </p>
+
+                                </div>
+
+                                <div class="form-check form-switch">
+
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        id="anonymous"
+                                        name="anonymous">
+
+                                </div>
+
+                            </div>
 
                         </div>
 
-                        <!-- Buttons -->
 
-                        <div class="d-grid gap-2">
+                        <div class="feedback-summary">
+
+                            <div class="summary-item">
+
+                                <i class="fas fa-book-open"></i>
+
+                                <div>
+
+                                    <span>Course</span>
+
+                                    <strong>Select a course</strong>
+
+                                </div>
+
+                            </div>
+
+                            <div class="summary-item">
+
+                                <i class="fas fa-star"></i>
+
+                                <div>
+
+                                    <span>Rating</span>
+
+                                    <strong id="selected-rating">
+
+                                        Not Selected
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="feedback-buttons">
 
                             <button
                                 type="submit"
-                                class="btn btn-success">
+                                class="btn btn-primary submit-btn">
 
                                 <i class="fas fa-paper-plane"></i>
 
@@ -150,9 +264,11 @@
 
                             <a
                                 href="{{ url_for('student.dashboard') }}"
-                                class="btn btn-secondary">
+                                class="btn btn-outline-secondary">
 
-                                Cancel
+                                <i class="fas fa-arrow-left"></i>
+
+                                Back to Dashboard
 
                             </a>
 
@@ -170,4 +286,8 @@
 
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
 {% endblock %}
