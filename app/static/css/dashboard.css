@@ -310,7 +310,7 @@
 }
 
 .table thead{
-    background:#2563eb;
+    background:#011236;
     color:#fff;
 }
 
@@ -550,4 +550,8 @@ canvas{
         font-size:24px;
     }
 
+}
+
+body {
+    background: lightgray !important;
 }

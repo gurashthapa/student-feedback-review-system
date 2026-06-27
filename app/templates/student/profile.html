@@ -4,43 +4,97 @@
 
 {% block content %}
 
-<div class="page-header">
-    <h2><i class="fas fa-user-circle"></i> My Profile</h2>
-</div>
+<div class="container-fluid">
 
-<div class="row">
+    <div class="card border-0 shadow-sm mb-4">
 
-    <div class="col-lg-4">
+        <div class="position-relative">
 
-        <div class="card profile-card">
+            <div class="profile-cover">
 
-            <div class="profile-cover"></div>
+                <button class="btn btn-light btn-sm cover-btn">
+                    <i class="fas fa-camera"></i> Change Cover
+                </button>
 
-            <div class="profile-content">
+            </div>
 
-                <img src="{{ url_for('static', filename='images/avatar.png') }}"
+            <div class="profile-avatar-wrapper">
+                <img src="{{ url_for('static', filename='uploads/' + student.profile_image) }}"
+
+                     id="profilePreview"
                      class="profile-avatar">
 
-                <h3>{{ student.name }}</h3>
+                <label for="profileImage" class="avatar-upload">
+                    <i class="fas fa-camera"></i>
+                </label>
 
-                <p class="profile-role">
+                <form action="{{ url_for('student.profile') }}"
+      method="POST"
+      enctype="multipart/form-data"
+      id="uploadForm">
+
+    <input
+        type="file"
+        id="profileImage"
+        name="profileImage"
+        accept="image/*"
+        hidden>
+
+</form>
+
+            </div>
+
+        </div>
+
+        <div class="card-body pt-5">
+
+            <div class="text-center">
+
+                <h2 class="mb-1">{{ student.full_name }}</h2>
+
+                <p class="text-muted mb-3">
                     <i class="fas fa-user-graduate"></i>
                     Student
                 </p>
 
-                <hr>
+                <button class="btn btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Edit Profile
+                </button>
 
-                <div class="profile-stat">
+            </div>
 
-                    <div>
-                        <h4>{{ total_feedback }}</h4>
-                        <span>Feedback</span>
-                    </div>
+            <hr>
 
-                    <div>
-                        <h4>{{ avg_rating }}</h4>
-                        <span>Rating</span>
-                    </div>
+            <div class="row text-center">
+
+                <div class="col-md-4">
+
+                    <h3>{{ total_feedback }}</h3>
+
+                    <small class="text-muted">
+                        Feedback
+                    </small>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <h3>{{ avg_rating }}</h3>
+
+                    <small class="text-muted">
+                        Average Rating
+                    </small>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <h3>{{ student.semester }}</h3>
+
+                    <small class="text-muted">
+                        Semester
+                    </small>
 
                 </div>
 
@@ -50,81 +104,54 @@
 
     </div>
 
+    <div class="row">
 
-    <div class="col-lg-8">
+        <div class="col-lg-6 mb-4">
 
-        <div class="card">
+            <div class="card shadow-sm h-100">
 
-            <div class="card-header">
-                <h4>
-                    <i class="fas fa-id-card"></i>
-                    Student Information
-                </h4>
-            </div>
+                <div class="card-header">
 
-            <div class="card-body">
+                    <h5 class="mb-0">
 
-                <div class="row">
+                        <i class="fas fa-user-circle"></i>
 
-                    <div class="col-md-6 mb-4">
+                        About
 
-                        <label>Full Name</label>
+                    </h5>
 
-                        <input class="form-control"
-                               value="{{ student.name }}"
-                               readonly>
+                </div>
 
-                    </div>
+                <div class="card-body">
 
-                    <div class="col-md-6 mb-4">
+                    <table class="table table-borderless">
 
-                        <label>Email Address</label>
+                        <tr>
+                            <th width="35%">Full Name</th>
+                            <td>{{ student.full_name }}</td>
+                        </tr>
 
-                        <input class="form-control"
-                               value="{{ student.email }}"
-                               readonly>
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ student.email }}</td>
+                        </tr>
 
-                    </div>
+                        <tr>
+                            <th>Department</th>
+                            <td>{{ student.department.name if student.department else "N/A" }}</td>
+                        </tr>
 
-                    <div class="col-md-6 mb-4">
+                        <tr>
+                            <th>Semester</th>
+                            <td>{{ student.semester }}</td>
+                        </tr>
 
-                        <label>Department</label>
+                        <tr>
+                            <th>Year</th>
+                            <td>{{ student.year }}</td>
+                        </tr>
 
-                        <input class="form-control"
-                               value="{{ student.department if student.department else 'N/A' }}"
-                               readonly>
-
-                    </div>
-
-                    <div class="col-md-6 mb-4">
-
-                        <label>Semester</label>
-
-                        <input class="form-control"
-                               value="{{ student.semester }}"
-                               readonly>
-
-                    </div>
-
-                    <div class="col-md-6 mb-4">
-
-                        <label>Total Feedback</label>
-
-                        <input class="form-control"
-                               value="{{ total_feedback }}"
-                               readonly>
-
-                    </div>
-
-                    <div class="col-md-6 mb-4">
-
-                        <label>Average Rating</label>
-
-                        <input class="form-control"
-                               value="{{ avg_rating }}"
-                               readonly>
-
-                    </div>
+                    </table>
 
                 </div>
 
@@ -132,8 +159,91 @@
 
         </div>
 
-    </div>
+        <div class="col-lg-6 mb-4">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-header">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-address-card"></i>
+
+                        Contact Information
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+                            <th width="35%">Phone</th>
+                            <td>{{ student.phone }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Gender</th>
+                            <td>{{ student.gender }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Address</th>
+                            <td>{{ student.address }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Total Feedback</th>
+                            <td>{{ total_feedback }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Average Rating</th>
+                            <td>{{ avg_rating }}</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        </div>
 
 </div>
+
+<script>
+
+const profileInput = document.getElementById("profileImage");
+
+const profilePreview = document.getElementById("profilePreview");
+
+const uploadForm = document.getElementById("uploadForm");
+
+profileInput.addEventListener("change", function () {
+
+    if (this.files.length > 0) {
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            profilePreview.src = e.target.result;
+
+        };
+
+        reader.readAsDataURL(profileInput.files[0]);
+
+        uploadForm.submit();
+
+    }
+
+});
+
+</script>
 
 {% endblock %}

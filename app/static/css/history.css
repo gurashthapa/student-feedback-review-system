@@ -213,3 +213,29 @@
 .empty-history p {
     color: #7f8c8d;
 }
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.page-btn {
+    padding: 8px 14px;
+    background: #3498db;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.page-btn:hover {
+    background: #2980b9;
+}
+
+.page-info {
+    font-size: 14px;
+    color: #7f8c8d;
+}

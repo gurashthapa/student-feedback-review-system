@@ -1,153 +1,363 @@
-from datetime import datetime
+import os
+
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+    session,
+    current_app
+)
+
+from sqlalchemy import func
+
+from werkzeug.utils import secure_filename
 
 from app import db
+from app.models.student import Student
+from app.models.course import Course
+from app.models.feedback import Feedback
 
 
-class Student(db.Model):
+student_bp = Blueprint(
+    "student",
+    __name__,
+    url_prefix="/student"
+)
 
-    __tablename__ = "students"
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True
+def get_logged_student():
+
+    if "user_id" not in session:
+        return None
+
+    return Student.query.filter_by(
+        user_id=session["user_id"]
+    ).first()
+
+
+@student_bp.route("/dashboard")
+def dashboard():
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    total_feedback = Feedback.query.filter_by(
+        student_id=student.id
+    ).count()
+
+    avg_rating = db.session.query(
+        func.avg(Feedback.rating)
+    ).filter(
+        Feedback.student_id == student.id
+    ).scalar()
+
+    avg_rating = round(avg_rating, 2) if avg_rating else 0
+
+    total_courses = Course.query.filter_by(
+        department_id=student.department_id,
+        semester=student.semester,
+        status="Active"
+    ).count()
+
+    total_faculty = (
+        db.session.query(Course.faculty_id)
+        .filter(
+            Course.department_id == student.department_id,
+            Course.semester == student.semester,
+            Course.status == "Active"
+        )
+        .distinct()
+        .count()
     )
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey("users.id"),
-        nullable=False,
-        unique=True
+    recent_feedback = (
+        Feedback.query
+        .filter_by(student_id=student.id)
+        .order_by(Feedback.created_at.desc())
+        .limit(5)
+        .all()
     )
 
-    department_id = db.Column(
-        db.Integer,
-        db.ForeignKey("departments.id"),
-        nullable=False
-    )
-
-    student_id = db.Column(
-        db.String(20),
-        unique=True,
-        nullable=False
-    )
-
-    full_name = db.Column(
-        db.String(100),
-        nullable=False
-    )
-
-    email = db.Column(
-        db.String(120),
-        unique=True,
-        nullable=False
-    )
-
-    phone = db.Column(
-        db.String(20)
-    )
-
-    address = db.Column(
-        db.Text
-    )
-
-    gender = db.Column(
-        db.String(10)
-    )
-
-    date_of_birth = db.Column(
-        db.Date
-    )
-
-    year = db.Column(
-        db.Integer,
-        nullable=False
-    )
-
-    semester = db.Column(
-        db.Integer,
-        nullable=False
-    )
-
-    section = db.Column(
-        db.String(10)
-    )
-
-    profile_image = db.Column(
-        db.String(255),
-        default="default.png"
-    )
-
-    status = db.Column(
-        db.String(20),
-        default="Active"
-    )
-
-    created_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow
-    )
-
-    updated_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
-    )
-
-    # ======================================
-    # Relationships
-    # ======================================
-
-    user = db.relationship(
-        "User",
-        back_populates="student",
-        uselist=False
-    )
-
-    department = db.relationship(
-        "Department",
-        back_populates="students"
-    )
-
-    feedbacks = db.relationship(
-        "Feedback",
-        back_populates="student",
-        cascade="all, delete-orphan",
-        lazy=True
+    return render_template(
+        "student/dashboard.html",
+        student=student,
+        total_feedback=total_feedback,
+        avg_rating=avg_rating,
+        total_courses=total_courses,
+        total_faculty=total_faculty,
+        recent_feedback=recent_feedback
     )
 
 
-    def __repr__(self):
+@student_bp.route("/feedback", methods=["GET", "POST"])
+def feedback():
 
-        return f"<Student {self.full_name}>"
+    student = get_logged_student()
 
-    @property
-    def current_year(self):
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
 
-        return f"Year {self.year}"
+    courses = Course.query.filter(
+        Course.status == "Active"
+    ).order_by(
+        Course.course_name
+    ).all()
 
-    @property
-    def current_semester(self):
+    if request.method == "POST":
 
-        return f"Semester {self.semester}"
+        course_id = request.form.get("course_id")
+        rating = request.form.get("rating")
+        review = request.form.get("review")
+        anonymous = bool(request.form.get("anonymous"))
 
-    def to_dict(self):
+        if not course_id:
+            flash("Please select a course.", "danger")
+            return render_template(
+                "student/feedback.html",
+                student=student,
+                courses=courses
+            )
 
-        return {
-            "id": self.id,
-            "student_id": self.student_id,
-            "user_id": self.user_id,
-            "department_id": self.department_id,
-            "full_name": self.full_name,
-            "email": self.email,
-            "phone": self.phone,
-            "address": self.address,
-            "gender": self.gender,
-            "date_of_birth": self.date_of_birth,
-            "year": self.year,
-            "semester": self.semester,
-            "section": self.section,
-            "profile_image": self.profile_image,
-            "status": self.status,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at
-        }
+        if not rating:
+            flash("Please select a rating.", "danger")
+            return render_template(
+                "student/feedback.html",
+                student=student,
+                courses=courses
+            )
+
+        if not review or review.strip() == "":
+            flash("Please enter your review.", "danger")
+            return render_template(
+                "student/feedback.html",
+                student=student,
+                courses=courses
+            )
+
+        try:
+            course = Course.query.get(int(course_id))
+        except (ValueError, TypeError):
+            course = None
+
+        if course is None:
+            flash("Selected course does not exist.", "danger")
+            return render_template(
+                "student/feedback.html",
+                student=student,
+                courses=courses
+            )
+
+        existing_feedback = Feedback.query.filter_by(
+            student_id=student.id,
+            course_id=course.id
+        ).first()
+
+        if existing_feedback:
+            flash(
+                "You have already submitted feedback for this course.",
+                "warning"
+            )
+            return redirect(url_for("student.history"))
+
+        feedback = Feedback(
+            student_id=student.id,
+            faculty_id=course.faculty_id,
+            course_id=course.id,
+            rating=int(rating),
+            review=review.strip(),
+            anonymous=anonymous,
+            status="Pending"
+        )
+
+        db.session.add(feedback)
+        db.session.commit()
+
+        flash(
+            "Feedback submitted successfully.",
+            "success"
+        )
+
+        return redirect(url_for("student.history"))
+
+    return render_template(
+        "student/feedback.html",
+        student=student,
+        courses=courses
+    )
+@student_bp.route("/history")
+def history():
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 5
+
+    feedbacks = (
+        Feedback.query
+        .filter_by(student_id=student.id)
+        .order_by(Feedback.created_at.desc())
+        .paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+    )
+
+    return render_template(
+        "student/history.html",
+        student=student,
+        feedbacks=feedbacks
+    )
+
+
+@student_bp.route("/history/<int:feedback_id>")
+def view_feedback(feedback_id):
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    feedback = Feedback.query.filter_by(
+        id=feedback_id,
+        student_id=student.id
+    ).first()
+
+    if feedback is None:
+        flash("Feedback not found.", "danger")
+        return redirect(url_for("student.history"))
+
+    return render_template(
+        "student/view_feedback.html",
+        student=student,
+        feedback=feedback
+    )
+
+
+@student_bp.route("/history/delete/<int:feedback_id>", methods=["POST"])
+def delete_feedback(feedback_id):
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    feedback = Feedback.query.filter_by(
+        id=feedback_id,
+        student_id=student.id
+    ).first()
+
+    if feedback is None:
+        flash("Feedback not found.", "danger")
+        return redirect(url_for("student.history"))
+
+    if feedback.status.lower() != "pending":
+        flash(
+            "Only pending feedback can be deleted.",
+            "warning"
+        )
+        return redirect(url_for("student.history"))
+
+    db.session.delete(feedback)
+    db.session.commit()
+
+    flash(
+        "Feedback deleted successfully.",
+        "success"
+    )
+
+    return redirect(url_for("student.history"))
+
+
+@student_bp.route("/profile", methods=["GET", "POST"])
+def profile():
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    if request.method == "POST":
+
+        file = request.files.get("profileImage")
+
+        if file and file.filename:
+
+            filename = secure_filename(file.filename)
+
+            upload_folder = os.path.join(
+                current_app.static_folder,
+                "uploads"
+            )
+
+            os.makedirs(upload_folder, exist_ok=True)
+
+            file.save(
+                os.path.join(upload_folder, filename)
+            )
+
+            student.profile_image = filename
+
+            db.session.commit()
+
+            flash(
+                "Profile picture updated successfully.",
+                "success"
+            )
+
+            return redirect(url_for("student.profile"))
+
+    total_feedback = Feedback.query.filter_by(
+        student_id=student.id
+    ).count()
+
+    avg_rating = db.session.query(
+        func.avg(Feedback.rating)
+    ).filter(
+        Feedback.student_id == student.id
+    ).scalar()
+
+    avg_rating = round(avg_rating, 2) if avg_rating else 0
+
+    return render_template(
+        "student/profile.html",
+        student=student,
+        total_feedback=total_feedback,
+        avg_rating=avg_rating
+    )
+
+
+@student_bp.route("/courses")
+def courses():
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    courses = Course.query.filter_by(
+        department_id=student.department_id,
+        semester=student.semester,
+        status="Active"
+    ).all()
+
+    return render_template(
+        "student/courses.html",
+        student=student,
+        courses=courses
+    )

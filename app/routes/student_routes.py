@@ -184,27 +184,21 @@ def feedback():
         courses=courses
     )
 
+from flask import request
+
 @student_bp.route("/history")
 def history():
 
-    student = get_logged_student()
+    page = request.args.get("page", 1, type=int)
+    per_page = 5
 
-    if student is None:
-        flash("Please login first.", "warning")
-        return redirect(url_for("auth.login"))
-
-    feedbacks = (
-        Feedback.query
-        .filter_by(student_id=student.id)
-        .order_by(Feedback.created_at.desc())
-        .all()
+    feedbacks = Feedback.query.order_by(Feedback.created_at.desc()).paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False
     )
 
-    return render_template(
-        "student/history.html",
-        student=student,
-        feedbacks=feedbacks
-    )
+    return render_template("student/history.html", feedbacks=feedbacks)
 
 
 @student_bp.route("/history/<int:feedback_id>")
@@ -278,18 +272,30 @@ def profile():
 
     if request.method == "POST":
 
-        student.name = request.form.get("name")
-        student.email = request.form.get("email")
-        student.semester = request.form.get("semester")
+        file = request.files.get("profileImage")
 
-        password = request.form.get("password")
-        if password:
-            student.password = generate_password_hash(password)
+        if file and file.filename != "":
 
-        db.session.commit()
+            filename = secure_filename(file.filename)
 
-        flash("Profile updated successfully.", "success")
-        return redirect(url_for("student.profile"))
+            upload_folder = os.path.join(
+                current_app.static_folder,
+                "uploads"
+            )
+
+            os.makedirs(upload_folder, exist_ok=True)
+
+            filepath = os.path.join(upload_folder, filename)
+
+            file.save(filepath)
+
+            student.profile_image = filename
+
+            db.session.commit()
+
+            flash("Profile picture updated successfully.", "success")
+
+            return redirect(url_for("student.profile"))
 
     total_feedback = Feedback.query.filter_by(
         student_id=student.id
@@ -309,3 +315,7 @@ def profile():
         total_feedback=total_feedback,
         avg_rating=avg_rating
     )
+
+@student_bp.route('/courses')
+def courses():
+    return render_template('student/courses.html')

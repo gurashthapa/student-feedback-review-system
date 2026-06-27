@@ -1,6 +1,14 @@
-<div class="container-fluid">
+{% extends "layout/base.html" %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
+{% block title %}My Feedback History{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
 
     <div class="history-header">
 
@@ -21,7 +29,6 @@
            class="btn btn-primary new-feedback-btn">
 
             <i class="fas fa-plus-circle"></i>
-
             New Feedback
 
         </a>
@@ -32,69 +39,41 @@
     <div class="history-stats">
 
         <div class="history-card">
-
             <i class="fas fa-comments"></i>
-
             <div>
-
-                <h3>{{ feedbacks|length }}</h3>
-
+                <h3>{{ feedbacks.total }}</h3>
                 <span>Total Feedback</span>
-
             </div>
-
         </div>
 
         <div class="history-card">
-
             <i class="fas fa-clock"></i>
-
             <div>
-
-                <h3>
-                    {{ feedbacks|selectattr('status','equalto','Pending')|list|length }}
-                </h3>
-
+                <h3>{{ feedbacks.items|selectattr('status','equalto','Pending')|list|length }}</h3>
                 <span>Pending</span>
-
             </div>
-
         </div>
 
         <div class="history-card">
-
             <i class="fas fa-check-circle"></i>
-
             <div>
-
-                <h3>
-                    {{ feedbacks|selectattr('status','equalto','Approved')|list|length }}
-                </h3>
-
+                <h3>{{ feedbacks.items|selectattr('status','equalto','Approved')|list|length }}</h3>
                 <span>Approved</span>
-
             </div>
-
         </div>
 
         <div class="history-card">
-
             <i class="fas fa-star"></i>
-
             <div>
-
                 <h3>
-                    {% if feedbacks %}
-                        {{ "%.1f"|format((feedbacks|sum(attribute='rating'))/(feedbacks|length)) }}
+                    {% if feedbacks.items %}
+                        {{ "%.1f"|format((feedbacks.items|sum(attribute='rating'))/(feedbacks.items|length)) }}
                     {% else %}
                         0.0
                     {% endif %}
                 </h3>
-
                 <span>Average Rating</span>
-
             </div>
-
         </div>
 
     </div>
@@ -106,26 +85,23 @@
 
             <i class="fas fa-search"></i>
 
-            <input
-                type="text"
-                id="historySearch"
-                placeholder="Search course, faculty or review...">
+            <input type="text"
+                   id="historySearch"
+                   placeholder="Search course, faculty or review...">
 
         </div>
 
     </div>
 
 
-    {% if feedbacks %}
+    {% if feedbacks.items %}
 
     <div class="table-responsive history-table">
 
         <table class="table align-middle" id="historyTable">
 
             <thead>
-
                 <tr>
-
                     <th>Course</th>
                     <th>Faculty</th>
                     <th>Rating</th>
@@ -133,14 +109,12 @@
                     <th>Status</th>
                     <th>Anonymous</th>
                     <th>Date</th>
-
                 </tr>
-
             </thead>
 
             <tbody>
 
-                {% for fb in feedbacks %}
+                {% for fb in feedbacks.items %}
 
                 <tr>
 
@@ -220,6 +194,32 @@
 
     </div>
 
+    {% if feedbacks.pages > 1 %}
+
+    <div class="pagination-container">
+
+        {% if feedbacks.has_prev %}
+            <a class="page-btn"
+               href="{{ url_for('student.history', page=feedbacks.prev_num) }}">
+                ← Prev
+            </a>
+        {% endif %}
+
+        <span class="page-info">
+            Page {{ feedbacks.page }} of {{ feedbacks.pages }}
+        </span>
+
+        {% if feedbacks.has_next %}
+            <a class="page-btn"
+               href="{{ url_for('student.history', page=feedbacks.next_num) }}">
+                Next →
+            </a>
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
     {% else %}
 
     <div class="empty-history">
@@ -234,7 +234,6 @@
            class="btn btn-primary">
 
             <i class="fas fa-plus-circle"></i>
-
             Submit Your First Feedback
 
         </a>
@@ -245,5 +244,8 @@
 
 </div>
 
+{% endblock %}
 
+{% block extra_js %}
 <script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

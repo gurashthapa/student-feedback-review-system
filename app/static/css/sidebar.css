@@ -1,62 +1,107 @@
 .sidebar{
-    position:fixed;
-    top:0;
-    left:0;
-    width:270px;
-    height:100vh;
-    background:#0f172a;
-    color:#fff;
-    padding:30px 20px;
-    display:flex;
-    flex-direction:column;
-    z-index:1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 270px;
+    height: 100vh;
+    background: #0f172a;
+    color: #fff;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 1000;
 }
 
 .sidebar-logo{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    margin-bottom:45px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 45px;
 }
 
 .sidebar-logo i{
-    font-size:34px;
-    color:#3b82f6;
+    font-size: 34px;
+    color: #3b82f6;
 }
 
 .sidebar-logo h3{
-    font-size:22px;
-    font-weight:700;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
 }
 
 .sidebar-menu{
-    padding:0;
-    margin:0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .sidebar-menu li{
-    list-style:none;
-    margin-bottom:12px;
+    margin-bottom: 12px;
 }
 
 .sidebar-menu a{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    padding:14px 18px;
-    color:#cbd5e1;
-    border-radius:12px;
-    transition:.3s;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 18px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: 0.3s;
 }
 
-.sidebar-menu a:hover{
-    background:#2563eb;
-    color:#fff;
-    transform:translateX(6px);
+.sidebar-menu a:hover,
+.sidebar-menu a.active{
+    background: #2563eb;
+    color: #fff;
 }
 
 .sidebar-menu a i{
-    width:25px;
-    text-align:center;
-    font-size:18px;
+    width: 25px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.app-container{
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-wrapper{
+    margin-left: 270px;
+    width: calc(100% - 270px);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-area{
+    flex: 1;
+    padding: 25px;
+}
+
+@media (max-width:768px){
+    .sidebar{
+        width: 220px;
+    }
+
+    .main-wrapper{
+        margin-left: 220px;
+        width: calc(100% - 220px);
+    }
+}
+
+@media (max-width:576px){
+    .sidebar{
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .main-wrapper{
+        margin-left: 0;
+        width: 100%;
+    }
 }
