@@ -38,15 +38,15 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-
             <tbody>
-                {% for s in students %}
-                <tr>
-                    <td>{{ s.id }}</td>
-                    <td>{{ s.name }}</td>
-                    <td>{{ s.email }}</td>
-                    <td>{{ s.department }}</td>
-                    <td>{{ s.semester }}</td>
+    {% for s in students %}
+    <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.full_name }}</td>
+        <td>{{ s.email }}</td>
+        <td>{{ s.department.department_name if s.department else "-" }}</td>
+        <td>{{ s.semester }}</td>
+
                     <td>
                         <button class="btn btn-edit" onclick="editStudent({{ s.id }})">
                             <i class="fas fa-edit"></i>
@@ -69,7 +69,6 @@
 </div>
 
 
-<!-- ================= MODAL ================= -->
 <div id="studentModal" class="modal" style="display:none;">
 
     <div class="modal-content">
@@ -79,7 +78,7 @@
             <span class="close" onclick="closeStudentModal()">&times;</span>
         </div>
 
-        <form id="studentForm" method="POST" action="{{ url_for('student.add_student') }}">
+        <form id="studentForm" method="POST" action="{{ url_for('admin.add_student') }}"></form>
 
             <input type="hidden" name="id" id="student_id">
 
