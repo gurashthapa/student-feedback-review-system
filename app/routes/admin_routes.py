@@ -32,16 +32,13 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("role") != "admin":
-            flash("Please log in as an administrator.", "danger")
+            flash("Unauthorized access. Please login as admin.", "danger")
             return redirect(url_for("auth.login"))
         return f(*args, **kwargs)
-
     return decorated_function
 
-@admin_bp.route("/")
-@admin_bp.route("/dashboard")
-@admin_required
-def dashboard():
+
+def get_dashboard_stats():
 
     total_students = Student.query.count()
     total_faculty = Faculty.query.count()
@@ -51,64 +48,54 @@ def dashboard():
 
     avg_rating = db.session.query(func.avg(Feedback.rating)).scalar() or 0
 
+    rating_values = [
+        Feedback.query.filter_by(rating=1).count(),
+        Feedback.query.filter_by(rating=2).count(),
+        Feedback.query.filter_by(rating=3).count(),
+        Feedback.query.filter_by(rating=4).count(),
+        Feedback.query.filter_by(rating=5).count(),
+    ]
+
+    distribution_values = [
+        Feedback.query.filter_by(status="Pending").count(),
+        Feedback.query.filter_by(status="Approved").count(),
+        Feedback.query.filter_by(status="Rejected").count(),
+    ]
+
     recent_feedback = (
         Feedback.query.order_by(Feedback.created_at.desc())
         .limit(10)
         .all()
     )
 
-    rating_labels = [
-        "1 Star",
-        "2 Stars",
-        "3 Stars",
-        "4 Stars",
-        "5 Stars"
-    ]
+    return {
+        "total_students": total_students,
+        "total_faculty": total_faculty,
+        "total_courses": total_courses,
+        "total_departments": total_departments,
+        "total_feedback": total_feedback,
+        "avg_rating": round(avg_rating, 2),
+        "rating_labels": ["1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"],
+        "rating_values": rating_values,
+        "distribution_labels": ["Pending", "Approved", "Rejected"],
+        "distribution_values": distribution_values,
+        "recent_feedback": recent_feedback,
+    }
 
-    rating_values = [
-        Feedback.query.filter_by(rating=1).count(),
-        Feedback.query.filter_by(rating=2).count(),
-        Feedback.query.filter_by(rating=3).count(),
-        Feedback.query.filter_by(rating=4).count(),
-        Feedback.query.filter_by(rating=5).count()
-    ]
 
-    distribution_labels = [
-        "Pending",
-        "Approved",
-        "Rejected"
-    ]
+@admin_bp.route("/")
+@admin_bp.route("/dashboard")
+@admin_required
+def dashboard():
+    data = get_dashboard_stats()
+    return render_template("admin/dashboard.html", **data)
 
-    distribution_values = [
-        Feedback.query.filter_by(status="Pending").count(),
-        Feedback.query.filter_by(status="Approved").count(),
-        Feedback.query.filter_by(status="Rejected").count()
-    ]
-
-    return render_template(
-        "admin/dashboard.html",
-        total_students=total_students,
-        total_faculty=total_faculty,
-        total_courses=total_courses,
-        total_departments=total_departments,
-        total_feedback=total_feedback,
-        avg_rating=round(avg_rating, 2),
-        recent_feedback=recent_feedback,
-        rating_labels=rating_labels,
-        rating_values=rating_values,
-        distribution_labels=distribution_labels,
-        distribution_values=distribution_values
-    )
 
 @admin_bp.route("/students")
 @admin_required
 def students():
     students = Student.query.order_by(Student.id.desc()).all()
-
-    return render_template(
-        "admin/students.html",
-        students=students
-    )
+    return render_template("admin/students.html", students=students)
 
 
 @admin_bp.route("/students/add", methods=["GET", "POST"])
@@ -124,17 +111,12 @@ def add_student():
             department_id=request.form.get("department_id"),
             semester=request.form.get("semester"),
         )
-
         db.session.add(student)
         db.session.commit()
-
         flash("Student added successfully.", "success")
         return redirect(url_for("admin.students"))
 
-    return render_template(
-        "admin/add_student.html",
-        departments=departments,
-    )
+    return render_template("admin/add_student.html", departments=departments)
 
 
 @admin_bp.route("/students/<int:student_id>/edit", methods=["GET", "POST"])
@@ -151,37 +133,27 @@ def edit_student(student_id):
         student.semester = request.form.get("semester")
 
         db.session.commit()
-
         flash("Student updated successfully.", "success")
         return redirect(url_for("admin.students"))
 
-    return render_template(
-        "admin/edit_student.html",
-        student=student,
-        departments=departments,
-    )
+    return render_template("admin/edit_student.html", student=student, departments=departments)
 
 
 @admin_bp.route("/students/<int:student_id>/delete", methods=["POST"])
 @admin_required
 def delete_student(student_id):
     student = Student.query.get_or_404(student_id)
-
     db.session.delete(student)
     db.session.commit()
-
     flash("Student deleted successfully.", "success")
     return redirect(url_for("admin.students"))
+
 
 @admin_bp.route("/faculty")
 @admin_required
 def faculty():
     faculty_list = Faculty.query.order_by(Faculty.name).all()
-
-    return render_template(
-        "admin/faculty.html",
-        faculty_list=faculty_list,
-    )
+    return render_template("admin/faculty.html", faculty_list=faculty_list)
 
 
 @admin_bp.route("/faculty/add", methods=["GET", "POST"])
@@ -195,17 +167,12 @@ def add_faculty():
             email=request.form.get("email"),
             department_id=request.form.get("department_id"),
         )
-
         db.session.add(faculty)
         db.session.commit()
-
         flash("Faculty added successfully.", "success")
         return redirect(url_for("admin.faculty"))
 
-    return render_template(
-        "admin/add_faculty.html",
-        departments=departments,
-    )
+    return render_template("admin/add_faculty.html", departments=departments)
 
 
 @admin_bp.route("/faculty/<int:faculty_id>/edit", methods=["GET", "POST"])
@@ -220,25 +187,18 @@ def edit_faculty(faculty_id):
         faculty.department_id = request.form.get("department_id")
 
         db.session.commit()
-
         flash("Faculty updated successfully.", "success")
         return redirect(url_for("admin.faculty"))
 
-    return render_template(
-        "admin/edit_faculty.html",
-        faculty=faculty,
-        departments=departments,
-    )
+    return render_template("admin/edit_faculty.html", faculty=faculty, departments=departments)
 
 
 @admin_bp.route("/faculty/<int:faculty_id>/delete", methods=["POST"])
 @admin_required
 def delete_faculty(faculty_id):
     faculty = Faculty.query.get_or_404(faculty_id)
-
     db.session.delete(faculty)
     db.session.commit()
-
     flash("Faculty deleted successfully.", "success")
     return redirect(url_for("admin.faculty"))
 
@@ -247,24 +207,16 @@ def delete_faculty(faculty_id):
 @admin_required
 def departments():
     departments = Department.query.order_by(Department.name).all()
-
-    return render_template(
-        "admin/departments.html",
-        departments=departments,
-    )
+    return render_template("admin/departments.html", departments=departments)
 
 
 @admin_bp.route("/departments/add", methods=["GET", "POST"])
 @admin_required
 def add_department():
     if request.method == "POST":
-        department = Department(
-            name=request.form.get("name"),
-        )
-
+        department = Department(name=request.form.get("name"))
         db.session.add(department)
         db.session.commit()
-
         flash("Department added successfully.", "success")
         return redirect(url_for("admin.departments"))
 
@@ -278,26 +230,19 @@ def edit_department(department_id):
 
     if request.method == "POST":
         department.name = request.form.get("name")
-
         db.session.commit()
-
         flash("Department updated successfully.", "success")
         return redirect(url_for("admin.departments"))
 
-    return render_template(
-        "admin/edit_department.html",
-        department=department,
-    )
+    return render_template("admin/edit_department.html", department=department)
 
 
 @admin_bp.route("/departments/<int:department_id>/delete", methods=["POST"])
 @admin_required
 def delete_department(department_id):
     department = Department.query.get_or_404(department_id)
-
     db.session.delete(department)
     db.session.commit()
-
     flash("Department deleted successfully.", "success")
     return redirect(url_for("admin.departments"))
 
@@ -306,11 +251,7 @@ def delete_department(department_id):
 @admin_required
 def courses():
     courses = Course.query.order_by(Course.name).all()
-
-    return render_template(
-        "admin/courses.html",
-        courses=courses,
-    )
+    return render_template("admin/courses.html", courses=courses)
 
 
 @admin_bp.route("/courses/add", methods=["GET", "POST"])
@@ -324,17 +265,12 @@ def add_course():
             code=request.form.get("code"),
             department_id=request.form.get("department_id"),
         )
-
         db.session.add(course)
         db.session.commit()
-
         flash("Course added successfully.", "success")
         return redirect(url_for("admin.courses"))
 
-    return render_template(
-        "admin/add_course.html",
-        departments=departments,
-    )
+    return render_template("admin/add_course.html", departments=departments)
 
 
 @admin_bp.route("/courses/<int:course_id>/edit", methods=["GET", "POST"])
@@ -349,61 +285,42 @@ def edit_course(course_id):
         course.department_id = request.form.get("department_id")
 
         db.session.commit()
-
         flash("Course updated successfully.", "success")
         return redirect(url_for("admin.courses"))
 
-    return render_template(
-        "admin/edit_course.html",
-        course=course,
-        departments=departments,
-    )
+    return render_template("admin/edit_course.html", course=course, departments=departments)
 
 
 @admin_bp.route("/courses/<int:course_id>/delete", methods=["POST"])
 @admin_required
 def delete_course(course_id):
     course = Course.query.get_or_404(course_id)
-
     db.session.delete(course)
     db.session.commit()
-
     flash("Course deleted successfully.", "success")
     return redirect(url_for("admin.courses"))
+
 
 @admin_bp.route("/feedback")
 @admin_required
 def feedback():
-    feedback_list = (
-        Feedback.query.order_by(Feedback.id.desc())
-        .all()
-    )
-
-    return render_template(
-        "admin/feedback.html",
-        feedback_list=feedback_list,
-    )
+    feedback_list = Feedback.query.order_by(Feedback.id.desc()).all()
+    return render_template("admin/feedback.html", feedback_list=feedback_list)
 
 
 @admin_bp.route("/feedback/<int:feedback_id>")
 @admin_required
 def view_feedback(feedback_id):
     feedback = Feedback.query.get_or_404(feedback_id)
-
-    return render_template(
-        "admin/view_feedback.html",
-        feedback=feedback,
-    )
+    return render_template("admin/view_feedback.html", feedback=feedback)
 
 
 @admin_bp.route("/feedback/<int:feedback_id>/delete", methods=["POST"])
 @admin_required
 def delete_feedback(feedback_id):
     feedback = Feedback.query.get_or_404(feedback_id)
-
     db.session.delete(feedback)
     db.session.commit()
-
     flash("Feedback deleted successfully.", "success")
     return redirect(url_for("admin.feedback"))
 
@@ -411,62 +328,9 @@ def delete_feedback(feedback_id):
 @admin_bp.route("/reports")
 @admin_required
 def reports():
-    total_students = Student.query.count()
-    total_faculty = Faculty.query.count()
-    total_courses = Course.query.count()
-    total_departments = Department.query.count()
-    total_feedback = Feedback.query.count()
+    data = get_dashboard_stats()
+    return render_template("admin/reports.html", **data)
 
-    avg_rating = db.session.query(func.avg(Feedback.rating)).scalar() or 0
-
-    recent_feedback = (
-        Feedback.query.order_by(Feedback.created_at.desc())
-        .limit(10)
-        .all()
-    )
-
-    rating_labels = [
-        "1 Star",
-        "2 Stars",
-        "3 Stars",
-        "4 Stars",
-        "5 Stars"
-    ]
-
-    rating_values = [
-        Feedback.query.filter_by(rating=1).count(),
-        Feedback.query.filter_by(rating=2).count(),
-        Feedback.query.filter_by(rating=3).count(),
-        Feedback.query.filter_by(rating=4).count(),
-        Feedback.query.filter_by(rating=5).count()
-    ]
-
-    distribution_labels = [
-        "Pending",
-        "Approved",
-        "Rejected"
-    ]
-
-    distribution_values = [
-        Feedback.query.filter_by(status="Pending").count(),
-        Feedback.query.filter_by(status="Approved").count(),
-        Feedback.query.filter_by(status="Rejected").count()
-    ]
-
-    return render_template(
-        "admin/dashboard.html",
-        total_students=total_students,
-        total_faculty=total_faculty,
-        total_courses=total_courses,
-        total_departments=total_departments,
-        total_feedback=total_feedback,
-        avg_rating=round(avg_rating, 2),
-        recent_feedback=recent_feedback,
-        rating_labels=rating_labels,
-        rating_values=rating_values,
-        distribution_labels=distribution_labels,
-        distribution_values=distribution_values,
-    )
 
 @admin_bp.route("/settings", methods=["GET", "POST"])
 @admin_required

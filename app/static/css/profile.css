@@ -1,224 +1,71 @@
-.profile-page{
-    padding:30px;
-    background:#f5f7fb;
-    min-height:100vh;
-}
+.profile-card{
 
-.profile-main-card{
-    border-radius:20px;
-    overflow:hidden;
-    background:#fff;
-}
+    padding:35px;
 
-.profile-main-card .card-body{
-    padding:40px;
-}
-
-.profile-image-wrapper{
-    position:relative;
-    width:180px;
-    height:180px;
-    margin:auto;
-}
-
-.profile-avatar{
-    width:180px;
-    height:180px;
-    border-radius:50%;
-    object-fit:cover;
-    border:6px solid #fff;
-    box-shadow:0 12px 30px rgba(0,0,0,.15);
-    transition:.3s;
-}
-
-.profile-avatar:hover{
-    transform:scale(1.04);
-}
-
-.avatar-upload{
-    position:absolute;
-    bottom:10px;
-    right:10px;
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    background:#2563eb;
-    color:#fff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    box-shadow:0 5px 15px rgba(37,99,235,.35);
-}
-
-.profile-detail p{
-    margin-bottom:14px;
-    color:#555;
-    font-size:15px;
-}
-
-.profile-detail i{
-    width:25px;
-    color:#2563eb;
-}
-
-.student-info-box{
-    background:#f8f9fc;
-    border-radius:16px;
-    padding:25px;
-}
-
-.student-info-box h5{
-    margin-bottom:25px;
-}
-
-.info-row{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:18px;
-    padding-bottom:12px;
-    border-bottom:1px solid #e8e8e8;
-}
-
-.info-row:last-child{
     border:none;
-    margin-bottom:0;
+
+    border-radius:15px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+}
+
+.profile-image{
+
+    width:140px;
+
+    height:140px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:5px solid #fff;
+
+    box-shadow:0 4px 20px rgba(0,0,0,.15);
+
 }
 
 .stat-card{
-    border-radius:18px;
-    transition:.3s;
+
+    background:#f8f9fa;
+
+    border-radius:10px;
+
+    padding:20px;
+
+    text-align:center;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
 }
 
-.stat-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 18px 35px rgba(0,0,0,.12);
+.green{
+
+    background:#eefbf3;
+
 }
 
-.stat-card .card-body{
-    padding:28px;
+.yellow{
+
+    background:#fff8e6;
+
 }
 
-.stat-card small{
-    color:#6b7280;
-    font-size:14px;
+.purple{
+
+    background:#f6efff;
+
 }
 
-.stat-card h3{
-    margin-top:8px;
-    font-size:30px;
+.profile-card p{
+
+    margin-bottom:8px;
+
+}
+
+.profile-card h2{
+
     font-weight:700;
-}
 
-.stat-icon{
-    width:60px;
-    height:60px;
-    border-radius:15px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:#fff;
-    font-size:22px;
-}
-
-.card{
-    border-radius:18px;
-}
-
-.card-header{
-    border-bottom:1px solid #eee;
-    font-weight:600;
-}
-
-.card-body{
-    padding:30px;
-}
-
-.info-box{
-    background:#f8fafc;
-    border-radius:12px;
-    padding:15px 18px;
-    transition:.25s;
-}
-
-.info-box:hover{
-    background:#eef4ff;
-}
-
-.info-box label{
-    color:#6b7280;
-    font-size:13px;
-    display:block;
-    margin-bottom:5px;
-}
-
-.info-box h6{
-    margin:0;
-    font-size:16px;
-    font-weight:600;
-}
-
-.btn-primary{
-    border-radius:10px;
-    padding:10px 22px;
-}
-
-.btn-outline-primary{
-    border-radius:10px;
-}
-
-.badge{
-    padding:8px 16px;
-    border-radius:30px;
-    font-size:13px;
-}
-
-.text-center i{
-    transition:.3s;
-}
-
-.text-center:hover i{
-    transform:scale(1.2);
-}
-
-.shadow-sm{
-    box-shadow:0 10px 25px rgba(0,0,0,.06)!important;
-}
-
-.shadow{
-    box-shadow:0 20px 45px rgba(0,0,0,.10)!important;
-}
-
-@media(max-width:991px){
-    .profile-main-card .row{
-        text-align:center;
-    }
-
-    .profile-detail{
-        margin-top:20px;
-    }
-
-    .student-info-box{
-        margin-top:30px;
-    }
-}
-
-@media(max-width:768px){
-    .profile-page{
-        padding:15px;
-    }
-
-    .profile-avatar{
-        width:150px;
-        height:150px;
-    }
-
-    .profile-image-wrapper{
-        width:150px;
-        height:150px;
-    }
-
-    .stat-card{
-        margin-bottom:20px;
-    }
 }

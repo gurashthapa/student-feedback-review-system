@@ -2,192 +2,750 @@
 
 {% block title %}Student Dashboard{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-{% endblock %}
-
 {% block content %}
 
-<!-- 🔥 WELCOME SECTION -->
-<div class="welcome-banner">
+<!-- ================= HERO SECTION ================= -->
 
-    <div class="welcome-text">
+<div class="hero-banner">
 
-        <h2>Welcome Back 👋</h2>
+    <div class="hero-overlay"></div>
 
-        <h3>{{ session.get('name', 'Student') }}</h3>
+    <div class="container-fluid">
 
-        <p>
-            Track your feedback, monitor your academic progress,
-            and improve your learning experience.
-        </p>
+        <div class="hero-content">
 
-        <div class="banner-buttons">
+            <div class="hero-left">
 
-            <a href="{{ url_for('student.feedback') }}" class="btn btn-primary">
-                <i class="fas fa-star"></i> Submit Feedback
-            </a>
+                <span class="hero-badge">
 
-            <a href="{{ url_for('student.profile') }}" class="btn btn-outline-primary">
-                <i class="fas fa-user"></i> My Profile
-            </a>
+                    <i class="fas fa-user-graduate"></i>
 
-        </div>
+                    Student Dashboard
 
-    </div>
+                </span>
 
-</div>
+                <h1>
 
+                    Welcome Back,
 
-<!-- 📊 STATS CARDS -->
-<div class="dashboard-grid">
+                    <span>{{ student.full_name }}</span>
 
-    <div class="dashboard-card">
-        <i class="fas fa-comments icon"></i>
-        <h3>{{ total_feedback }}</h3>
-        <p>Total Feedback</p>
-    </div>
+                </h1>
 
-    <div class="dashboard-card">
-        <i class="fas fa-star icon"></i>
-        <h3>{{ avg_rating }}</h3>
-        <p>Average Rating</p>
-    </div>
+                <p>
 
-    <div class="dashboard-card">
-        <i class="fas fa-book icon"></i>
-        <h3>{{ total_courses }}</h3>
-        <p>Courses</p>
-    </div>
+                    Manage your profile, submit feedback, monitor your academic
+                    progress and stay connected with your university.
 
-    <div class="dashboard-card">
-        <i class="fas fa-chalkboard-teacher icon"></i>
-        <h3>{{ total_faculty }}</h3>
-        <p>Faculty</p>
-    </div>
+                </p>
 
-</div>
+                <div class="hero-buttons">
 
+                    <a href="{{ url_for('student.feedback') }}"
+                       class="btn btn-light btn-lg">
 
-<!-- ⚡ QUICK ACTIONS -->
-<div class="section-title">
-    <h3>Quick Actions</h3>
-</div>
+                        <i class="fas fa-star me-2"></i>
 
-<div class="action-grid">
+                        Submit Feedback
 
-    <a href="{{ url_for('student.feedback') }}" class="action-card">
-        <i class="fas fa-star"></i>
-        <h4>Give Feedback</h4>
-        <p>Rate your courses and faculty</p>
-    </a>
+                    </a>
 
-    <a href="{{ url_for('student.history') }}" class="action-card">
-        <i class="fas fa-history"></i>
-        <h4>History</h4>
-        <p>View submitted feedback</p>
-    </a>
+                    <a href="{{ url_for('student.profile') }}"
+                       class="btn btn-outline-light btn-lg">
 
-    <a href="{{ url_for('student.profile') }}" class="action-card">
-        <i class="fas fa-user"></i>
-        <h4>Profile</h4>
-        <p>Manage your account</p>
-    </a>
+                        <i class="fas fa-user me-2"></i>
 
-</div>
+                        My Profile
 
+                    </a>
 
-<!-- 📈 PERFORMANCE -->
-<div class="two-col">
+                </div>
 
-    <div class="card-box">
-
-        <h4><i class="fas fa-chart-line"></i> Performance</h4>
-
-        <div class="progress-item">
-            <span>Feedback Submitted</span>
-            <div class="progress"><div style="width:80%"></div></div>
-        </div>
-
-        <div class="progress-item">
-            <span>Course Completion</span>
-            <div class="progress"><div style="width:70%"></div></div>
-        </div>
-
-        <div class="progress-item">
-            <span>Participation</span>
-            <div class="progress"><div style="width:90%"></div></div>
-        </div>
-
-    </div>
-
-
-    <!-- 🔔 NOTIFICATIONS -->
-    <div class="card-box">
-
-        <h4><i class="fas fa-bell"></i> Notifications</h4>
-
-        <div class="notify">
-            <i class="fas fa-star"></i>
-            <div>
-                <b>Feedback Reminder</b>
-                <p>Submit your feedback regularly</p>
             </div>
-        </div>
 
-        <div class="notify">
-            <i class="fas fa-check"></i>
-            <div>
-                <b>Feedback Approved</b>
-                <p>Your feedback was approved</p>
-            </div>
-        </div>
+            <div class="hero-right">
 
-        <div class="notify">
-            <i class="fas fa-book"></i>
-            <div>
-                <b>Course Update</b>
-                <p>New materials available</p>
+                <div class="student-avatar">
+
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + (student.profile_image if student.profile_image else 'default.png')) }}"
+                        alt="Student Profile">
+
+                </div>
+
             </div>
+
         </div>
 
     </div>
 
 </div>
 
+<!-- ================= STATISTICS ================= -->
 
-<!-- 📊 CHART -->
-<div class="card-box chart-box">
+<div class="container-fluid mt-4">
 
-    <h4><i class="fas fa-chart-bar"></i> Feedback Analytics</h4>
+    <div class="row g-4">
 
-    <canvas id="studentChart"></canvas>
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card stat-blue">
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-comments"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <small>Total Feedback</small>
+
+                    <h2>{{ total_feedback }}</h2>
+
+                    <span>Submitted Feedback</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card stat-green">
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-star"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <small>Average Rating</small>
+
+                    <h2>{{ avg_rating }}</h2>
+
+                    <span>Overall Performance</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card stat-orange">
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-book-open"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <small>Courses</small>
+
+                    <h2>{{ total_courses }}</h2>
+
+                    <span>Registered Courses</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card stat-purple">
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-chalkboard-teacher"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <small>Faculty</small>
+
+                    <h2>{{ total_faculty }}</h2>
+
+                    <span>Teaching Staff</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ================= QUICK ACTIONS ================= -->
+
+<div class="container-fluid mt-5">
+
+    <div class="row">
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-card">
+
+                <div class="section-title">
+
+                    <h3>
+
+                        <i class="fas fa-bolt text-warning me-2"></i>
+
+                        Quick Actions
+
+                    </h3>
+
+                </div>
+
+                <div class="row g-4 mt-2">
+
+                    <div class="col-md-4">
+
+                        <a href="{{ url_for('student.feedback') }}"
+                           class="quick-action">
+
+                            <div class="quick-icon bg-primary">
+
+                                <i class="fas fa-star"></i>
+
+                            </div>
+
+                            <h5>Submit Feedback</h5>
+
+                            <p>
+
+                                Evaluate your faculty and courses.
+
+                            </p>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <a href="{{ url_for('student.history') }}"
+                           class="quick-action">
+
+                            <div class="quick-icon bg-success">
+
+                                <i class="fas fa-history"></i>
+
+                            </div>
+
+                            <h5>Feedback History</h5>
+
+                            <p>
+
+                                Review your previous submissions.
+
+                            </p>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <a href="{{ url_for('student.profile') }}"
+                           class="quick-action">
+
+                            <div class="quick-icon bg-warning">
+
+                                <i class="fas fa-user-edit"></i>
+
+                            </div>
+
+                            <h5>My Profile</h5>
+
+                            <p>
+
+                                Update your personal information.
+
+                            </p>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================= STUDENT SUMMARY ================= -->
+
+        <div class="col-lg-4">
+
+            <div class="dashboard-card">
+
+                <div class="section-title">
+
+                    <h3>
+
+                        <i class="fas fa-user-circle text-primary me-2"></i>
+
+                        Student Summary
+
+                    </h3>
+
+                </div>
+
+                <table class="table table-borderless mt-3">
+
+                    <tr>
+
+                        <th>Full Name</th>
+
+                        <td>{{ student.full_name }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Student ID</th>
+
+                        <td>{{ student.student_id }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Department</th>
+
+                        <td>
+
+                            {% if student.department %}
+
+                                {{ student.department.department_name }}
+
+                            {% else %}
+
+                                Not Assigned
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Semester</th>
+
+                        <td>{{ student.semester }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Email</th>
+
+                        <td>{{ student.email }}</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Phone</th>
+
+                        <td>
+
+                            {{ student.phone if student.phone else "Not Available" }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>Address</th>
+
+                        <td>
+
+                            {{ student.address if student.address else "Not Available" }}
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ================= RECENT FEEDBACK ================= -->
+
+<div class="container-fluid mt-5">
+
+    <div class="row">
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-card">
+
+                <div class="section-title d-flex justify-content-between align-items-center">
+
+                    <h3>
+
+                        <i class="fas fa-comments text-primary me-2"></i>
+
+                        Recent Feedback
+
+                    </h3>
+
+                    <a href="{{ url_for('student.history') }}"
+                       class="btn btn-outline-primary btn-sm">
+
+                        View All
+
+                    </a>
+
+                </div>
+
+                {% if recent_feedback %}
+
+                <div class="table-responsive mt-4">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Course</th>
+
+                                <th>Faculty</th>
+
+                                <th>Rating</th>
+
+                                <th>Status</th>
+
+                                <th>Date</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for fb in recent_feedback %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ fb.course.course_name }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ fb.course.faculty.full_name if fb.course.faculty else "N/A" }}
+
+                                </td>
+
+                                <td>
+
+                                    {% for i in range(fb.rating) %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% endfor %}
+
+                                    <span class="ms-2">
+
+                                        ({{ fb.rating }}/5)
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    {% if fb.status == "Approved" %}
+
+                                        <span class="badge bg-success">
+
+                                            Approved
+
+                                        </span>
+
+                                    {% elif fb.status == "Pending" %}
+
+                                        <span class="badge bg-warning text-dark">
+
+                                            Pending
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-danger">
+
+                                            Rejected
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {{ fb.created_at.strftime("%d %b %Y") if fb.created_at else "-" }}
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {% else %}
+
+                <div class="text-center py-5">
+
+                    <i class="fas fa-inbox fa-4x text-secondary mb-3"></i>
+
+                    <h4>No Feedback Yet</h4>
+
+                    <p class="text-muted">
+
+                        You haven't submitted any feedback.
+
+                    </p>
+
+                    <a href="{{ url_for('student.feedback') }}"
+                       class="btn btn-primary">
+
+                        Submit Feedback
+
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <!-- ================= PROGRESS ================= -->
+
+        <div class="col-lg-4">
+
+            <div class="dashboard-card">
+
+                <div class="section-title">
+
+                    <h3>
+
+                        <i class="fas fa-chart-line text-success me-2"></i>
+
+                        Progress
+
+                    </h3>
+
+                </div>
+
+                <div class="progress-item">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>Profile Completion</span>
+
+                        <strong>90%</strong>
+
+                    </div>
+
+                    <div class="progress mt-2">
+
+                        <div class="progress-bar bg-primary"
+                             style="width:90%;">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="progress-item mt-4">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>Feedback Submitted</span>
+
+                        <strong>{{ total_feedback }}</strong>
+
+                    </div>
+
+                    <div class="progress mt-2">
+
+                        <div class="progress-bar bg-success"
+                             style="width:75%;">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="progress-item mt-4">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>Courses Registered</span>
+
+                        <strong>{{ total_courses }}</strong>
+
+                    </div>
+
+                    <div class="progress mt-2">
+
+                        <div class="progress-bar bg-warning"
+                             style="width:80%;">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="progress-item mt-4">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>Average Rating</span>
+
+                        <strong>{{ avg_rating }}/5</strong>
+
+                    </div>
+
+                    <div class="progress mt-2">
+
+                        <div class="progress-bar bg-info"
+                             style="width:{{ (avg_rating / 5 * 100) if avg_rating else 0 }}%;">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ================= MOTIVATION SECTION ================= -->
+
+<div class="container-fluid mt-5 mb-4">
+
+    <div class="dashboard-card motivation-card">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-9">
+
+                <h3>
+
+                    <i class="fas fa-lightbulb text-warning me-2"></i>
+
+                    Keep Learning & Keep Improving
+
+                </h3>
+
+                <p class="mb-0 mt-3">
+
+                    Every feedback you submit helps improve teaching quality,
+                    enhances the learning experience, and contributes to a
+                    better academic environment for everyone. Thank you for
+                    being an active part of your university community.
+
+                </p>
+
+            </div>
+
+            <div class="col-lg-3 text-center">
+
+                <i class="fas fa-graduation-cap dashboard-illustration"></i>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
 {% endblock %}
-
 
 {% block extra_js %}
 
 <script>
-const ctx = document.getElementById('studentChart');
 
-if (ctx) {
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-            datasets: [{
-                label: 'Feedback',
-                data: [2,4,6,5,8,10],
-                borderColor: '#2563eb',
-                fill: true,
-                tension: 0.4
-            }]
-        }
+document.addEventListener("DOMContentLoaded", function () {
+
+    const cards = document.querySelectorAll(".stat-card");
+
+    cards.forEach(function(card){
+
+        card.addEventListener("mouseenter", function(){
+
+            this.style.transform = "translateY(-10px)";
+
+        });
+
+        card.addEventListener("mouseleave", function(){
+
+            this.style.transform = "translateY(0px)";
+
+        });
+
     });
-}
+
+    const quickActions = document.querySelectorAll(".quick-action");
+
+    quickActions.forEach(function(action){
+
+        action.addEventListener("mouseenter", function(){
+
+            this.style.transform = "translateY(-8px)";
+
+        });
+
+        action.addEventListener("mouseleave", function(){
+
+            this.style.transform = "translateY(0px)";
+
+        });
+
+    });
+
+});
+
 </script>
 
 {% endblock %}

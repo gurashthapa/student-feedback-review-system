@@ -60,10 +60,7 @@ class Department(db.Model):
         onupdate=datetime.utcnow
     )
 
-    # ==================================
-    # Relationships
-    # ==================================
-
+    
     students = db.relationship(
         "Student",
         back_populates="department",
@@ -85,16 +82,15 @@ class Department(db.Model):
         lazy=True
     )
 
-    # ==================================
-    # Helper Methods
-    # ==================================
+    @property
+    def name(self):
+        return self.department_name
 
+    
     def __repr__(self):
-
         return f"<Department {self.department_name}>"
 
     def to_dict(self):
-
         return {
             "id": self.id,
             "department_name": self.department_name,

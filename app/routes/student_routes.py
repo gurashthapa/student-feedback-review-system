@@ -290,7 +290,6 @@ def profile():
 
     if request.method == "POST":
 
-        # Upload profile image
         file = request.files.get("profileImage")
 
         if file and file.filename != "":
@@ -304,28 +303,28 @@ def profile():
 
             os.makedirs(upload_folder, exist_ok=True)
 
-            filepath = os.path.join(
-                upload_folder,
-                filename
-            )
+            filepath = os.path.join(upload_folder, filename)
 
             file.save(filepath)
 
             student.profile_image = filename
 
-        # Update profile information
         full_name = request.form.get("full_name")
         email = request.form.get("email")
         phone = request.form.get("phone")
         address = request.form.get("address")
         semester = request.form.get("semester")
 
-        if full_name:
-            student.full_name = full_name
+        # User information
+        if hasattr(student, "user") and student.user:
 
-        if email:
-            student.email = email
+            if full_name:
+                student.user.full_name = full_name
 
+            if email:
+                student.user.email = email
+
+        # Student information
         if phone:
             student.phone = phone
 
@@ -344,6 +343,7 @@ def profile():
 
         return redirect(url_for("student.profile"))
 
+    
     total_feedback = Feedback.query.filter_by(
         student_id=student.id
     ).count()
@@ -356,11 +356,30 @@ def profile():
 
     avg_rating = round(avg_rating, 2) if avg_rating else 0
 
+    total_courses = Course.query.filter_by(
+        department_id=student.department_id,
+        semester=student.semester,
+        status="Active"
+    ).count()
+
+    total_faculty = (
+        db.session.query(Course.faculty_id)
+        .filter(
+            Course.department_id == student.department_id,
+            Course.semester == student.semester,
+            Course.status == "Active"
+        )
+        .distinct()
+        .count()
+    )
+
     return render_template(
         "student/profile.html",
         student=student,
         total_feedback=total_feedback,
-        avg_rating=avg_rating
+        avg_rating=avg_rating,
+        total_courses=total_courses,
+        total_faculty=total_faculty
     )
 
 

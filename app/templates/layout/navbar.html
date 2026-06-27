@@ -14,13 +14,8 @@
     </div>
 
     <div class="navbar-search">
-
         <i class="fas fa-search"></i>
-
-        <input
-            type="text"
-            placeholder="Search...">
-
+        <input type="text" placeholder="Search...">
     </div>
 
     <div class="navbar-right">
@@ -37,9 +32,7 @@
 
         <div class="profile-box">
 
-            <img
-                src="{{ url_for('static', filename='images/avatar.png') }}"
-                alt="Profile">
+            <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="Profile">
 
             <div class="profile-info">
                 <h6>{{ session.get('name','Student') }}</h6>

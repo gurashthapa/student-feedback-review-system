@@ -73,7 +73,7 @@ class Student(db.Model):
 
     profile_image = db.Column(
         db.String(255),
-        default="gurash.jpeg"
+        default="default.png"
     )
 
     status = db.Column(
@@ -91,6 +91,7 @@ class Student(db.Model):
         default=datetime.utcnow,
         onupdate=datetime.utcnow
     )
+
 
 
     user = db.relationship(
@@ -111,8 +112,6 @@ class Student(db.Model):
         lazy=True
     )
 
-    def __repr__(self):
-        return f"<Student {self.full_name}>"
 
     @property
     def current_year(self):
@@ -121,6 +120,7 @@ class Student(db.Model):
     @property
     def current_semester(self):
         return f"Semester {self.semester}"
+
 
     def to_dict(self):
         return {
@@ -142,3 +142,6 @@ class Student(db.Model):
             "created_at": self.created_at,
             "updated_at": self.updated_at
         }
+
+    def __repr__(self):
+        return f"<Student {self.full_name}>"
