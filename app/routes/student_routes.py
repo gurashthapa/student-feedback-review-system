@@ -1,3 +1,5 @@
+import os
+
 from flask import (
     Blueprint,
     render_template,
@@ -5,11 +7,12 @@ from flask import (
     redirect,
     url_for,
     flash,
-    session
+    session,
+    current_app
 )
 
 from sqlalchemy import func
-from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 
 from app import db
 from app.models.student import Student
@@ -89,6 +92,7 @@ def dashboard():
         recent_feedback=recent_feedback
     )
 
+
 @student_bp.route("/feedback", methods=["GET", "POST"])
 def feedback():
 
@@ -100,7 +104,9 @@ def feedback():
 
     courses = Course.query.filter(
         Course.status == "Active"
-    ).order_by(Course.course_name).all()
+    ).order_by(
+        Course.course_name
+    ).all()
 
     if request.method == "POST":
 
@@ -183,22 +189,34 @@ def feedback():
         student=student,
         courses=courses
     )
-
-from flask import request
-
 @student_bp.route("/history")
 def history():
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
 
     page = request.args.get("page", 1, type=int)
     per_page = 5
 
-    feedbacks = Feedback.query.order_by(Feedback.created_at.desc()).paginate(
-        page=page,
-        per_page=per_page,
-        error_out=False
+    feedbacks = (
+        Feedback.query
+        .filter_by(student_id=student.id)
+        .order_by(Feedback.created_at.desc())
+        .paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
     )
 
-    return render_template("student/history.html", feedbacks=feedbacks)
+    return render_template(
+        "student/history.html",
+        student=student,
+        feedbacks=feedbacks
+    )
 
 
 @student_bp.route("/history/<int:feedback_id>")
@@ -272,6 +290,7 @@ def profile():
 
     if request.method == "POST":
 
+        # Upload profile image
         file = request.files.get("profileImage")
 
         if file and file.filename != "":
@@ -285,17 +304,45 @@ def profile():
 
             os.makedirs(upload_folder, exist_ok=True)
 
-            filepath = os.path.join(upload_folder, filename)
+            filepath = os.path.join(
+                upload_folder,
+                filename
+            )
 
             file.save(filepath)
 
             student.profile_image = filename
 
-            db.session.commit()
+        # Update profile information
+        full_name = request.form.get("full_name")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        address = request.form.get("address")
+        semester = request.form.get("semester")
 
-            flash("Profile picture updated successfully.", "success")
+        if full_name:
+            student.full_name = full_name
 
-            return redirect(url_for("student.profile"))
+        if email:
+            student.email = email
+
+        if phone:
+            student.phone = phone
+
+        if address:
+            student.address = address
+
+        if semester:
+            student.semester = int(semester)
+
+        db.session.commit()
+
+        flash(
+            "Profile updated successfully.",
+            "success"
+        )
+
+        return redirect(url_for("student.profile"))
 
     total_feedback = Feedback.query.filter_by(
         student_id=student.id
@@ -316,6 +363,24 @@ def profile():
         avg_rating=avg_rating
     )
 
-@student_bp.route('/courses')
+
+@student_bp.route("/courses")
 def courses():
-    return render_template('student/courses.html')
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    courses = Course.query.filter_by(
+        department_id=student.department_id,
+        semester=student.semester,
+        status="Active"
+    ).all()
+
+    return render_template(
+        "student/courses.html",
+        student=student,
+        courses=courses
+    )

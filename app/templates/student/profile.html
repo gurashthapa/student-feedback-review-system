@@ -19,30 +19,36 @@
             </div>
 
             <div class="profile-avatar-wrapper">
-                <img src="{{ url_for('static', filename='uploads/' + student.profile_image) }}"
 
-                     id="profilePreview"
-                     class="profile-avatar">
+    {% if student.profile_image %}
+    <img src="{{ url_for('static', filename='uploads/' + student.profile_image) }}"
+         id="profilePreview"
+         class="profile-avatar">
+{% else %}
+    <img src="{{ url_for('static', filename='uploads/gurash.jpeg') }}"
+         id="profilePreview"
+         class="profile-avatar">
+{% endif %}
 
-                <label for="profileImage" class="avatar-upload">
-                    <i class="fas fa-camera"></i>
-                </label>
+    <label for="profileImage" class="avatar-upload">
+        <i class="fas fa-camera"></i>
+    </label>
 
-                <form action="{{ url_for('student.profile') }}"
-      method="POST"
-      enctype="multipart/form-data"
-      id="uploadForm">
+    <form action="{{ url_for('student.profile') }}"
+          method="POST"
+          enctype="multipart/form-data"
+          id="uploadForm">
 
-    <input
-        type="file"
-        id="profileImage"
-        name="profileImage"
-        accept="image/*"
-        hidden>
+        <input
+            type="file"
+            id="profileImage"
+            name="profileImage"
+            accept="image/*"
+            hidden>
 
-</form>
+    </form>
 
-            </div>
+</div>
 
         </div>
 
