@@ -63,3 +63,159 @@
 .profile-box small{
     color:#6b7280;
 }
+
+.navbar-custom{
+    height:80px;
+    background:#ffffff;
+    border-radius:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 30px;
+    margin-bottom:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+
+.navbar-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.menu-toggle{
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:12px;
+    background:#f3f4f6;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.menu-toggle:hover{
+    background:#2563eb;
+    color:#fff;
+}
+
+.navbar-title h4{
+    margin:0;
+    font-weight:700;
+    color:#111827;
+}
+
+.navbar-title small{
+    color:#94a3b8;
+}
+
+.navbar-search{
+    width:380px;
+    height:48px;
+    background:#f8fafc;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    padding:0 18px;
+}
+
+.navbar-search i{
+    color:#94a3b8;
+}
+
+.navbar-search input{
+    width:100%;
+    border:none;
+    background:transparent;
+    outline:none;
+    margin-left:12px;
+    font-size:15px;
+}
+
+.navbar-right{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.icon-btn{
+    width:48px;
+    height:48px;
+    border:none;
+    border-radius:14px;
+    background:#f8fafc;
+    position:relative;
+    cursor:pointer;
+    transition:.3s;
+    font-size:18px;
+}
+
+.icon-btn:hover{
+    background:#2563eb;
+    color:#fff;
+}
+
+.badge-dot{
+    position:absolute;
+    top:10px;
+    right:12px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#ef4444;
+}
+
+.profile-box{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    background:#f8fafc;
+    padding:8px 18px;
+    border-radius:16px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.profile-box:hover{
+    background:#eef4ff;
+}
+
+.profile-box img{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.profile-info h6{
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+}
+
+.profile-info small{
+    color:#94a3b8;
+}
+
+.profile-box .fa-chevron-down{
+    color:#94a3b8;
+    margin-left:5px;
+}
+
+@media(max-width:992px){
+
+.navbar-search{
+    display:none;
+}
+
+.navbar-custom{
+    padding:0 15px;
+}
+
+.profile-info{
+    display:none;
+}
+
+.profile-box{
+    padding:6px;
+}
+
+}

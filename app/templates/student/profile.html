@@ -4,103 +4,143 @@
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid profile-page">
 
-    <div class="card border-0 shadow-sm mb-4">
-
-        <div class="position-relative">
-
-            <div class="profile-cover">
-
-                <button class="btn btn-light btn-sm cover-btn">
-                    <i class="fas fa-camera"></i> Change Cover
-                </button>
-
-            </div>
-
-            <div class="profile-avatar-wrapper">
-
-    {% if student.profile_image %}
-    <img src="{{ url_for('static', filename='uploads/' + student.profile_image) }}"
-         id="profilePreview"
-         class="profile-avatar">
-{% else %}
-    <img src="{{ url_for('static', filename='uploads/gurash.jpeg') }}"
-         id="profilePreview"
-         class="profile-avatar">
-{% endif %}
-
-    <label for="profileImage" class="avatar-upload">
-        <i class="fas fa-camera"></i>
-    </label>
-
-    <form action="{{ url_for('student.profile') }}"
-          method="POST"
-          enctype="multipart/form-data"
-          id="uploadForm">
-
-        <input
-            type="file"
-            id="profileImage"
-            name="profileImage"
-            accept="image/*"
-            hidden>
-
-    </form>
-
-</div>
-
+    <!-- Page Title -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">My Profile</h2>
+            <p class="text-muted mb-0">
+                Manage your personal information and account details.
+            </p>
         </div>
 
-        <div class="card-body pt-5">
+        <button class="btn btn-primary px-4">
+            <i class="fas fa-edit me-2"></i>
+            Edit Profile
+        </button>
+    </div>
 
-            <div class="text-center">
+    <!-- Main Profile Card -->
+    <div class="card border-0 shadow profile-main-card">
 
-                <h2 class="mb-1">{{ student.full_name }}</h2>
+        <div class="card-body p-4">
 
-                <p class="text-muted mb-3">
-                    <i class="fas fa-user-graduate"></i>
-                    Student
-                </p>
+            <div class="row align-items-center">
 
-                <button class="btn btn-primary">
-                    <i class="fas fa-edit"></i>
-                    Edit Profile
-                </button>
+                <!-- Profile Image -->
+                <div class="col-lg-3 text-center">
 
-            </div>
+                    <div class="profile-image-wrapper">
 
-            <hr>
+                        {% if student.profile_image %}
+                        <img
+                            src="{{ url_for('static', filename='uploads/' + student.profile_image) }}"
+                            class="profile-avatar"
+                            id="profilePreview">
+                        {% else %}
+                        <img
+                            src="{{ url_for('static', filename='images/avatar.png') }}"
+                            class="profile-avatar"
+                            id="profilePreview">
+                        {% endif %}
 
-            <div class="row text-center">
+                        <label for="profileImage" class="avatar-upload">
+                            <i class="fas fa-camera"></i>
+                        </label>
 
-                <div class="col-md-4">
+                    </div>
 
-                    <h3>{{ total_feedback }}</h3>
+                    <form
+                        action="{{ url_for('student.profile') }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        id="uploadForm">
 
-                    <small class="text-muted">
-                        Feedback
-                    </small>
+                        <input
+                            type="file"
+                            id="profileImage"
+                            name="profileImage"
+                            accept="image/*"
+                            hidden>
+
+                    </form>
 
                 </div>
 
-                <div class="col-md-4">
+                <!-- Basic Information -->
+                <div class="col-lg-5">
 
-                    <h3>{{ avg_rating }}</h3>
+                    <h2 class="fw-bold mb-2">
+                        {{ student.full_name }}
+                    </h2>
 
-                    <small class="text-muted">
-                        Average Rating
-                    </small>
+                    <span class="badge bg-primary mb-3">
+                        Student
+                    </span>
+
+                    <div class="profile-detail">
+
+                        <p>
+                            <i class="fas fa-envelope text-primary me-2"></i>
+                            {{ student.email }}
+                        </p>
+
+                        <p>
+                            <i class="fas fa-phone text-primary me-2"></i>
+                            {{ student.phone or "Not Added" }}
+                        </p>
+
+                        <p>
+                            <i class="fas fa-building text-primary me-2"></i>
+
+                            {{ student.department.name if student.department else "Department Not Assigned" }}
+
+                        </p>
+
+                        <p>
+                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+
+                            {{ student.address or "Address Not Added" }}
+
+                        </p>
+
+                    </div>
 
                 </div>
 
-                <div class="col-md-4">
+                <!-- Student Information -->
+                <div class="col-lg-4">
 
-                    <h3>{{ student.semester }}</h3>
+                    <div class="student-info-box">
 
-                    <small class="text-muted">
-                        Semester
-                    </small>
+                        <h5 class="fw-bold mb-3">
+                            Student Information
+                        </h5>
+
+                        <div class="info-row">
+                            <span>Semester</span>
+                            <strong>{{ student.semester }}</strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span>Year</span>
+                            <strong>{{ student.year }}</strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span>Gender</span>
+                            <strong>{{ student.gender or "Not Added" }}</strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span>Status</span>
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -110,146 +150,335 @@
 
     </div>
 
+    <!-- Statistics -->
+    <div class="row mt-4">
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card stat-card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small>Total Feedback</small>
+
+                            <h3 class="fw-bold mt-2">
+
+                                {{ total_feedback }}
+
+                            </h3>
+
+                        </div>
+
+                        <div class="stat-icon bg-primary">
+
+                            <i class="fas fa-comments"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card stat-card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small>Average Rating</small>
+
+                            <h3 class="fw-bold mt-2">
+
+                                {{ avg_rating }}
+
+                            </h3>
+
+                        </div>
+
+                        <div class="stat-icon bg-success">
+
+                            <i class="fas fa-star"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card stat-card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small>Semester</small>
+
+                            <h3 class="fw-bold mt-2">
+
+                                {{ student.semester }}
+
+                            </h3>
+
+                        </div>
+
+                        <div class="stat-icon bg-warning">
+
+                            <i class="fas fa-graduation-cap"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card stat-card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small>Academic Year</small>
+
+                            <h3 class="fw-bold mt-2">
+
+                                {{ student.year }}
+
+                            </h3>
+
+                        </div>
+
+                        <div class="stat-icon bg-danger">
+
+                            <i class="fas fa-chart-line"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+        <!-- About & Account Information -->
+    <div class="row mt-4">
+
+        <!-- About Me -->
+        <div class="col-lg-4 mb-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-user-circle text-primary me-2"></i>
+                        About Me
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    <p class="text-muted">
+                        Welcome to your student profile. Here you can view your
+                        academic information, update your personal details, and
+                        monitor your feedback statistics.
+                    </p>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Department</span>
+                        <strong>
+                            {{ student.department.name if student.department else "N/A" }}
+                        </strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Semester</span>
+                        <strong>{{ student.semester }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Year</span>
+                        <strong>{{ student.year }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Gender</span>
+                        <strong>{{ student.gender or "Not Added" }}</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Account Information -->
+        <div class="col-lg-8 mb-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-header bg-white border-0 py-3 d-flex justify-content-between">
+
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-id-card text-primary me-2"></i>
+                        Account Information
+                    </h5>
+
+                    <button class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit me-1"></i>
+                        Edit
+                    </button>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <div class="info-box mb-4">
+                                <label>Full Name</label>
+                                <h6>{{ student.full_name }}</h6>
+                            </div>
+
+                            <div class="info-box mb-4">
+                                <label>Email Address</label>
+                                <h6>{{ student.email }}</h6>
+                            </div>
+
+                            <div class="info-box mb-4">
+                                <label>Phone Number</label>
+                                <h6>{{ student.phone or "Not Added" }}</h6>
+                            </div>
+
+                            <div class="info-box">
+                                <label>Address</label>
+                                <h6>{{ student.address or "Not Added" }}</h6>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="info-box mb-4">
+                                <label>Department</label>
+                                <h6>
+                                    {{ student.department.name if student.department else "Not Assigned" }}
+                                </h6>
+                            </div>
+
+                            <div class="info-box mb-4">
+                                <label>Semester</label>
+                                <h6>{{ student.semester }}</h6>
+                            </div>
+
+                            <div class="info-box mb-4">
+                                <label>Academic Year</label>
+                                <h6>{{ student.year }}</h6>
+                            </div>
+
+                            <div class="info-box">
+                                <label>Average Rating</label>
+                                <h6>{{ avg_rating }}</h6>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Quick Statistics -->
     <div class="row">
 
-        <div class="col-lg-6 mb-4">
+        <div class="col-md-4 mb-3">
 
-            <div class="card shadow-sm h-100">
+            <div class="card border-0 shadow-sm text-center p-4">
 
-                <div class="card-header">
+                <i class="fas fa-comments fa-2x text-primary mb-3"></i>
 
-                    <h5 class="mb-0">
+                <h2 class="fw-bold">{{ total_feedback }}</h2>
 
-                        <i class="fas fa-user-circle"></i>
-
-                        About
-
-                    </h5>
-
-                </div>
-
-                <div class="card-body">
-
-                    <table class="table table-borderless">
-
-                        <tr>
-                            <th width="35%">Full Name</th>
-                            <td>{{ student.full_name }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Email</th>
-                            <td>{{ student.email }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Department</th>
-                            <td>{{ student.department.name if student.department else "N/A" }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Semester</th>
-                            <td>{{ student.semester }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Year</th>
-                            <td>{{ student.year }}</td>
-                        </tr>
-
-                    </table>
-
-                </div>
+                <p class="text-muted mb-0">
+                    Feedback Submitted
+                </p>
 
             </div>
 
         </div>
 
-        <div class="col-lg-6 mb-4">
+        <div class="col-md-4 mb-3">
 
-            <div class="card shadow-sm h-100">
+            <div class="card border-0 shadow-sm text-center p-4">
 
-                <div class="card-header">
+                <i class="fas fa-star fa-2x text-warning mb-3"></i>
 
-                    <h5 class="mb-0">
+                <h2 class="fw-bold">{{ avg_rating }}</h2>
 
-                        <i class="fas fa-address-card"></i>
-
-                        Contact Information
-
-                    </h5>
-
-                </div>
-
-                <div class="card-body">
-
-                    <table class="table table-borderless">
-
-                        <tr>
-                            <th width="35%">Phone</th>
-                            <td>{{ student.phone }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Gender</th>
-                            <td>{{ student.gender }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Address</th>
-                            <td>{{ student.address }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Total Feedback</th>
-                            <td>{{ total_feedback }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Average Rating</th>
-                            <td>{{ avg_rating }}</td>
-                        </tr>
-
-                    </table>
-
-                </div>
+                <p class="text-muted mb-0">
+                    Average Rating
+                </p>
 
             </div>
 
         </div>
 
+        <div class="col-md-4 mb-3">
+
+            <div class="card border-0 shadow-sm text-center p-4">
+
+                <i class="fas fa-graduation-cap fa-2x text-success mb-3"></i>
+
+                <h2 class="fw-bold">{{ student.semester }}</h2>
+
+                <p class="text-muted mb-0">
+                    Current Semester
+                </p>
+
+            </div>
+
         </div>
+
+    </div>
 
 </div>
-
-<script>
-
-const profileInput = document.getElementById("profileImage");
-
-const profilePreview = document.getElementById("profilePreview");
-
-const uploadForm = document.getElementById("uploadForm");
-
-profileInput.addEventListener("change", function () {
-
-    if (this.files.length > 0) {
-
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-
-            profilePreview.src = e.target.result;
-
-        };
-
-        reader.readAsDataURL(profileInput.files[0]);
-
-        uploadForm.submit();
-
-    }
-
-});
-
-</script>
 
 {% endblock %}

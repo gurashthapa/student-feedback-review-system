@@ -555,3 +555,139 @@ canvas{
 body {
     background: lightgray !important;
 }
+
+.sidebar{
+    width:270px;
+    height:100vh;
+    position:fixed;
+    left:0;
+    top:0;
+    background:#ffffff;
+    border-right:1px solid #edf2f7;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    box-shadow:0 10px 35px rgba(0,0,0,.06);
+    z-index:1000;
+}
+
+.sidebar-top{
+    padding:30px 25px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logo-icon{
+    width:55px;
+    height:55px;
+    background:#2563eb;
+    color:#fff;
+    border-radius:16px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+}
+
+.logo h4{
+    margin:0;
+    font-weight:700;
+    color:#111827;
+}
+
+.logo small{
+    color:#94a3b8;
+}
+
+.sidebar-menu{
+    list-style:none;
+    padding:0 18px;
+    margin:0;
+}
+
+.sidebar-menu li{
+    margin-bottom:10px;
+}
+
+.sidebar-menu a{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    text-decoration:none;
+    color:#64748b;
+    padding:14px 18px;
+    border-radius:14px;
+    transition:.3s;
+    font-weight:500;
+}
+
+.sidebar-menu a i{
+    width:22px;
+    text-align:center;
+    font-size:18px;
+}
+
+.sidebar-menu a:hover{
+    background:#eff6ff;
+    color:#2563eb;
+    transform:translateX(6px);
+}
+
+.sidebar-menu a.active{
+    background:#2563eb;
+    color:#fff;
+    box-shadow:0 10px 25px rgba(37,99,235,.30);
+}
+
+.sidebar-bottom{
+    padding:20px;
+}
+
+.logout-btn{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    text-decoration:none;
+    padding:15px 18px;
+    border-radius:14px;
+    background:#fee2e2;
+    color:#dc2626;
+    font-weight:600;
+    transition:.3s;
+}
+
+.logout-btn:hover{
+    background:#dc2626;
+    color:#fff;
+}
+
+@media(max-width:992px){
+
+.sidebar{
+    width:85px;
+}
+
+.logo h4,
+.logo small,
+.sidebar-menu span,
+.logout-btn span{
+    display:none;
+}
+
+.logo{
+    justify-content:center;
+}
+
+.sidebar-menu a{
+    justify-content:center;
+}
+
+.logout-btn{
+    justify-content:center;
+}
+
+}

@@ -1,25 +1,53 @@
 <nav class="navbar-custom">
 
-    <div class="navbar-title">
-        <h4>{% block page_title %}Dashboard{% endblock %}</h4>
+    <div class="navbar-left">
+
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="navbar-title">
+            <h4>{% block page_title %}Dashboard{% endblock %}</h4>
+            <small>Student Feedback Review System</small>
+        </div>
+
+    </div>
+
+    <div class="navbar-search">
+
+        <i class="fas fa-search"></i>
+
+        <input
+            type="text"
+            placeholder="Search...">
+
     </div>
 
     <div class="navbar-right">
 
         <button class="icon-btn">
             <i class="fas fa-bell"></i>
+            <span class="badge-dot"></span>
         </button>
 
         <button class="icon-btn">
             <i class="fas fa-envelope"></i>
+            <span class="badge-dot"></span>
         </button>
 
         <div class="profile-box">
-            <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="Profile">
-            <div>
+
+            <img
+                src="{{ url_for('static', filename='images/avatar.png') }}"
+                alt="Profile">
+
+            <div class="profile-info">
                 <h6>{{ session.get('name','Student') }}</h6>
                 <small>Student</small>
             </div>
+
+            <i class="fas fa-chevron-down"></i>
+
         </div>
 
     </div>

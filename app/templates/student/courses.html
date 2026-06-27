@@ -8,10 +8,59 @@
     <h2><i class="fas fa-book"></i> My Courses</h2>
 </div>
 
+
 <div class="card">
     <div class="card-body">
+
         <h5>Enrolled Courses</h5>
-        <p>No courses available yet.</p>
+
+        {% if courses %}
+
+            <div class="row">
+
+                {% for course in courses %}
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="card shadow-sm">
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                {{ course.course_name }}
+                            </h5>
+
+                            <p>
+                                <strong>Code:</strong>
+                                {{ course.course_code }}
+                            </p>
+
+                            <p>
+                                <strong>Semester:</strong>
+                                {{ course.semester }}
+                            </p>
+
+                            <p>
+                                <strong>Credit:</strong>
+                                {{ course.credit }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p>No courses available yet.</p>
+
+        {% endif %}
+
     </div>
 </div>
 
