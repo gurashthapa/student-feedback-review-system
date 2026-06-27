@@ -1,0 +1,290 @@
+.profile-card{
+    border:none;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+    transition:.35s;
+    background:#fff;
+}
+
+.profile-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 25px 45px rgba(37,99,235,.18);
+}
+
+.profile-cover{
+    height:150px;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8,#3b82f6);
+    position:relative;
+}
+
+.profile-content{
+    text-align:center;
+    padding:0 30px 35px;
+}
+
+.profile-avatar{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    border:6px solid #fff;
+    object-fit:cover;
+    margin-top:-75px;
+    background:#fff;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+    transition:.35s;
+}
+
+.profile-avatar:hover{
+    transform:scale(1.05);
+}
+
+.profile-content h3{
+    margin-top:18px;
+    font-size:28px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.profile-role{
+    color:#64748b;
+    font-size:16px;
+    margin-top:8px;
+}
+
+.profile-role i{
+    color:#2563eb;
+    margin-right:6px;
+}
+
+.profile-content hr{
+    margin:30px 0;
+}
+
+.profile-stat{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
+
+.profile-stat div{
+    flex:1;
+}
+
+.profile-stat h4{
+    font-size:32px;
+    font-weight:700;
+    color:#2563eb;
+    margin-bottom:5px;
+}
+
+.profile-stat span{
+    color:#64748b;
+    font-size:14px;
+}
+
+.card-header{
+    background:#fff;
+    border-bottom:1px solid #edf2f7;
+    padding:22px 28px;
+}
+
+.card-header h4{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.card-header i{
+    color:#2563eb;
+    margin-right:10px;
+}
+
+.card-body{
+    padding:30px;
+}
+
+label{
+    font-weight:600;
+    color:#334155;
+    margin-bottom:8px;
+    display:block;
+}
+
+.form-control{
+    height:52px;
+    border-radius:12px;
+    border:1px solid #dbe4ee;
+    padding:0 15px;
+    font-size:15px;
+    background:#f8fafc;
+}
+
+.form-control:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+    background:#fff;
+}
+
+.profile-card,
+.card{
+    animation:fadeUp .6s ease;
+}
+
+.profile-content{
+    position:relative;
+}
+
+.profile-content::after{
+    content:"";
+    position:absolute;
+    top:25px;
+    right:25px;
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#22c55e;
+    border:3px solid #fff;
+}
+
+.profile-stat div{
+    padding:15px;
+    border-radius:15px;
+    transition:.35s;
+}
+
+.profile-stat div:hover{
+    background:#eff6ff;
+    transform:translateY(-5px);
+}
+
+.form-control:hover{
+    border-color:#2563eb;
+}
+
+.form-control[readonly]{
+    cursor:default;
+}
+
+.card{
+    border:none;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    transition:.35s;
+}
+
+.row{
+    row-gap:25px;
+}
+
+.page-header{
+    margin-bottom:30px;
+}
+
+.page-header h2{
+    font-size:32px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.page-header i{
+    color:#2563eb;
+    margin-right:10px;
+}
+
+input{
+    transition:.3s;
+}
+
+input:hover{
+    background:#fff;
+}
+
+@keyframes fadeUp{
+
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+@media(max-width:992px){
+
+    .profile-card{
+        margin-bottom:30px;
+    }
+
+    .profile-content{
+        padding:0 20px 25px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .profile-avatar{
+        width:120px;
+        height:120px;
+        margin-top:-60px;
+    }
+
+    .profile-content h3{
+        font-size:24px;
+    }
+
+    .profile-stat{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .profile-stat div{
+        width:100%;
+    }
+
+    .card-body{
+        padding:20px;
+    }
+
+}
+
+@media(max-width:576px){
+
+    .profile-cover{
+        height:120px;
+    }
+
+    .profile-avatar{
+        width:100px;
+        height:100px;
+        margin-top:-50px;
+    }
+
+    .profile-content h3{
+        font-size:22px;
+    }
+
+    .card-header{
+        padding:18px;
+    }
+
+    .card-body{
+        padding:18px;
+    }
+
+    .page-header h2{
+        font-size:26px;
+    }
+
+}
