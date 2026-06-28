@@ -106,16 +106,19 @@ def students():
 @admin_bp.route("/students/add", methods=["GET", "POST"])
 @admin_required
 def add_student():
-    departments = Department.query.order_by(Department.name).all()
+    departments = Department.query.order_by(Department.department_name).all()
 
     if request.method == "POST":
         student = Student(
-            student_id=request.form.get("student_id"),
-            name=request.form.get("name"),
-            email=request.form.get("email"),
-            department_id=request.form.get("department_id"),
-            semester=request.form.get("semester"),
-        )
+    student_id=request.form.get("student_id"),
+    full_name=request.form.get("full_name"),
+    email=request.form.get("email"),
+    department_id=request.form.get("department_id"),
+    year=request.form.get("year"),
+    semester=request.form.get("semester"),
+    user_id=1
+)
+    
         db.session.add(student)
         db.session.commit()
         flash("Student added successfully.", "success")
@@ -128,11 +131,11 @@ def add_student():
 @admin_required
 def edit_student(student_id):
     student = Student.query.get_or_404(student_id)
-    departments = Department.query.order_by(Department.name).all()
+    departments = Department.query.order_by(Department.department_name).all()
 
     if request.method == "POST":
         student.student_id = request.form.get("student_id")
-        student.name = request.form.get("name")
+        student.full_name = request.form.get("full_name")
         student.email = request.form.get("email")
         student.department_id = request.form.get("department_id")
         student.semester = request.form.get("semester")
