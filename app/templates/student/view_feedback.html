@@ -1,0 +1,52 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Feedback Details{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header">
+            <h3>Feedback Details</h3>
+        </div>
+
+        <div class="card-body">
+
+            <p><strong>Course:</strong> {{ feedback.course.course_name }}</p>
+
+            <p><strong>Faculty:</strong> {{ feedback.faculty.full_name }}</p>
+
+            <p><strong>Rating:</strong> {{ feedback.rating }}/5</p>
+
+            <p><strong>Status:</strong> {{ feedback.status }}</p>
+
+            <p><strong>Anonymous:</strong>
+                {% if feedback.anonymous %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            </p>
+
+            <p><strong>Review:</strong></p>
+
+            <div class="border rounded p-3">
+                {{ feedback.review }}
+            </div>
+
+            <br>
+
+            <a href="{{ url_for('student.history') }}"
+               class="btn btn-secondary">
+                ← Back to History
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
