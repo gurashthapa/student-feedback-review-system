@@ -95,7 +95,7 @@ def dashboard():
 @admin_required
 def students():
     students = Student.query.order_by(Student.id.desc()).all()
-    departments = Department.query.order_by(Department.name).all()
+    departments = Department.query.order_by(Department.department_name).all()
 
     return render_template(
         "admin/students.html",
@@ -169,7 +169,7 @@ def faculty():
 @admin_bp.route("/faculty/add", methods=["GET", "POST"])
 @admin_required
 def add_faculty():
-    departments = Department.query.order_by(Department.name).all()
+    departments = Department.query.order_by(Department.department_name).all()
 
     if request.method == "POST":
         faculty = Faculty(
@@ -189,7 +189,7 @@ def add_faculty():
 @admin_required
 def edit_faculty(faculty_id):
     faculty = Faculty.query.get_or_404(faculty_id)
-    departments = Department.query.order_by(Department.name).all()
+    departments = Department.query.order_by(Department.department_name).all()
 
     if request.method == "POST":
         faculty.name = request.form.get("name")
@@ -216,7 +216,7 @@ def delete_faculty(faculty_id):
 @admin_bp.route("/departments")
 @admin_required
 def departments():
-    departments = Department.query.order_by(Department.name).all()
+    departments = Department.query.order_by(Department.department_name).all()
     return render_template("admin/departments.html", departments=departments)
 
 
@@ -260,14 +260,14 @@ def delete_department(department_id):
 @admin_bp.route("/courses")
 @admin_required
 def courses():
-    courses = Course.query.order_by(Course.name).all()
+    courses = Course.query.order_by(Course.course_name).all()
     return render_template("admin/courses.html", courses=courses)
 
 
 @admin_bp.route("/courses/add", methods=["GET", "POST"])
 @admin_required
 def add_course():
-    departments = Department.query.order_by(Department.name).all()
+    departments = Department.query.order_by(Department.department_name).all()
 
     if request.method == "POST":
         course = Course(
@@ -287,8 +287,7 @@ def add_course():
 @admin_required
 def edit_course(course_id):
     course = Course.query.get_or_404(course_id)
-    departments = Department.query.order_by(Department.name).all()
-
+    departments = Department.query.order_by(Department.department_name).all()
     if request.method == "POST":
         course.name = request.form.get("name")
         course.code = request.form.get("code")
