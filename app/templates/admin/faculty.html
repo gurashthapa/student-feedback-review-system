@@ -39,23 +39,36 @@
             </thead>
 
             <tbody>
-                {% for f in faculty %}
+                {% for f in faculty_list %}
                 <tr>
                     <td>{{ f.id }}</td>
-                    <td>{{ f.name }}</td>
+                    <td>{{ f.full_name }}</td>
                     <td>{{ f.email }}</td>
-                    <td>{{ f.department }}</td>
+                    <td>{{ f.department.department_name if f.department else "" }}</td>
                     <td>{{ f.designation }}</td>
                     <td>
                         <button class="btn btn-edit" onclick="editFaculty({{ f.id }})">
                             <i class="fas fa-edit"></i>
                         </button>
 
-                        <a href="{{ url_for('faculty.delete_faculty', id=f.id) }}"
-                           onclick="return confirmDelete('Delete this faculty member?')"
-                           class="btn btn-delete">
-                            <i class="fas fa-trash"></i>
-                        </a>
+                        <form method="POST"
+      action="{{ url_for('admin.delete_faculty', faculty_id=f.id) }}"
+      style="display:inline;">
+    <button type="submit"
+            class="btn btn-delete"
+            onclick="return confirm('Delete this faculty member?')">
+        <i class="fas fa-trash"></i>
+    </button>
+    <form method="POST"
+      action="{{ url_for('admin.delete_faculty', faculty_id=f.id) }}"
+      style="display:inline;">
+    <button type="submit"
+            class="btn btn-delete"
+            onclick="return confirm('Delete this faculty member?')">
+        <i class="fas fa-trash"></i>
+    </button>
+</form>
+
                     </td>
                 </tr>
                 {% endfor %}
@@ -77,8 +90,9 @@
             <span class="close" onclick="closeFacultyModal()">&times;</span>
         </div>
 
-        <form id="facultyForm" method="POST" action="{{ url_for('faculty.add_faculty') }}">
 
+        <form id="facultyForm" method="POST"
+      action="{{ url_for('admin.add_faculty') }}">
             <input type="hidden" name="id" id="faculty_id">
 
             <div class="form-group">
