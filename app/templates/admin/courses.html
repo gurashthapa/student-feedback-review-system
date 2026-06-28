@@ -37,15 +37,15 @@
                 {% for course in courses %}
                 <tr>
                     <td>{{ course.id }}</td>
-                    <td>{{ course.name }}</td>
-                    <td>{{ course.department }}</td>
-                    <td>{{ course.credits }}</td>
+                    <td>{{ course.course_name }}</td>
+                    <td>{{ course.department.department_name if course.department else "" }}</td>
+                    <td>{{ course.credit }}</td>
                     <td>
                         <button class="btn btn-edit" onclick="editCourse({{ course.id }})">
                             <i class="fas fa-edit"></i>
                         </button>
+                        <a href="{{ url_for('admin.delete_course', course_id=course.id) }}"
 
-                        <a href="{{ url_for('course.delete_course', id=course.id) }}"
                            onclick="return confirmDelete('Delete this course?')"
                            class="btn btn-delete">
                             <i class="fas fa-trash"></i>
@@ -69,7 +69,8 @@
             <span class="close" onclick="closeCourseModal()">&times;</span>
         </div>
 
-        <form id="courseForm" method="POST" action="{{ url_for('course.add_course') }}">
+        <form id="courseForm" method="POST" action="{{ url_for('admin.add_course') }}"></form>
+
 
             <input type="hidden" name="id" id="course_id">
 
