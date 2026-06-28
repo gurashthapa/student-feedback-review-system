@@ -95,8 +95,13 @@ def dashboard():
 @admin_required
 def students():
     students = Student.query.order_by(Student.id.desc()).all()
-    return render_template("admin/students.html", students=students)
+    departments = Department.query.order_by(Department.name).all()
 
+    return render_template(
+        "admin/students.html",
+        students=students,
+        departments=departments,
+    )
 
 @admin_bp.route("/students/add", methods=["GET", "POST"])
 @admin_required
