@@ -447,7 +447,8 @@
 
                             {% for fb in recent_feedback %}
 
-                            <tr>
+                            <tr onclick="window.location='{{ url_for('student.history') }}'"
+    style="cursor:pointer;">
 
                                 <td>
 

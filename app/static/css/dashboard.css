@@ -1456,3 +1456,17 @@ body{
     transform:translateY(-5px);
     box-shadow:0 8px 20px rgba(0,0,0,.15);
 }
+.dashboard-card {
+    position: relative;
+    z-index: 1;
+}
+
+.table-responsive {
+    position: relative;
+    z-index: 10;
+}
+
+.table tbody tr {
+    position: relative;
+    z-index: 11;
+}
