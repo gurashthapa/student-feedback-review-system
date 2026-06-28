@@ -198,12 +198,18 @@ def history():
         flash("Please login first.", "warning")
         return redirect(url_for("auth.login"))
 
+    status = request.args.get("status")
+
     page = request.args.get("page", 1, type=int)
     per_page = 5
 
+    query = Feedback.query.filter_by(student_id=student.id)
+
+    if status:
+        query = query.filter_by(status=status)
+
     feedbacks = (
-        Feedback.query
-        .filter_by(student_id=student.id)
+        query
         .order_by(Feedback.created_at.desc())
         .paginate(
             page=page,

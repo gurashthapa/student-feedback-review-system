@@ -44,25 +44,26 @@
                 </li>
 
                 <li>
-                    <a class="dropdown-item" href="#">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        Feedback submitted successfully
-                    </a>
+                    <a class="dropdown-item" href="{{ url_for('student.history') }}">
+    <i class="fas fa-check-circle text-success me-2"></i>
+    Feedback submitted successfully
+</a>
                 </li>
 
                 <li>
-                    <a class="dropdown-item" href="#">
-                        <i class="fas fa-star text-warning me-2"></i>
-                        Your feedback was reviewed
-                    </a>
+                    <a class="dropdown-item" href="{{ url_for('student.history', status='Approved') }}">
+    <i class="fas fa-star text-warning me-2"></i>
+    Your feedback was reviewed
+</a>
                 </li>
 
                 <li><hr class="dropdown-divider"></li>
 
                 <li>
-                    <a class="dropdown-item text-center" href="#">
-                        View All Notifications
-                    </a>
+                    <a class="dropdown-item text-center"
+   href="{{ url_for('student.history') }}">
+    View All Notifications
+</a>
                 </li>
 
             </ul>

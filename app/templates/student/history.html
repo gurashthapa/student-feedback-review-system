@@ -34,60 +34,55 @@
         </a>
 
     </div>
-
-
     <div class="history-stats">
-    
-    <a href="{{ url_for('student.history') }}" class="text-decoration-none text-dark">
 
-        <div class="history-card">
-            <i class="fas fa-comments"></i>
-            <div>
-                <h3>{{ feedbacks.total }}</h3>
-                <span>Total Feedback</span>
-            </div>
+    <!-- Total Feedback -->
+    <div class="history-card"
+         onclick="window.location.href='{{ url_for('student.history') }}'">
+        <i class="fas fa-comments"></i>
+        <div>
+            <h3>{{ feedbacks.total }}</h3>
+            <span>Total Feedback</span>
         </div>
-    </a>
-    <a href="{{ url_for('student.history') }}" class="text-decoration-none text-dark">
-
-        <div class="history-card">
-            <i class="fas fa-clock"></i>
-            <div>
-                <h3>{{ feedbacks.items|selectattr('status','equalto','Pending')|list|length }}</h3>
-                <span>Pending</span>
-            </div>
-        </div>
-    </a>
-    <a href="{{ url_for('student.history') }}" class="text-decoration-none text-dark">
-
-        <div class="history-card">
-            <i class="fas fa-check-circle"></i>
-            <div>
-                <h3>{{ feedbacks.items|selectattr('status','equalto','Approved')|list|length }}</h3>
-                <span>Approved</span>
-            </div>
-        </div>
-    </a>
-    <a href="{{ url_for('student.history') }}" class="text-decoration-none text-dark">
-
-        <div class="history-card">
-            <i class="fas fa-star"></i>
-            <div>
-                <h3>
-                    {% if feedbacks.items %}
-                        {{ "%.1f"|format((feedbacks.items|sum(attribute='rating'))/(feedbacks.items|length)) }}
-                    {% else %}
-                        0.0
-                    {% endif %}
-                </h3>
-                <span>Average Rating</span>
-            </div>
-        </div>
-    </a>
-
     </div>
-    
 
+    <!-- Pending -->
+    <div class="history-card"
+         onclick="window.location.href='{{ url_for('student.history', status='Pending') }}'">
+        <i class="fas fa-clock"></i>
+        <div>
+            <h3>{{ feedbacks.items|selectattr('status','equalto','Pending')|list|length }}</h3>
+            <span>Pending</span>
+        </div>
+    </div>
+
+    <!-- Approved -->
+    <div class="history-card"
+         onclick="window.location.href='{{ url_for('student.history', status='Approved') }}'">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <h3>{{ feedbacks.items|selectattr('status','equalto','Approved')|list|length }}</h3>
+            <span>Approved</span>
+        </div>
+    </div>
+
+    <!-- Average Rating -->
+    <div class="history-card"
+         onclick="window.location.href='{{ url_for('student.history') }}'">
+        <i class="fas fa-star"></i>
+        <div>
+            <h3>
+                {% if feedbacks.items %}
+                    {{ "%.1f"|format((feedbacks.items|sum(attribute='rating'))/(feedbacks.items|length)) }}
+                {% else %}
+                    0.0
+                {% endif %}
+            </h3>
+            <span>Average Rating</span>
+        </div>
+    </div>
+
+</div>
 
     <div class="history-toolbar">
 
