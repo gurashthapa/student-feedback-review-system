@@ -409,3 +409,42 @@ def courses():
         student=student,
         courses=courses
     )
+
+@student_bp.route("/search")
+def search():
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    keyword = request.args.get("q", "").strip()
+
+    feedbacks = []
+
+    if keyword:
+
+        feedbacks = (
+            Feedback.query
+            .join(Course)
+            .join(Faculty)
+            .filter(
+                Feedback.student_id == student.id,
+                or_(
+                    Course.course_name.ilike(f"%{keyword}%"),
+                    Course.course_code.ilike(f"%{keyword}%"),
+                    Faculty.full_name.ilike(f"%{keyword}%"),
+                    Feedback.review.ilike(f"%{keyword}%"),
+                    Feedback.status.ilike(f"%{keyword}%")
+                )
+            )
+            .all()
+        )
+
+    return render_template(
+        "student/search_results.html",
+        student=student,
+        keyword=keyword,
+        feedbacks=feedbacks
+    )

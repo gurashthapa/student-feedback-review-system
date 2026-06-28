@@ -13,10 +13,14 @@
 
     </div>
 
-    <div class="navbar-search">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search...">
-    </div>
+    <form class="navbar-search" action="{{ url_for('student.search') }}" method="GET">
+    <i class="fas fa-search"></i>
+    <input
+        type="text"
+        name="q"
+        placeholder="Search courses, faculty, feedback..."
+        required>
+</form>
 
     <div class="navbar-right">
 
