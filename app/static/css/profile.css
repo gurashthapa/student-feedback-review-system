@@ -6,6 +6,8 @@
 
     border-radius:15px;
 
+    background:#eaf8ff; /* Light Sky Blue */
+
     box-shadow:0 10px 30px rgba(0,0,0,.08);
 
 }
@@ -20,23 +22,37 @@
 
     object-fit:cover;
 
-    border:5px solid #fff;
+    border:5px solid #ffffff;
 
-    box-shadow:0 4px 20px rgba(0,0,0,.15);
+    box-shadow:0 6px 20px rgba(0,0,0,.15);
 
 }
 
 .stat-card{
 
-    background:#f8f9fa;
+    background:#ffffff;
 
-    border-radius:10px;
+    border-radius:12px;
 
     padding:20px;
 
     text-align:center;
 
     box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+    transition:all .3s ease;
+
+    cursor:pointer;
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-5px);
+
+    background:#dff4ff;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
 
 }
 
@@ -62,10 +78,28 @@
 
     margin-bottom:8px;
 
+    color:#444;
+
 }
 
 .profile-card h2{
 
     font-weight:700;
+
+    color:#0f172a;
+
+}
+
+.profile-card h5{
+
+    color:#2563eb;
+
+    font-weight:600;
+
+}
+
+.profile-card hr{
+
+    border-color:#bfe8ff;
 
 }

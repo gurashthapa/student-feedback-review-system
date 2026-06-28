@@ -10,14 +10,14 @@ from flask import (
     session,
     current_app
 )
-
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from werkzeug.utils import secure_filename
 
 from app import db
 from app.models.student import Student
 from app.models.course import Course
 from app.models.feedback import Feedback
+from app.models.faculty import Faculty
 
 student_bp = Blueprint(
     "student",
@@ -424,11 +424,10 @@ def search():
     feedbacks = []
 
     if keyword:
-
         feedbacks = (
             Feedback.query
-            .join(Course)
-            .join(Faculty)
+            .join(Course, Feedback.course_id == Course.id)
+            .join(Faculty, Feedback.faculty_id == Faculty.id)
             .filter(
                 Feedback.student_id == student.id,
                 or_(
@@ -439,6 +438,7 @@ def search():
                     Feedback.status.ilike(f"%{keyword}%")
                 )
             )
+            .order_by(Feedback.created_at.desc())
             .all()
         )
 
