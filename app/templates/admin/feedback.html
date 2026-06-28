@@ -1,0 +1,78 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Feedback Management{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>
+        <i class="fas fa-comments"></i>
+        Student Feedback
+    </h2>
+</div>
+
+<div class="card">
+
+    <div class="table-responsive">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Faculty</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for feedback in feedback_list %}
+
+                <tr>
+
+                    <td>{{ feedback.id }}</td>
+
+                    <td>
+                        {{ feedback.student.full_name if feedback.student else "-" }}
+                    </td>
+
+                    <td>
+                        {{ feedback.course.course_name if feedback.course else "-" }}
+                    </td>
+
+                    <td>
+                        {{ feedback.faculty.full_name if feedback.faculty else "-" }}
+                    </td>
+
+                    <td>{{ feedback.rating }}</td>
+
+                    <td>{{ feedback.status }}</td>
+
+                    <td>{{ feedback.created_at.strftime("%Y-%m-%d") }}</td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+                    <td colspan="7" class="text-center">
+                        No feedback found.
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
