@@ -239,3 +239,22 @@
     font-size: 14px;
     color: #7f8c8d;
 }
+
+.history-card {
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.history-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,.15);
+}
+
+#historyTable tbody tr {
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+#historyTable tbody tr:hover {
+    background: #f5f9ff;
+}

@@ -37,6 +37,8 @@
 
 
     <div class="history-stats">
+    
+    <a href="{{ url_for('student.history') }}" class="text-decoration-none text-dark">
 
         <div class="history-card">
             <i class="fas fa-comments"></i>
@@ -45,6 +47,8 @@
                 <span>Total Feedback</span>
             </div>
         </div>
+    </a>
+    <a href="{{ url_for('student.history') }}" class="text-decoration-none text-dark">
 
         <div class="history-card">
             <i class="fas fa-clock"></i>
@@ -53,6 +57,8 @@
                 <span>Pending</span>
             </div>
         </div>
+    </a>
+    <a href="{{ url_for('student.history') }}" class="text-decoration-none text-dark">
 
         <div class="history-card">
             <i class="fas fa-check-circle"></i>
@@ -61,6 +67,8 @@
                 <span>Approved</span>
             </div>
         </div>
+    </a>
+    <a href="{{ url_for('student.history') }}" class="text-decoration-none text-dark">
 
         <div class="history-card">
             <i class="fas fa-star"></i>
@@ -75,8 +83,10 @@
                 <span>Average Rating</span>
             </div>
         </div>
+    </a>
 
     </div>
+    
 
 
     <div class="history-toolbar">
@@ -116,7 +126,8 @@
 
                 {% for fb in feedbacks.items %}
 
-                <tr>
+                <tr onclick="window.location='{{ url_for('student.view_feedback', feedback_id=fb.id) }}'"
+    style="cursor:pointer;">
 
                     <td>
                         <div class="course-info">
