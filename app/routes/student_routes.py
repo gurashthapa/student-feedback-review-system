@@ -189,14 +189,40 @@ def feedback():
         student=student,
         courses=courses
     )
+def get_logged_student():
+
+    print("SESSION DATA:", dict(session))
+
+    if "user_id" not in session:
+        print("ERROR: user_id not found in session")
+        return None
+
+    student = Student.query.filter_by(
+        user_id=session["user_id"]
+    ).first()
+
+    if student is None:
+        print("ERROR: Student not found for user_id =", session["user_id"])
+    else:
+        print("Student Found:", student.full_name)
+
+    return student
+
+
 @student_bp.route("/history")
 def history():
+
+    print("========== HISTORY ROUTE ==========")
+    print("Session:", dict(session))
 
     student = get_logged_student()
 
     if student is None:
+        print("Student is None")
         flash("Please login first.", "warning")
         return redirect(url_for("auth.login"))
+
+    print("Logged in Student ID:", student.id)
 
     status = request.args.get("status")
 
@@ -218,12 +244,14 @@ def history():
         )
     )
 
+    print("Feedback Count:", feedbacks.total)
+    print("===================================")
+
     return render_template(
         "student/history.html",
         student=student,
         feedbacks=feedbacks
     )
-
 
 @student_bp.route("/history/<int:feedback_id>")
 def view_feedback(feedback_id):

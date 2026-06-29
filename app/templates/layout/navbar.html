@@ -13,18 +13,19 @@
 
     </div>
 
+    {% if session.get('role') == 'student' %}
     <form class="navbar-search" action="{{ url_for('student.search') }}" method="GET">
-    <i class="fas fa-search"></i>
-    <input
-        type="text"
-        name="q"
-        placeholder="Search courses, faculty, feedback..."
-        required>
-</form>
+        <i class="fas fa-search"></i>
+        <input
+            type="text"
+            name="q"
+            placeholder="Search courses, faculty, feedback..."
+            required>
+    </form>
+    {% endif %}
 
     <div class="navbar-right">
 
-        <!-- Notifications -->
         <div class="dropdown">
 
             <button
@@ -47,34 +48,70 @@
                     <h6 class="dropdown-header">Notifications</h6>
                 </li>
 
+                {% if session.get('role') == 'student' %}
+
                 <li>
                     <a class="dropdown-item" href="{{ url_for('student.history') }}">
-    <i class="fas fa-check-circle text-success me-2"></i>
-    Feedback submitted successfully
-</a>
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Feedback submitted successfully
+                    </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item" href="{{ url_for('student.history', status='Approved') }}">
-    <i class="fas fa-star text-warning me-2"></i>
-    Your feedback was reviewed
-</a>
+                        <i class="fas fa-star text-warning me-2"></i>
+                        Your feedback was reviewed
+                    </a>
                 </li>
 
                 <li><hr class="dropdown-divider"></li>
 
                 <li>
-                    <a class="dropdown-item text-center"
-   href="{{ url_for('student.history') }}">
-    View All Notifications
-</a>
+                    <a class="dropdown-item text-center" href="{{ url_for('student.history') }}">
+                        View All Notifications
+                    </a>
                 </li>
+
+                {% elif session.get('role') == 'admin' %}
+
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('admin.feedback') }}">
+                        <i class="fas fa-comments me-2"></i>
+                        View Feedback
+                    </a>
+                </li>
+
+                <li><hr class="dropdown-divider"></li>
+
+                <li>
+                    <a class="dropdown-item text-center" href="{{ url_for('admin.feedback') }}">
+                        View All Feedback
+                    </a>
+                </li>
+
+                {% elif session.get('role') == 'faculty' %}
+
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('faculty.statistics') }}">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        View Statistics
+                    </a>
+                </li>
+
+                <li><hr class="dropdown-divider"></li>
+
+                <li>
+                    <a class="dropdown-item text-center" href="{{ url_for('faculty.statistics') }}">
+                        View Dashboard
+                    </a>
+                </li>
+
+                {% endif %}
 
             </ul>
 
         </div>
 
-        <!-- Messages -->
         <div class="dropdown">
 
             <button
@@ -107,7 +144,6 @@
 
         </div>
 
-        <!-- Profile -->
         <div class="dropdown">
 
             <div
@@ -120,8 +156,8 @@
                 <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="Profile">
 
                 <div class="profile-info">
-                    <h6>{{ session.get('name','Student') }}</h6>
-                    <small>Student</small>
+                    <h6>{{ session.get('username', 'User') }}</h6>
+                    <small>{{ session.get('role', 'User')|title }}</small>
                 </div>
 
                 <i class="fas fa-chevron-down"></i>
@@ -130,6 +166,8 @@
 
             <ul class="dropdown-menu dropdown-menu-end shadow"
                 aria-labelledby="profileDropdown">
+
+                {% if session.get('role') == 'student' %}
 
                 <li>
                     <a class="dropdown-item" href="{{ url_for('student.profile') }}">
@@ -145,11 +183,44 @@
                     </a>
                 </li>
 
+                {% elif session.get('role') == 'admin' %}
+
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('admin.profile') }}">
+                        <i class="fas fa-user me-2"></i>
+                        My Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">
+                        <i class="fas fa-home me-2"></i>
+                        Dashboard
+                    </a>
+                </li>
+
+                {% elif session.get('role') == 'faculty' %}
+
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('faculty.profile') }}">
+                        <i class="fas fa-user me-2"></i>
+                        My Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="{{ url_for('faculty.statistics') }}">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Statistics
+                    </a>
+                </li>
+
+                {% endif %}
+
                 <li><hr class="dropdown-divider"></li>
 
                 <li>
-                    <a class="dropdown-item text-danger"
-                       href="{{ url_for('auth.logout') }}">
+                    <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
                         <i class="fas fa-sign-out-alt me-2"></i>
                         Logout
                     </a>
