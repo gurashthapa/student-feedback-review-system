@@ -5,6 +5,7 @@ from .department import Department
 from .course import Course
 from .feedback import Feedback
 from .admin import Admin
+from .notification import Notification
 
 __all__ = [
     "User",

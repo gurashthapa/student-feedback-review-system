@@ -18,6 +18,7 @@ from app.models.student import Student
 from app.models.course import Course
 from app.models.feedback import Feedback
 from app.models.faculty import Faculty
+from app.models.notification import Notification
 
 student_bp = Blueprint(
     "student",
@@ -91,7 +92,6 @@ def dashboard():
         total_faculty=total_faculty,
         recent_feedback=recent_feedback
     )
-
 
 @student_bp.route("/feedback", methods=["GET", "POST"])
 def feedback():
@@ -175,6 +175,17 @@ def feedback():
         )
 
         db.session.add(feedback)
+
+        faculty = Faculty.query.get(course.faculty_id)
+
+        notification = Notification(
+            title="New Feedback Submitted",
+            message=f"{student.full_name} submitted feedback for {faculty.full_name} ({course.course_name}).",
+            is_read=False
+        )
+
+        db.session.add(notification)
+
         db.session.commit()
 
         flash(
