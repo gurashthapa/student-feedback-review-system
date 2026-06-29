@@ -32,7 +32,13 @@
 
 <div class="app-container">
 
-    {% include "layout/sidebar.html" %}
+    {% if session.get('role') == 'admin' %}
+    {% include "layout/admin_sidebar.html" %}
+{% elif session.get('role') == 'student' %}
+    {% include "layout/student_sidebar.html" %}
+{% elif session.get('role') == 'faculty' %}
+    {% include "layout/faculty_sidebar.html" %}
+{% endif %}
 
     <div class="main-wrapper">
 

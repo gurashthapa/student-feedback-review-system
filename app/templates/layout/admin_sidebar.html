@@ -1,0 +1,71 @@
+<aside class="sidebar">
+
+    <div class="sidebar-top">
+
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+
+            <div class="logo-text">
+                <h4>Feedback</h4>
+                <small>Admin Panel</small>
+            </div>
+        </div>
+
+    </div>
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="{% if request.endpoint=='admin.dashboard' %}active{% endif %}">
+                <i class="fas fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('admin.students') }}"
+               class="{% if request.endpoint=='admin.students' %}active{% endif %}">
+                <i class="fas fa-user-graduate"></i>
+                <span>Students</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('admin.faculty') }}"
+               class="{% if request.endpoint=='admin.faculty' %}active{% endif %}">
+                <i class="fas fa-user-tie"></i>
+                <span>Faculty</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('admin.courses') }}"
+               class="{% if request.endpoint=='admin.courses' %}active{% endif %}">
+                <i class="fas fa-book"></i>
+                <span>Courses</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('admin.feedback') }}"
+               class="{% if request.endpoint=='admin.feedback' %}active{% endif %}">
+                <i class="fas fa-comments"></i>
+                <span>Feedback</span>
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="sidebar-bottom">
+
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+            <i class="fas fa-arrow-right-from-bracket"></i>
+            <span>Logout</span>
+        </a>
+
+    </div>
+
+</aside>

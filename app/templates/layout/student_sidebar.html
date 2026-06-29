@@ -1,0 +1,55 @@
+<aside class="sidebar">
+
+    <div class="sidebar-top">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+
+            <div class="logo-text">
+                <h4>Feedback</h4>
+                <small>Student Panel</small>
+            </div>
+        </div>
+    </div>
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="{{ url_for('student.dashboard') }}">
+                <i class="fas fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('student.profile') }}">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('student.feedback') }}">
+                <i class="fas fa-comments"></i>
+                <span>Submit Feedback</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('student.feedback_history') }}">
+                <i class="fas fa-history"></i>
+                <span>Feedback History</span>
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="sidebar-bottom">
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+</aside>
