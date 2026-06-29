@@ -25,6 +25,7 @@
     </div>
 
     <div class="table-responsive">
+
         <table class="table" id="facultyTable">
 
             <thead>
@@ -39,48 +40,60 @@
             </thead>
 
             <tbody>
+
                 {% for f in faculty_list %}
                 <tr>
+
                     <td>{{ f.id }}</td>
                     <td>{{ f.full_name }}</td>
                     <td>{{ f.email }}</td>
                     <td>{{ f.department.department_name if f.department else "" }}</td>
                     <td>{{ f.designation }}</td>
+
                     <td>
-                        <button class="btn btn-edit" onclick="editFaculty({{ f.id }})">
+
+                        <button
+                            class="btn btn-edit"
+                            onclick="editFaculty(
+                                '{{ f.id }}',
+                                '{{ f.full_name }}',
+                                '{{ f.email }}',
+                                '{{ f.department_id }}',
+                                '{{ f.designation }}'
+                            )">
                             <i class="fas fa-edit"></i>
                         </button>
 
-                        <form method="POST"
-      action="{{ url_for('admin.delete_faculty', faculty_id=f.id) }}"
-      style="display:inline;">
-    <button type="submit"
-            class="btn btn-delete"
-            onclick="return confirm('Delete this faculty member?')">
-        <i class="fas fa-trash"></i>
-    </button>
-    <form method="POST"
-      action="{{ url_for('admin.delete_faculty', faculty_id=f.id) }}"
-      style="display:inline;">
-    <button type="submit"
-            class="btn btn-delete"
-            onclick="return confirm('Delete this faculty member?')">
-        <i class="fas fa-trash"></i>
-    </button>
-</form>
+                        <form
+                            method="POST"
+                            action="{{ url_for('admin.delete_faculty', faculty_id=f.id) }}"
+                            style="display:inline;">
+
+                            <button
+                                type="submit"
+                                class="btn btn-delete"
+                                onclick="return confirm('Delete this faculty member?')">
+
+                                <i class="fas fa-trash"></i>
+
+                            </button>
+
+                        </form>
 
                     </td>
+
                 </tr>
                 {% endfor %}
+
             </tbody>
 
         </table>
+
     </div>
 
 </div>
 
 
-<!-- ================= MODAL ================= -->
 <div id="facultyModal" class="modal" style="display:none;">
 
     <div class="modal-content">
@@ -90,34 +103,77 @@
             <span class="close" onclick="closeFacultyModal()">&times;</span>
         </div>
 
+        <form
+            id="facultyForm"
+            method="POST"
+            action="{{ url_for('admin.add_faculty') }}">
 
-        <form id="facultyForm" method="POST"
-      action="{{ url_for('admin.add_faculty') }}">
             <input type="hidden" name="id" id="faculty_id">
 
             <div class="form-group">
                 <label>Name</label>
-                <input type="text" name="name" id="faculty_name" required>
+                <input
+                    type="text"
+                    name="name"
+                    id="faculty_name"
+                    required>
             </div>
 
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" name="email" id="faculty_email" required>
+                <input
+                    type="email"
+                    name="email"
+                    id="faculty_email"
+                    required>
             </div>
 
             <div class="form-group">
                 <label>Department</label>
-                <input type="text" name="department" id="faculty_department" required>
+
+                <select
+                    name="department_id"
+                    id="faculty_department"
+                    required>
+
+                    <option value="">Select Department</option>
+
+                    {% for d in departments %}
+                    <option value="{{ d.id }}">
+                        {{ d.department_name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
             </div>
 
             <div class="form-group">
                 <label>Designation</label>
-                <input type="text" name="designation" id="faculty_designation" required>
+
+                <input
+                    type="text"
+                    name="designation"
+                    id="faculty_designation"
+                    required>
+
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-secondary" onclick="closeFacultyModal()">Cancel</button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Save
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeFacultyModal()">
+                    Cancel
+                </button>
+
             </div>
 
         </form>
@@ -130,39 +186,68 @@
 
 
 {% block extra_js %}
+
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const input = document.getElementById("facultySearch");
     const table = document.getElementById("facultyTable");
 
     input.addEventListener("keyup", function () {
+
         const filter = input.value.toLowerCase();
         const rows = table.getElementsByTagName("tr");
 
         for (let i = 1; i < rows.length; i++) {
+
             const text = rows[i].textContent.toLowerCase();
-            rows[i].style.display = text.includes(filter) ? "" : "none";
+
+            rows[i].style.display = text.includes(filter)
+                ? ""
+                : "none";
         }
+
     });
 
 });
 
 function openFacultyModal() {
+
     document.getElementById("facultyForm").reset();
+
     document.getElementById("faculty_id").value = "";
-    document.getElementById("facultyModalTitle").innerText = "Add Faculty";
+
+    document.getElementById("facultyModalTitle").innerHTML = "Add Faculty";
+
     document.getElementById("facultyModal").style.display = "block";
+
 }
 
 function closeFacultyModal() {
+
     document.getElementById("facultyModal").style.display = "none";
+
 }
 
-function editFaculty(id) {
+function editFaculty(id, name, email, department, designation) {
+
     document.getElementById("faculty_id").value = id;
-    document.getElementById("facultyModalTitle").innerText = "Edit Faculty";
+
+    document.getElementById("faculty_name").value = name;
+
+    document.getElementById("faculty_email").value = email;
+
+    document.getElementById("faculty_department").value = department;
+
+    document.getElementById("faculty_designation").value = designation;
+
+    document.getElementById("facultyModalTitle").innerHTML = "Edit Faculty";
+
     document.getElementById("facultyModal").style.display = "block";
+
 }
+
 </script>
+
 {% endblock %}
