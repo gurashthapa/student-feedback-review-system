@@ -183,6 +183,7 @@ def feedback():
         )
 
         db.session.add(feedback)
+        db.session.flush()
 
         faculty = Faculty.query.get(course.faculty_id)
 
@@ -190,6 +191,7 @@ def feedback():
     title="New Feedback Submitted",
     message=f"{student.full_name} submitted feedback.",
     recipient_role="admin",
+    feedback_id=feedback.id,
     is_read=False
 )
 
