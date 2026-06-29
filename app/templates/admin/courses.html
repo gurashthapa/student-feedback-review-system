@@ -52,10 +52,9 @@
                                 '{{ course.faculty_id }}',
                                 '{{ course.semester }}',
                                 '{{ course.credit }}',
-                                '{{ course.description | default("") | replace("\n", " ") | replace("'", "\\'") }}'
+                                '{{ course.description | default("") | replace("\n", " ") | replace("'", "\\'") }}',
                                 '{{ course.status }}'
                             )">
-
                             <i class="fas fa-edit"></i>
                         </button>
 
@@ -218,8 +217,7 @@ function editCourse(
     document.getElementById("modalTitle").innerText = "Edit Course";
 
     document.getElementById("courseForm").action =
-        "/admin/courses/" + id + "/edit";
-
+    "{{ url_for('admin.edit_course', course_id=0) }}".replace("0", id);
     document.getElementById("courseModal").style.display = "block";
 }
 

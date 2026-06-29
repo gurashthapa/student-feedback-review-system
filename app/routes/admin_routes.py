@@ -685,10 +685,6 @@ def feedback_detail(feedback_id):
 @admin_required
 def approve_feedback(feedback_id):
 
-@admin_bp.route("/feedback/<int:feedback_id>/approve", methods=["POST"])
-@admin_required
-def approve_feedback(feedback_id):
-
     feedback = Feedback.query.get_or_404(feedback_id)
 
     feedback.status = "Approved"

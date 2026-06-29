@@ -121,49 +121,53 @@
 </div>
     <div class="row mt-4">
 
-        <div class="col-lg-6">
+    <!-- Rating Overview -->
+    <div class="col-lg-6">
+
+        <a href="{{ url_for('admin.feedback') }}"
+           class="text-decoration-none text-dark">
 
             <div class="card shadow">
 
-                <a href="{{ url_for('admin.feedback') }}"
-   class="card-header bg-primary text-white text-decoration-none d-block">
-    <h5 class="mb-0">
-        Rating Overview
-    </h5>
-</a>
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Rating Overview</h5>
+                </div>
 
                 <div class="card-body">
-
                     <canvas id="ratingChart"></canvas>
-
                 </div>
 
             </div>
 
-        </div>
+        </a>
 
-        <div class="col-lg-6">
+    </div> <!-- CLOSE FIRST COLUMN -->
+
+
+    <!-- Feedback Distribution -->
+    <div class="col-lg-6">
+
+        <a href="{{ url_for('admin.feedback') }}"
+           class="text-decoration-none text-dark">
 
             <div class="card shadow">
 
-                <a href="{{ url_for('admin.feedback') }}"
-   class="card-header bg-primary text-white text-decoration-none d-block">
-    <h5 class="mb-0">
-        Feedback Distribution
-    </h5>
-</a>
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Feedback Distribution</h5>
+                </div>
 
                 <div class="card-body">
-
                     <canvas id="distributionChart"></canvas>
-
                 </div>
 
             </div>
 
-        </div>
+        </a>
 
     </div>
+
+</div>
+
 
     <div class="card shadow mt-4">
 
