@@ -4,74 +4,138 @@
 
 {% block content %}
 
-<div class="page-header">
-    <h2>
-        <i class="fas fa-comments"></i>
-        Student Feedback
-    </h2>
-</div>
+<div class="table-responsive">
 
-<div class="card">
+    <table class="table table-bordered table-hover">
 
-    <div class="table-responsive">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Faculty</th>
+                <th>Rating</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th width="220">Action</th>
+            </tr>
+        </thead>
 
-        <table class="table">
+        <tbody>
 
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Student</th>
-                    <th>Course</th>
-                    <th>Faculty</th>
-                    <th>Rating</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
+        {% for feedback in feedback_list %}
 
-            <tbody>
+            <tr>
 
-            {% for feedback in feedback_list %}
+                <td>{{ feedback.id }}</td>
 
-                <tr>
+                <td>
+                    {{ feedback.student.full_name if feedback.student else "-" }}
+                </td>
 
-                    <td>{{ feedback.id }}</td>
+                <td>
+                    {{ feedback.course.course_name if feedback.course else "-" }}
+                </td>
 
-                    <td>
-                        {{ feedback.student.full_name if feedback.student else "-" }}
-                    </td>
+                <td>
+                    {{ feedback.faculty.full_name if feedback.faculty else "-" }}
+                </td>
 
-                    <td>
-                        {{ feedback.course.course_name if feedback.course else "-" }}
-                    </td>
+                <td>
+                    {{ feedback.rating }}/5
+                </td>
 
-                    <td>
-                        {{ feedback.faculty.full_name if feedback.faculty else "-" }}
-                    </td>
+                <td>
 
-                    <td>{{ feedback.rating }}</td>
+                    {% if feedback.status == "Approved" %}
 
-                    <td>{{ feedback.status }}</td>
+                        <span class="badge bg-success">
+                            Approved
+                        </span>
 
-                    <td>{{ feedback.created_at.strftime("%Y-%m-%d") }}</td>
+                    {% elif feedback.status == "Rejected" %}
 
-                </tr>
+                        <span class="badge bg-danger">
+                            Rejected
+                        </span>
 
-            {% else %}
+                    {% else %}
 
-                <tr>
-                    <td colspan="7" class="text-center">
-                        No feedback found.
-                    </td>
-                </tr>
+                        <span class="badge bg-warning text-dark">
+                            Pending
+                        </span>
 
-            {% endfor %}
+                    {% endif %}
 
-            </tbody>
+                </td>
 
-        </table>
+                <td>
+                    {{ feedback.created_at.strftime("%d %b %Y") }}
+                </td>
 
-    </div>
+                <td>
+
+                    {% if feedback.status == "Pending" %}
+
+                        <form
+                            action="{{ url_for('admin.approve_feedback', feedback_id=feedback.id) }}"
+                            method="POST"
+                            class="d-inline"
+                        >
+
+                            <button
+                                type="submit"
+                                class="btn btn-success btn-sm"
+                            >
+                                <i class="fas fa-check"></i>
+                                Approve
+                            </button>
+
+                        </form>
+
+                        <form
+                            action="{{ url_for('admin.reject_feedback', feedback_id=feedback.id) }}"
+                            method="POST"
+                            class="d-inline"
+                        >
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger btn-sm"
+                            >
+                                <i class="fas fa-times"></i>
+                                Reject
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <span class="text-muted">
+                            Completed
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+        {% else %}
+
+            <tr>
+
+                <td colspan="8" class="text-center">
+                    No feedback found.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
 
 </div>
 
