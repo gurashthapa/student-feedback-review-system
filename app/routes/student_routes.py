@@ -27,13 +27,23 @@ student_bp = Blueprint(
 )
 
 
+def get_logged_student():
+    print("SESSION DATA:", dict(session))
+
     if "user_id" not in session:
+        print("ERROR: user_id not found in session")
         return None
 
-    return Student.query.filter_by(
+    student = Student.query.filter_by(
         user_id=session["user_id"]
     ).first()
 
+    if student:
+        print("Student Found:", student.full_name)
+    else:
+        print("Student not found")
+
+    return student
 
 @student_bp.route("/dashboard")
 def dashboard():
@@ -180,7 +190,6 @@ def feedback():
     title="New Feedback Submitted",
     message=f"{student.full_name} submitted feedback.",
     recipient_role="admin",
-    student_id=student.id,
     is_read=False
 )
 
