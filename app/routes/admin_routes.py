@@ -529,7 +529,7 @@ def courses():
     faculty_list = Faculty.query.order_by(Faculty.full_name).all()
 
     return render_template(
-        "admin/course.html",
+        "admin/courses.html",
         courses=courses,
         departments=departments,
         faculty_list=faculty_list

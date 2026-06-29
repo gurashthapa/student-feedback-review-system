@@ -52,7 +52,7 @@
                                 '{{ course.faculty_id }}',
                                 '{{ course.semester }}',
                                 '{{ course.credit }}',
-                                `{{ course.description | replace('`', \"'\") or '' }}`,
+                                '{{ course.description | default("") | replace("\n", " ") | replace("'", "\\'") }}'
                                 '{{ course.status }}'
                             )">
 
