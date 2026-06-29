@@ -160,10 +160,19 @@ def delete_student(student_id):
 @admin_bp.route("/faculty")
 @admin_required
 def faculty():
-    faculty_list = Faculty.query.order_by(Faculty.full_name).all()
+
+    faculty_list = Faculty.query.order_by(
+        Faculty.full_name
+    ).all()
+
+    departments = Department.query.order_by(
+        Department.department_name
+    ).all()
+
     return render_template(
         "admin/faculty.html",
-        faculty_list=faculty_list
+        faculty_list=faculty_list,
+        departments=departments
     )
 
 @admin_bp.route("/faculty/add", methods=["GET", "POST"])
@@ -176,11 +185,19 @@ def add_faculty():
 
     if request.method == "POST":
 
+        print(request.form)
+
+        department_id = request.form.get("department_id")
+
+        if not department_id:
+            flash("Please select a department.", "danger")
+            return redirect(url_for("admin.faculty"))
+
         faculty = Faculty(
             full_name=request.form.get("name"),
             email=request.form.get("email"),
             designation=request.form.get("designation"),
-            department_id=int(request.form.get("department_id"))
+            department_id=int(department_id)
         )
 
         db.session.add(faculty)
@@ -189,14 +206,15 @@ def add_faculty():
         flash("Faculty added successfully.", "success")
         return redirect(url_for("admin.faculty"))
 
-    faculty_list = Faculty.query.order_by(Faculty.full_name).all()
+    faculty_list = Faculty.query.order_by(
+        Faculty.full_name
+    ).all()
 
     return render_template(
         "admin/faculty.html",
         faculty_list=faculty_list,
         departments=departments
     )
-
 
 @admin_bp.route("/faculty/<int:faculty_id>/edit", methods=["GET", "POST"])
 @admin_required
@@ -250,7 +268,10 @@ def departments():
 @admin_required
 def add_department():
     if request.method == "POST":
-        department = Department(name=request.form.get("name"))
+        Department(
+    department_name=request.form.get("department_name"),
+    department_code=request.form.get("department_code")
+)
         db.session.add(department)
         db.session.commit()
         flash("Department added successfully.", "success")
