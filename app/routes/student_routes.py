@@ -10,6 +10,7 @@ from flask import (
     session,
     current_app
 )
+
 from sqlalchemy import func, or_
 from werkzeug.utils import secure_filename
 
@@ -19,6 +20,15 @@ from app.models.course import Course
 from app.models.feedback import Feedback
 from app.models.faculty import Faculty
 from app.models.notification import Notification
+
+
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+
+def allowed_file(filename):
+    return (
+        "." in filename and
+        filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+    )
 
 student_bp = Blueprint(
     "student",
@@ -44,7 +54,6 @@ def get_logged_student():
         print("Student not found")
 
     return student
-
 @student_bp.route("/dashboard")
 def dashboard():
 
@@ -346,11 +355,21 @@ def profile():
 
     if request.method == "POST":
 
+       
         file = request.files.get("profileImage")
 
         if file and file.filename != "":
 
+            if not allowed_file(file.filename):
+                flash(
+                    "Only JPG, JPEG, PNG and GIF files are allowed.",
+                    "danger"
+                )
+                return redirect(url_for("student.profile"))
+
             filename = secure_filename(file.filename)
+
+            filename = f"{student.student_id}_{filename}"
 
             upload_folder = os.path.join(
                 current_app.static_folder,
@@ -359,20 +378,37 @@ def profile():
 
             os.makedirs(upload_folder, exist_ok=True)
 
-            filepath = os.path.join(upload_folder, filename)
+            # Delete old image
+            if (
+                student.profile_image
+                and student.profile_image != "default.png"
+            ):
+
+                old_path = os.path.join(
+                    upload_folder,
+                    student.profile_image
+                )
+
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+
+            filepath = os.path.join(
+                upload_folder,
+                filename
+            )
 
             file.save(filepath)
 
             student.profile_image = filename
 
+        
         full_name = request.form.get("full_name")
         email = request.form.get("email")
         phone = request.form.get("phone")
         address = request.form.get("address")
         semester = request.form.get("semester")
 
-        # User information
-        if hasattr(student, "user") and student.user:
+        if student.user:
 
             if full_name:
                 student.user.full_name = full_name
@@ -380,7 +416,6 @@ def profile():
             if email:
                 student.user.email = email
 
-        # Student information
         if phone:
             student.phone = phone
 
@@ -388,7 +423,10 @@ def profile():
             student.address = address
 
         if semester:
-            student.semester = int(semester)
+            try:
+                student.semester = int(semester)
+            except ValueError:
+                pass
 
         db.session.commit()
 
@@ -399,7 +437,8 @@ def profile():
 
         return redirect(url_for("student.profile"))
 
-    
+
+
     total_feedback = Feedback.query.filter_by(
         student_id=student.id
     ).count()
