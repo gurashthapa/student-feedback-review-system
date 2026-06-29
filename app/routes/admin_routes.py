@@ -106,27 +106,66 @@ def students():
 @admin_bp.route("/students/add", methods=["GET", "POST"])
 @admin_required
 def add_student():
-    departments = Department.query.order_by(Department.department_name).all()
+
+    departments = Department.query.order_by(
+        Department.department_name
+    ).all()
 
     if request.method == "POST":
+
+        department_id = request.form.get("department_id")
+
+        if not department_id:
+            flash("Please select a department.", "danger")
+            return redirect(url_for("admin.add_student"))
+
+        # Check username
+        if User.query.filter_by(username=request.form.get("username")).first():
+            flash("Username already exists.", "danger")
+            return redirect(url_for("admin.add_student"))
+
+        # Check email
+        if User.query.filter_by(email=request.form.get("email")).first():
+            flash("Email already exists.", "danger")
+            return redirect(url_for("admin.add_student"))
+
+        # Create User
+        user = User(
+            username=request.form.get("username"),
+            email=request.form.get("email"),
+            role="student"
+        )
+
+        user.set_password(request.form.get("password"))
+
+        db.session.add(user)
+        db.session.flush()
+
+        # Create Student
         student = Student(
-    student_id=request.form.get("student_id"),
-    full_name=request.form.get("full_name"),
-    email=request.form.get("email"),
-    department_id=request.form.get("department_id"),
-    year=request.form.get("year"),
-    semester=request.form.get("semester"),
-    user_id=1
-)
-    
+            user_id=user.id,
+            student_id=request.form.get("student_id"),
+            full_name=request.form.get("full_name"),
+            email=request.form.get("email"),
+            department_id=int(department_id),
+            phone=request.form.get("phone"),
+            address=request.form.get("address"),
+            gender=request.form.get("gender"),
+            year=int(request.form.get("year")),
+            semester=int(request.form.get("semester")),
+            section=request.form.get("section")
+        )
+
         db.session.add(student)
         db.session.commit()
+
         flash("Student added successfully.", "success")
         return redirect(url_for("admin.students"))
 
-    return render_template("admin/add_student.html", departments=departments)
-
-
+    return render_template(
+        "admin/add_student.html",
+        departments=departments
+    )
 @admin_bp.route("/students/<int:student_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_student(student_id):
@@ -175,36 +214,6 @@ def faculty():
         departments=departments
     )
 
-from app.models.user import User
-if request.method == "POST":
-
-    department_id = request.form.get("department_id")
-
-    user = User(
-        username=request.form.get("username"),
-        email=request.form.get("email"),
-        role="faculty"
-    )
-
-    user.set_password(request.form.get("password"))
-
-    db.session.add(user)
-    db.session.flush()
-
-    faculty = Faculty(
-        user_id=user.id,
-        department_id=int(department_id),
-        faculty_code=f"FAC{user.id:03d}",
-        full_name=request.form.get("name"),
-        designation=request.form.get("designation"),
-        email=request.form.get("email")
-    )
-
-    db.session.add(faculty)
-    db.session.commit()
-
-    flash("Faculty added successfully.", "success")
-    return redirect(url_for("admin.faculty"))
 
 @admin_bp.route("/faculty/add", methods=["GET", "POST"])
 @admin_required
@@ -267,7 +276,6 @@ def add_faculty():
         faculty_list=faculty_list,
         departments=departments
     )
-
 @admin_bp.route("/faculty/<int:faculty_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_faculty(faculty_id):
@@ -280,32 +288,62 @@ def edit_faculty(faculty_id):
 
     if request.method == "POST":
 
-    faculty.full_name = request.form.get("name")
-    faculty.email = request.form.get("email")
-    faculty.designation = request.form.get("designation")
-    faculty.department_id = int(request.form.get("department_id"))
+        department_id = request.form.get("department_id")
 
-    # Update linked User
-    faculty.user.username = request.form.get("username")
-    faculty.user.email = request.form.get("email")
+        if not department_id:
+            flash("Please select a department.", "danger")
+            return redirect(url_for("admin.faculty"))
 
-    password = request.form.get("password")
-    if password:
-        faculty.user.set_password(password)
+        # Check if another user already has this username
+        username = request.form.get("username")
+        existing_user = User.query.filter(
+            User.username == username,
+            User.id != faculty.user_id
+        ).first()
 
-    db.session.commit()
+        if existing_user:
+            flash("Username already exists.", "danger")
+            return redirect(url_for("admin.faculty"))
 
-    flash("Faculty updated successfully.", "success")
-    return redirect(url_for("admin.faculty"))
+        # Check if another user already has this email
+        email = request.form.get("email")
+        existing_email = User.query.filter(
+            User.email == email,
+            User.id != faculty.user_id
+        ).first()
 
-    faculty_list = Faculty.query.order_by(Faculty.full_name).all()
+        if existing_email:
+            flash("Email already exists.", "danger")
+            return redirect(url_for("admin.faculty"))
+
+        # Update Faculty table
+        faculty.full_name = request.form.get("name")
+        faculty.email = email
+        faculty.designation = request.form.get("designation")
+        faculty.department_id = int(department_id)
+
+        # Update User table
+        faculty.user.username = username
+        faculty.user.email = email
+
+        password = request.form.get("password")
+        if password:
+            faculty.user.set_password(password)
+
+        db.session.commit()
+
+        flash("Faculty updated successfully.", "success")
+        return redirect(url_for("admin.faculty"))
+
+    faculty_list = Faculty.query.order_by(
+        Faculty.full_name
+    ).all()
 
     return render_template(
         "admin/faculty.html",
         faculty_list=faculty_list,
         departments=departments
     )
-
 @admin_bp.route("/faculty/<int:faculty_id>/delete", methods=["POST"])
 @admin_required
 def delete_faculty(faculty_id):
@@ -377,10 +415,10 @@ def add_course():
 
     if request.method == "POST":
         course = Course(
-            name=request.form.get("name"),
-            code=request.form.get("code"),
-            department_id=request.form.get("department_id"),
-        )
+    course_name=request.form.get("course_name"),
+    course_code=request.form.get("course_code"),
+    department_id=request.form.get("department_id")
+)
         db.session.add(course)
         db.session.commit()
         flash("Course added successfully.", "success")

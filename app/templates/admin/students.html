@@ -86,10 +86,7 @@
             <h3 id="studentModalTitle">Add Student</h3>
             <span class="close" onclick="closeStudentModal()">&times;</span>
         </div>
-
-        
-
-        <form id="studentForm"
+<form id="studentForm"
       method="POST"
       action="{{ url_for('admin.add_student') }}">
 
@@ -104,7 +101,13 @@
         <label>Full Name</label>
         <input type="text"
                name="full_name"
-               id="student_name"
+               required>
+    </div>
+
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text"
+               name="username"
                required>
     </div>
 
@@ -112,20 +115,28 @@
         <label>Email</label>
         <input type="email"
                name="email"
-               id="student_email"
+               required>
+    </div>
+
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password"
+               name="password"
                required>
     </div>
 
     <div class="form-group">
         <label>Department</label>
-        <select name="department_id"
-                id="student_department"
-                required>
+        <select name="department_id" required>
+
+            <option value="">Select Department</option>
+
             {% for d in departments %}
             <option value="{{ d.id }}">
                 {{ d.department_name }}
             </option>
             {% endfor %}
+
         </select>
     </div>
 
@@ -144,12 +155,40 @@
                name="semester"
                min="1"
                max="8"
-               id="student_semester"
                required>
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">
+        <label>Phone</label>
+        <input type="text"
+               name="phone">
+    </div>
+
+    <div class="form-group">
+        <label>Gender</label>
+        <select name="gender">
+            <option value="">Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Section</label>
+        <input type="text"
+               name="section">
+    </div>
+
+    <div class="form-group">
+        <label>Address</label>
+        <textarea name="address"></textarea>
+    </div>
+
+    <div class="form-group">
+
+        <button type="submit"
+                class="btn btn-primary">
             Save
         </button>
 
@@ -158,10 +197,13 @@
                 onclick="closeStudentModal()">
             Cancel
         </button>
+
     </div>
 
 </form>
+        
 
+    
     </div>
 
 </div>
@@ -191,7 +233,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function openStudentModal() {
     document.getElementById("studentForm").reset();
-    document.getElementById("student_id").value = "";
     document.getElementById("studentModalTitle").innerText = "Add Student";
     document.getElementById("studentModal").style.display = "block";
 }
