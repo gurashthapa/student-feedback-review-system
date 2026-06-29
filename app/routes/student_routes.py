@@ -486,6 +486,32 @@ def edit_profile():
         flash("Please login first.", "warning")
         return redirect(url_for("auth.login"))
 
+    if request.method == "POST":
+
+        full_name = request.form.get("full_name")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        address = request.form.get("address")
+        semester = request.form.get("semester")
+
+        # Update User table
+        if student.user:
+            student.user.full_name = full_name
+            student.user.email = email
+
+        # Update Student table
+        student.phone = phone
+        student.address = address
+
+        if semester:
+            student.semester = int(semester)
+
+        db.session.commit()
+
+        flash("Profile updated successfully!", "success")
+
+        return redirect(url_for("student.profile"))
+
     return render_template(
         "student/edit_profile.html",
         student=student
