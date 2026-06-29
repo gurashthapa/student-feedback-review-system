@@ -41,38 +41,37 @@
                     <td>{{ course.department.department_name if course.department else "" }}</td>
                     <td>{{ course.credit }}</td>
                     <td>
+
                         <button
-    class="btn btn-edit"
-    onclick="editCourse(
-        '{{ course.id }}',
-        '{{ course.course_name }}',
-        '{{ course.course_code }}',
-        '{{ course.department_id }}',
-        '{{ course.faculty_id }}',
-        '{{ course.semester }}',
-        '{{ course.credit }}',
-        `{{ course.description or "" }}`,
-        '{{ course.status }}'
-    )">
+                            class="btn btn-edit"
+                            onclick="editCourse(
+                                '{{ course.id }}',
+                                '{{ course.course_name }}',
+                                '{{ course.course_code }}',
+                                '{{ course.department_id }}',
+                                '{{ course.faculty_id }}',
+                                '{{ course.semester }}',
+                                '{{ course.credit }}',
+                                `{{ course.description | replace('`', \"'\") or '' }}`,
+                                '{{ course.status }}'
+                            )">
 
-    <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit"></i>
+                        </button>
 
-</button>
-                        <form
-    method="POST"
-    action="{{ url_for('admin.delete_course', course_id=course.id) }}"
-    style="display:inline;">
+                        <form method="POST"
+                              action="{{ url_for('admin.delete_course', course_id=course.id) }}"
+                              style="display:inline;">
 
-    <button
-        type="submit"
-        class="btn btn-delete"
-        onclick="return confirm('Delete this course?')">
+                            <button type="submit"
+                                    class="btn btn-delete"
+                                    onclick="return confirm('Delete this course?')">
 
-        <i class="fas fa-trash"></i>
+                                <i class="fas fa-trash"></i>
 
-    </button>
+                            </button>
+                        </form>
 
-</form>
                     </td>
                 </tr>
                 {% endfor %}
@@ -81,8 +80,7 @@
     </div>
 </div>
 
-
-<!-- ================= ADD / EDIT MODAL ================= -->
+<!-- ================= MODAL ================= -->
 <div id="courseModal" class="modal" style="display:none;">
 
     <div class="modal-content">
@@ -92,173 +90,110 @@
             <span class="close" onclick="closeCourseModal()">&times;</span>
         </div>
 
-        <form
-    id="courseForm"
-    method="POST"
-    action="{{ url_for('admin.add_course') }}">
+        <form id="courseForm"
+              method="POST"
+              action="{{ url_for('admin.add_course') }}">
 
-    <input type="hidden"
-           id="course_id"
-           name="id">
+            <input type="hidden" id="course_id" name="id">
 
-    <div class="form-group">
-        <label>Course Name</label>
-        <input
-            type="text"
-            id="course_name"
-            name="course_name"
-            required>
+            <div class="form-group">
+                <label>Course Name</label>
+                <input type="text" id="course_name" name="course_name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Course Code</label>
+                <input type="text" id="course_code" name="course_code" required>
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                <select id="course_department" name="department_id" required>
+                    <option value="">Select Department</option>
+                    {% for d in departments %}
+                    <option value="{{ d.id }}">{{ d.department_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Faculty</label>
+                <select id="course_faculty" name="faculty_id" required>
+                    <option value="">Select Faculty</option>
+                    {% for f in faculty_list %}
+                    <option value="{{ f.id }}">{{ f.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Semester</label>
+                <input type="number" id="course_semester" name="semester" min="1" max="8" required>
+            </div>
+
+            <div class="form-group">
+                <label>Credit</label>
+                <input type="number" id="course_credit" name="credit" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="course_description" name="description" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select id="course_status" name="status">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" onclick="closeCourseModal()">Cancel</button>
+            </div>
+
+        </form>
     </div>
-
-    <div class="form-group">
-        <label>Course Code</label>
-        <input
-            type="text"
-            id="course_code"
-            name="course_code"
-            required>
-    </div>
-
-    <div class="form-group">
-        <label>Department</label>
-
-        <select
-            id="course_department"
-            name="department_id"
-            required>
-
-            <option value="">Select Department</option>
-
-            {% for d in departments %}
-            <option value="{{ d.id }}">
-                {{ d.department_name }}
-            </option>
-            {% endfor %}
-
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Faculty</label>
-
-        <select
-            id="course_faculty"
-            name="faculty_id"
-            required>
-
-            <option value="">Select Faculty</option>
-
-            {% for f in faculty_list %}
-            <option value="{{ f.id }}">
-                {{ f.full_name }}
-            </option>
-            {% endfor %}
-
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Semester</label>
-
-        <input
-            type="number"
-            id="course_semester"
-            name="semester"
-            min="1"
-            max="8"
-            required>
-    </div>
-
-    <div class="form-group">
-        <label>Credit</label>
-
-        <input
-            type="number"
-            id="course_credit"
-            name="credit"
-            min="1"
-            required>
-    </div>
-
-    <div class="form-group">
-        <label>Description</label>
-
-        <textarea
-            id="course_description"
-            name="description"
-            rows="3"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label>Status</label>
-
-        <select
-            id="course_status"
-            name="status">
-
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-
-        </select>
-    </div>
-
-    <div class="form-group">
-
-        <button
-            type="submit"
-            class="btn btn-primary">
-            Save
-        </button>
-
-        <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="closeCourseModal()">
-            Cancel
-        </button>
-
-    </div>
-
-</form>
-
-    </div>
-
 </div>
 
 {% endblock %}
 
-
 {% block extra_js %}
 <script>
-    // SEARCH
-    document.addEventListener("DOMContentLoaded", function () {
-        const input = document.getElementById("courseSearch");
-        const table = document.getElementById("courseTable");
 
-        input.addEventListener("keyup", function () {
-            const filter = input.value.toLowerCase();
-            const rows = table.getElementsByTagName("tr");
+// SEARCH
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("courseSearch");
+    const table = document.getElementById("courseTable");
 
-            for (let i = 1; i < rows.length; i++) {
-                const text = rows[i].textContent.toLowerCase();
-                rows[i].style.display = text.includes(filter) ? "" : "none";
-            }
-        });
+    input.addEventListener("keyup", function () {
+        const filter = input.value.toLowerCase();
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) {
+            const text = rows[i].textContent.toLowerCase();
+            rows[i].style.display = text.includes(filter) ? "" : "none";
+        }
     });
+});
 
-    // MODAL FUNCTIONS
-    function openAddCourseModal() {
-        document.getElementById("courseForm").reset();
-        document.getElementById("course_id").value = "";
-        document.getElementById("modalTitle").innerText = "Add Course";
-        document.getElementById("courseModal").style.display = "block";
-    }
+// ADD MODAL
+function openAddCourseModal() {
+    document.getElementById("courseForm").reset();
+    document.getElementById("course_id").value = "";
+    document.getElementById("modalTitle").innerText = "Add Course";
+    document.getElementById("courseForm").action = "{{ url_for('admin.add_course') }}";
+    document.getElementById("courseModal").style.display = "block";
+}
 
-    function closeCourseModal() {
-        document.getElementById("courseModal").style.display = "none";
-    }
+// CLOSE MODAL
+function closeCourseModal() {
+    document.getElementById("courseModal").style.display = "none";
+}
 
-    <script>
+// EDIT COURSE
 function editCourse(
     id,
     name,
@@ -287,6 +222,6 @@ function editCourse(
 
     document.getElementById("courseModal").style.display = "block";
 }
-</script>
+
 </script>
 {% endblock %}
