@@ -669,7 +669,6 @@ def feedback():
         feedback_list=feedback_list
     )
 
-
 @admin_bp.route("/feedback/<int:feedback_id>/approve", methods=["POST"])
 @admin_required
 def approve_feedback(feedback_id):
@@ -678,11 +677,19 @@ def approve_feedback(feedback_id):
 
     feedback.status = "Approved"
 
+    notification = Notification.query.filter_by(
+        feedback_id=feedback.id
+    ).first()
+
+    if notification:
+        db.session.delete(notification)
+
     db.session.commit()
 
     flash("Feedback approved successfully.", "success")
 
     return redirect(url_for("admin.feedback"))
+
 
 
 @admin_bp.route("/feedback/<int:feedback_id>/reject", methods=["POST"])
@@ -693,23 +700,18 @@ def reject_feedback(feedback_id):
 
     feedback.status = "Rejected"
 
+    notification = Notification.query.filter_by(
+        feedback_id=feedback.id
+    ).first()
+
+    if notification:
+        db.session.delete(notification)
+
     db.session.commit()
 
     flash("Feedback rejected successfully.", "warning")
 
     return redirect(url_for("admin.feedback"))
-
-
-@admin_bp.route("/feedback/<int:feedback_id>")
-@admin_required
-def view_feedback(feedback_id):
-
-    feedback = Feedback.query.get_or_404(feedback_id)
-
-    return render_template(
-        "admin/view_feedback.html",
-        feedback=feedback
-    )
 
 
 @admin_bp.route("/feedback/<int:feedback_id>/delete", methods=["POST"])

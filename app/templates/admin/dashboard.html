@@ -24,27 +24,28 @@
 
             <ul class="list-group">
 
-                {% for notification in notifications %}
+{% for notification in notifications %}
 
-                <li class="list-group-item">
+<a href="{{ url_for('admin.feedback') }}"
+   class="list-group-item list-group-item-action text-decoration-none text-dark">
 
-                    <strong>{{ notification.title }}</strong>
+    <strong>{{ notification.title }}</strong>
 
-                    <br>
+    <br>
 
-                    {{ notification.message }}
+    {{ notification.message }}
 
-                    <br>
+    <br>
 
-                    <small class="text-muted">
-                        {{ notification.created_at.strftime("%d %b %Y %I:%M %p") }}
-                    </small>
+    <small class="text-muted">
+        {{ notification.created_at.strftime("%d %b %Y %I:%M %p") }}
+    </small>
 
-                </li>
+</a>
 
-                {% endfor %}
+{% endfor %}
 
-            </ul>
+</ul>
 
         {% else %}
 

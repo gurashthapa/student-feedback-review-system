@@ -31,6 +31,11 @@ class Notification(db.Model):
         db.ForeignKey("students.id"),
         nullable=True
     )
+    feedback_id = db.Column(
+    db.Integer,
+    db.ForeignKey("feedback.id"),
+    nullable=True
+)
 
     is_read = db.Column(
         db.Boolean,
