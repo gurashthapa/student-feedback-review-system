@@ -1,0 +1,80 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Feedback Details{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Feedback Details</h4>
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Student:</strong>
+                {% if feedback.anonymous %}
+                    Anonymous
+                {% else %}
+                    {{ feedback.student.full_name }}
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>Faculty:</strong>
+                {{ feedback.faculty.full_name }}
+            </p>
+
+            <p>
+                <strong>Course:</strong>
+                {{ feedback.course.course_name }}
+            </p>
+
+            <p>
+                <strong>Rating:</strong>
+                {{ feedback.rating }}/5
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+
+                {% if feedback.status == "Approved" %}
+                    <span class="badge bg-success">Approved</span>
+
+                {% elif feedback.status == "Rejected" %}
+                    <span class="badge bg-danger">Rejected</span>
+
+                {% else %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>Date:</strong>
+                {{ feedback.created_at.strftime("%d %b %Y %I:%M %p") }}
+            </p>
+
+            <hr>
+
+            <h5>Review</h5>
+
+            <div class="border rounded p-3 bg-light">
+                {{ feedback.review }}
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ url_for('admin.feedback') }}" class="btn btn-secondary">
+                    ← Back to Feedback
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -669,6 +669,22 @@ def feedback():
         feedback_list=feedback_list
     )
 
+@admin_bp.route("/feedback/<int:feedback_id>")
+@admin_required
+def feedback_detail(feedback_id):
+
+    feedback = Feedback.query.get_or_404(feedback_id)
+
+    return render_template(
+        "admin/feedback_detail.html",
+        feedback=feedback
+    )
+
+
+@admin_bp.route("/feedback/<int:feedback_id>/approve", methods=["POST"])
+@admin_required
+def approve_feedback(feedback_id):
+
 @admin_bp.route("/feedback/<int:feedback_id>/approve", methods=["POST"])
 @admin_required
 def approve_feedback(feedback_id):

@@ -211,7 +211,8 @@
 
                             {% for fb in recent_feedback %}
 
-                            <tr>
+                            <tr onclick="window.location='{{ url_for('admin.feedback_detail', feedback_id=fb.id) }}'"
+    style="cursor:pointer;">
 
                                 <td>
 
