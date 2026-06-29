@@ -41,15 +41,38 @@
                     <td>{{ course.department.department_name if course.department else "" }}</td>
                     <td>{{ course.credit }}</td>
                     <td>
-                        <button class="btn btn-edit" onclick="editCourse({{ course.id }})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <a href="{{ url_for('admin.delete_course', course_id=course.id) }}"
+                        <button
+    class="btn btn-edit"
+    onclick="editCourse(
+        '{{ course.id }}',
+        '{{ course.course_name }}',
+        '{{ course.course_code }}',
+        '{{ course.department_id }}',
+        '{{ course.faculty_id }}',
+        '{{ course.semester }}',
+        '{{ course.credit }}',
+        `{{ course.description or "" }}`,
+        '{{ course.status }}'
+    )">
 
-                           onclick="return confirmDelete('Delete this course?')"
-                           class="btn btn-delete">
-                            <i class="fas fa-trash"></i>
-                        </a>
+    <i class="fas fa-edit"></i>
+
+</button>
+                        <form
+    method="POST"
+    action="{{ url_for('admin.delete_course', course_id=course.id) }}"
+    style="display:inline;">
+
+    <button
+        type="submit"
+        class="btn btn-delete"
+        onclick="return confirm('Delete this course?')">
+
+        <i class="fas fa-trash"></i>
+
+    </button>
+
+</form>
                     </td>
                 </tr>
                 {% endfor %}
@@ -69,32 +92,134 @@
             <span class="close" onclick="closeCourseModal()">&times;</span>
         </div>
 
-        <form id="courseForm" method="POST" action="{{ url_for('admin.add_course') }}"></form>
+        <form
+    id="courseForm"
+    method="POST"
+    action="{{ url_for('admin.add_course') }}">
 
+    <input type="hidden"
+           id="course_id"
+           name="id">
 
-            <input type="hidden" name="id" id="course_id">
+    <div class="form-group">
+        <label>Course Name</label>
+        <input
+            type="text"
+            id="course_name"
+            name="course_name"
+            required>
+    </div>
 
-            <div class="form-group">
-                <label>Course Name</label>
-                <input type="text" name="name" id="course_name" required>
-            </div>
+    <div class="form-group">
+        <label>Course Code</label>
+        <input
+            type="text"
+            id="course_code"
+            name="course_code"
+            required>
+    </div>
 
-            <div class="form-group">
-                <label>Department</label>
-                <input type="text" name="department" id="course_department" required>
-            </div>
+    <div class="form-group">
+        <label>Department</label>
 
-            <div class="form-group">
-                <label>Credits</label>
-                <input type="number" name="credits" id="course_credits" required>
-            </div>
+        <select
+            id="course_department"
+            name="department_id"
+            required>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-secondary" onclick="closeCourseModal()">Cancel</button>
-            </div>
+            <option value="">Select Department</option>
 
-        </form>
+            {% for d in departments %}
+            <option value="{{ d.id }}">
+                {{ d.department_name }}
+            </option>
+            {% endfor %}
+
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Faculty</label>
+
+        <select
+            id="course_faculty"
+            name="faculty_id"
+            required>
+
+            <option value="">Select Faculty</option>
+
+            {% for f in faculty_list %}
+            <option value="{{ f.id }}">
+                {{ f.full_name }}
+            </option>
+            {% endfor %}
+
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Semester</label>
+
+        <input
+            type="number"
+            id="course_semester"
+            name="semester"
+            min="1"
+            max="8"
+            required>
+    </div>
+
+    <div class="form-group">
+        <label>Credit</label>
+
+        <input
+            type="number"
+            id="course_credit"
+            name="credit"
+            min="1"
+            required>
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+
+        <textarea
+            id="course_description"
+            name="description"
+            rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+
+        <select
+            id="course_status"
+            name="status">
+
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+
+        </select>
+    </div>
+
+    <div class="form-group">
+
+        <button
+            type="submit"
+            class="btn btn-primary">
+            Save
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="closeCourseModal()">
+            Cancel
+        </button>
+
+    </div>
+
+</form>
 
     </div>
 
@@ -133,11 +258,35 @@
         document.getElementById("courseModal").style.display = "none";
     }
 
-    function editCourse(id) {
-        // You can replace this with AJAX call later
-        document.getElementById("modalTitle").innerText = "Edit Course";
-        document.getElementById("course_id").value = id;
-        document.getElementById("courseModal").style.display = "block";
-    }
+    <script>
+function editCourse(
+    id,
+    name,
+    code,
+    department,
+    faculty,
+    semester,
+    credit,
+    description,
+    status
+) {
+    document.getElementById("course_id").value = id;
+    document.getElementById("course_name").value = name;
+    document.getElementById("course_code").value = code;
+    document.getElementById("course_department").value = department;
+    document.getElementById("course_faculty").value = faculty;
+    document.getElementById("course_semester").value = semester;
+    document.getElementById("course_credit").value = credit;
+    document.getElementById("course_description").value = description;
+    document.getElementById("course_status").value = status;
+
+    document.getElementById("modalTitle").innerText = "Edit Course";
+
+    document.getElementById("courseForm").action =
+        "/admin/courses/" + id + "/edit";
+
+    document.getElementById("courseModal").style.display = "block";
+}
+</script>
 </script>
 {% endblock %}

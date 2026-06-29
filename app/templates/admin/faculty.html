@@ -127,10 +127,10 @@
 <div class="form-group">
     <label>Password</label>
     <input
-        type="password"
-        id="faculty_password"
-        name="password"
-        placeholder="Leave blank to keep current password">
+    type="password"
+    id="faculty_password"
+    name="password"
+    required>
 </div>
 
 
@@ -215,6 +215,8 @@ function openFacultyModal() {
 
     document.getElementById("facultyModal").style.display = "block";
 
+    document.getElementById("faculty_password").setAttribute("required", "required");
+
 }
 
 function closeFacultyModal() {
@@ -231,9 +233,11 @@ function editFaculty(id, name, email, department, designation) {
     document.getElementById("faculty_department").value = department;
     document.getElementById("faculty_designation").value = designation;
 
-    // Clear username and password
     document.getElementById("faculty_username").value = "";
     document.getElementById("faculty_password").value = "";
+
+    // Password optional while editing
+    document.getElementById("faculty_password").removeAttribute("required");
 
     document.getElementById("facultyModalTitle").innerHTML = "Edit Faculty";
 

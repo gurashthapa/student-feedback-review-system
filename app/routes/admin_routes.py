@@ -14,6 +14,7 @@ from sqlalchemy import func
 
 from app import db
 from app.models import (
+    User,
     Student,
     Faculty,
     Course,
@@ -117,29 +118,40 @@ def add_student():
 
         if not department_id:
             flash("Please select a department.", "danger")
-            return redirect(url_for("admin.add_student"))
+            return redirect(url_for("admin.students"))
 
-        # Check username
+        # Check if username already exists
         if User.query.filter_by(username=request.form.get("username")).first():
             flash("Username already exists.", "danger")
-            return redirect(url_for("admin.add_student"))
+            return redirect(url_for("admin.students"))
 
-        # Check email
+        # Check if email already exists
         if User.query.filter_by(email=request.form.get("email")).first():
             flash("Email already exists.", "danger")
-            return redirect(url_for("admin.add_student"))
+            return redirect(url_for("admin.students"))
 
-        # Create User
+        # Check if student ID already exists
+        if Student.query.filter_by(student_id=request.form.get("student_id")).first():
+            flash("Student ID already exists.", "danger")
+            return redirect(url_for("admin.students"))
+
+        password = request.form.get("password")
+
+        if not password:
+            flash("Password is required.", "danger")
+            return redirect(url_for("admin.students"))
+
+        # Create User account
         user = User(
             username=request.form.get("username"),
             email=request.form.get("email"),
             role="student"
         )
 
-        user.set_password(request.form.get("password"))
+        user.set_password(password)
 
         db.session.add(user)
-        db.session.flush()
+        db.session.flush()   # Generates user.id
 
         # Create Student
         student = Student(
@@ -163,9 +175,11 @@ def add_student():
         return redirect(url_for("admin.students"))
 
     return render_template(
-        "admin/add_student.html",
+        "admin/students.html",
+        students=Student.query.order_by(Student.full_name).all(),
         departments=departments
     )
+
 @admin_bp.route("/students/<int:student_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_student(student_id):
@@ -226,39 +240,60 @@ def add_faculty():
     if request.method == "POST":
 
         department_id = request.form.get("department_id")
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
 
+        # Validate department
         if not department_id:
             flash("Please select a department.", "danger")
             return redirect(url_for("admin.faculty"))
 
-        # Check if username already exists
-        if User.query.filter_by(username=request.form.get("username")).first():
+        # Validate username
+        if not username:
+            flash("Username is required.", "danger")
+            return redirect(url_for("admin.faculty"))
+
+        # Validate email
+        if not email:
+            flash("Email is required.", "danger")
+            return redirect(url_for("admin.faculty"))
+
+        # Validate password
+        if not password:
+            flash("Password is required.", "danger")
+            return redirect(url_for("admin.faculty"))
+
+        # Check duplicate username
+        if User.query.filter_by(username=username).first():
             flash("Username already exists.", "danger")
             return redirect(url_for("admin.faculty"))
 
-        # Check if email already exists
-        if User.query.filter_by(email=request.form.get("email")).first():
+        # Check duplicate email
+        if User.query.filter_by(email=email).first():
             flash("Email already exists.", "danger")
             return redirect(url_for("admin.faculty"))
 
+        # Create login account
         user = User(
-            username=request.form.get("username"),
-            email=request.form.get("email"),
+            username=username,
+            email=email,
             role="faculty"
         )
 
-        user.set_password(request.form.get("password"))
+        user.set_password(password)
 
         db.session.add(user)
-        db.session.flush()
+        db.session.flush()   # Generates user.id
 
+        # Create faculty record
         faculty = Faculty(
             user_id=user.id,
             department_id=int(department_id),
             faculty_code=f"FAC{user.id:03d}",
             full_name=request.form.get("name"),
             designation=request.form.get("designation"),
-            email=request.form.get("email")
+            email=email
         )
 
         db.session.add(faculty)
@@ -276,6 +311,7 @@ def add_faculty():
         faculty_list=faculty_list,
         departments=departments
     )
+
 @admin_bp.route("/faculty/<int:faculty_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_faculty(faculty_id):
@@ -364,33 +400,117 @@ def departments():
 @admin_bp.route("/departments/add", methods=["GET", "POST"])
 @admin_required
 def add_department():
+
     if request.method == "POST":
-        Department(
-    department_name=request.form.get("department_name"),
-    department_code=request.form.get("department_code")
-)
+
+        department_name = request.form.get("department_name")
+        department_code = request.form.get("department_code")
+
+        # Validation
+        if not department_name:
+            flash("Department name is required.", "danger")
+            return redirect(url_for("admin.add_department"))
+
+        if not department_code:
+            flash("Department code is required.", "danger")
+            return redirect(url_for("admin.add_department"))
+
+        # Check duplicate department name
+        if Department.query.filter_by(department_name=department_name).first():
+            flash("Department name already exists.", "danger")
+            return redirect(url_for("admin.add_department"))
+
+        # Check duplicate department code
+        if Department.query.filter_by(department_code=department_code).first():
+            flash("Department code already exists.", "danger")
+            return redirect(url_for("admin.add_department"))
+
+        department = Department(
+            department_name=department_name,
+            department_code=department_code,
+            description=request.form.get("description"),
+            hod_name=request.form.get("hod_name"),
+            office_location=request.form.get("office_location"),
+            contact_email=request.form.get("contact_email"),
+            contact_phone=request.form.get("contact_phone"),
+            status=request.form.get("status") or "Active"
+        )
+
         db.session.add(department)
         db.session.commit()
+
         flash("Department added successfully.", "success")
         return redirect(url_for("admin.departments"))
 
     return render_template("admin/add_department.html")
 
-
 @admin_bp.route("/departments/<int:department_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_department(department_id):
+
     department = Department.query.get_or_404(department_id)
 
     if request.method == "POST":
-        department.name = request.form.get("name")
+
+        department_name = request.form.get("department_name")
+        department_code = request.form.get("department_code")
+
+        # Validation
+        if not department_name:
+            flash("Department name is required.", "danger")
+            return redirect(
+                url_for("admin.edit_department", department_id=department.id)
+            )
+
+        if not department_code:
+            flash("Department code is required.", "danger")
+            return redirect(
+                url_for("admin.edit_department", department_id=department.id)
+            )
+
+        # Check duplicate department name
+        existing_name = Department.query.filter(
+            Department.department_name == department_name,
+            Department.id != department.id
+        ).first()
+
+        if existing_name:
+            flash("Department name already exists.", "danger")
+            return redirect(
+                url_for("admin.edit_department", department_id=department.id)
+            )
+
+        # Check duplicate department code
+        existing_code = Department.query.filter(
+            Department.department_code == department_code,
+            Department.id != department.id
+        ).first()
+
+        if existing_code:
+            flash("Department code already exists.", "danger")
+            return redirect(
+                url_for("admin.edit_department", department_id=department.id)
+            )
+
+        # Update department
+        department.department_name = department_name
+        department.department_code = department_code
+        department.description = request.form.get("description")
+        department.hod_name = request.form.get("hod_name")
+        department.office_location = request.form.get("office_location")
+        department.contact_email = request.form.get("contact_email")
+        department.contact_phone = request.form.get("contact_phone")
+        department.status = request.form.get("status")
+
         db.session.commit()
+
         flash("Department updated successfully.", "success")
         return redirect(url_for("admin.departments"))
 
-    return render_template("admin/edit_department.html", department=department)
-
-
+    return render_template(
+        "admin/edit_department.html",
+        department=department
+    )
 @admin_bp.route("/departments/<int:department_id>/delete", methods=["POST"])
 @admin_required
 def delete_department(department_id):
@@ -405,8 +525,15 @@ def delete_department(department_id):
 @admin_required
 def courses():
     courses = Course.query.order_by(Course.course_name).all()
-    return render_template("admin/courses.html", courses=courses)
+    departments = Department.query.order_by(Department.department_name).all()
+    faculty_list = Faculty.query.order_by(Faculty.full_name).all()
 
+    return render_template(
+        "admin/course.html",
+        courses=courses,
+        departments=departments,
+        faculty_list=faculty_list
+    )
 
 @admin_bp.route("/courses/add", methods=["GET", "POST"])
 @admin_required
@@ -430,20 +557,67 @@ def add_course():
 @admin_bp.route("/courses/<int:course_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_course(course_id):
+
     course = Course.query.get_or_404(course_id)
-    departments = Department.query.order_by(Department.department_name).all()
+
+    departments = Department.query.order_by(
+        Department.department_name
+    ).all()
+
+    faculty_list = Faculty.query.order_by(
+        Faculty.full_name
+    ).all()
+
     if request.method == "POST":
-        course.name = request.form.get("name")
-        course.code = request.form.get("code")
-        course.department_id = request.form.get("department_id")
+
+        course_name = request.form.get("course_name")
+        course_code = request.form.get("course_code")
+
+        if not course_name:
+            flash("Course name is required.", "danger")
+            return redirect(
+                url_for("admin.edit_course", course_id=course.id)
+            )
+
+        if not course_code:
+            flash("Course code is required.", "danger")
+            return redirect(
+                url_for("admin.edit_course", course_id=course.id)
+            )
+
+        # Check duplicate course code
+        existing_course = Course.query.filter(
+            Course.course_code == course_code,
+            Course.id != course.id
+        ).first()
+
+        if existing_course:
+            flash("Course code already exists.", "danger")
+            return redirect(
+                url_for("admin.edit_course", course_id=course.id)
+            )
+
+        # Update course
+        course.course_name = course_name
+        course.course_code = course_code
+        course.department_id = int(request.form.get("department_id"))
+        course.faculty_id = int(request.form.get("faculty_id"))
+        course.semester = int(request.form.get("semester"))
+        course.credit = int(request.form.get("credit"))
+        course.description = request.form.get("description")
+        course.status = request.form.get("status")
 
         db.session.commit()
+
         flash("Course updated successfully.", "success")
         return redirect(url_for("admin.courses"))
 
-    return render_template("admin/edit_course.html", course=course, departments=departments)
-
-
+    return render_template(
+        "admin/edit_course.html",
+        course=course,
+        departments=departments,
+        faculty_list=faculty_list
+    )
 @admin_bp.route("/courses/<int:course_id>/delete", methods=["POST"])
 @admin_required
 def delete_course(course_id):
