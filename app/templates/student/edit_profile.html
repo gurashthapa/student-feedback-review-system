@@ -6,13 +6,78 @@
 
 <div class="container mt-4">
 
-    <h2>Edit Profile</h2>
+    <div class="card shadow">
 
-    <p>This page is working!</p>
+        <div class="card-header bg-primary text-white">
+            <h3>Edit Profile</h3>
+        </div>
 
-    <a href="{{ url_for('student.profile') }}" class="btn btn-secondary">
-        Back
-    </a>
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="full_name"
+                        value="{{ student.full_name }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+
+                    <input
+                        type="email"
+                        class="form-control"
+                        name="email"
+                        value="{{ student.email }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="phone"
+                        value="{{ student.phone }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+
+                    <textarea
+                        class="form-control"
+                        name="address"
+                        rows="3">{{ student.address }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Semester</label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="semester"
+                        value="{{ student.semester }}">
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    Save Changes
+                </button>
+
+                <a href="{{ url_for('student.profile') }}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
 
 </div>
 
