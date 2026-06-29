@@ -477,6 +477,20 @@ def profile():
         total_faculty=total_faculty
     )
 
+@student_bp.route("/edit-profile", methods=["GET", "POST"])
+def edit_profile():
+
+    student = get_logged_student()
+
+    if student is None:
+        flash("Please login first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    return render_template(
+        "student/edit_profile.html",
+        student=student
+    )
+
 
 @student_bp.route("/courses")
 def courses():
