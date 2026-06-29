@@ -109,16 +109,30 @@
             action="{{ url_for('admin.add_faculty') }}">
 
             <input type="hidden" id="faculty_id" name="id">
-
             <div class="form-group">
-                <label>Name</label>
-                <input type="text" id="faculty_name" name="name" required>
-            </div>
+    <label>Full Name</label>
+    <input type="text" id="faculty_name" name="name" required>
+</div>
 
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="faculty_email" name="email" required>
-            </div>
+<div class="form-group">
+    <label>Username</label>
+    <input type="text" id="faculty_username" name="username" required>
+</div>
+
+<div class="form-group">
+    <label>Email</label>
+    <input type="email" id="faculty_email" name="email" required>
+</div>
+
+<div class="form-group">
+    <label>Password</label>
+    <input
+        type="password"
+        id="faculty_password"
+        name="password"
+        placeholder="Leave blank to keep current password">
+</div>
+
 
             <div class="form-group">
                 <label>Department</label>
@@ -217,14 +231,17 @@ function editFaculty(id, name, email, department, designation) {
     document.getElementById("faculty_department").value = department;
     document.getElementById("faculty_designation").value = designation;
 
+    // Clear username and password
+    document.getElementById("faculty_username").value = "";
+    document.getElementById("faculty_password").value = "";
+
     document.getElementById("facultyModalTitle").innerHTML = "Edit Faculty";
 
-    document.getElementById("facultyForm").action = "/admin/faculty/" + id + "/edit";
+    document.getElementById("facultyForm").action =
+        "/admin/faculty/" + id + "/edit";
 
     document.getElementById("facultyModal").style.display = "block";
-
 }
-
 </script>
 
 {% endblock %}
