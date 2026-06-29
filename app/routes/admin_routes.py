@@ -173,17 +173,21 @@ def add_faculty():
 
     if request.method == "POST":
         faculty = Faculty(
-            name=request.form.get("name"),
+            full_name=request.form.get("name"),
             email=request.form.get("email"),
-            department_id=request.form.get("department_id"),
+            department_id=int(request.form.get("department_id"))
         )
+
         db.session.add(faculty)
         db.session.commit()
+
         flash("Faculty added successfully.", "success")
         return redirect(url_for("admin.faculty"))
 
-    return render_template("admin/add_faculty.html", departments=departments)
-
+    return render_template(
+        "admin/add_faculty.html",
+        departments=departments
+    )
 
 @admin_bp.route("/faculty/<int:faculty_id>/edit", methods=["GET", "POST"])
 @admin_required
