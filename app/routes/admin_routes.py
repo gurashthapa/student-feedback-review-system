@@ -198,10 +198,14 @@ def add_student():
 @admin_bp.route("/students/<int:student_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_student(student_id):
+
     student = Student.query.get_or_404(student_id)
-    departments = Department.query.order_by(Department.department_name).all()
+    departments = Department.query.order_by(
+        Department.department_name
+    ).all()
 
     if request.method == "POST":
+
         student.student_id = request.form.get("student_id")
         student.full_name = request.form.get("full_name")
         student.email = request.form.get("email")
@@ -209,21 +213,30 @@ def edit_student(student_id):
         student.semester = request.form.get("semester")
 
         db.session.commit()
+
         flash("Student updated successfully.", "success")
+
         return redirect(url_for("admin.students"))
 
-    return render_template("admin/edit_student.html", student=student, departments=departments)
+    return render_template(
+        "admin/edit_student.html",
+        student=student,
+        departments=departments
+    )
 
 
 @admin_bp.route("/students/<int:student_id>/delete", methods=["POST"])
 @admin_required
 def delete_student(student_id):
+
     student = Student.query.get_or_404(student_id)
+
     db.session.delete(student)
     db.session.commit()
-    flash("Student deleted successfully.", "success")
-    return redirect(url_for("admin.students"))
 
+    flash("Student deleted successfully.", "success")
+
+    return redirect(url_for("admin.students"))
 
 @admin_bp.route("/faculty")
 @admin_required
@@ -646,26 +659,71 @@ def delete_course(course_id):
 @admin_bp.route("/feedback")
 @admin_required
 def feedback():
-    feedback_list = Feedback.query.order_by(Feedback.id.desc()).all()
-    return render_template("admin/feedback.html", feedback_list=feedback_list)
+
+    feedback_list = Feedback.query.order_by(
+        Feedback.id.desc()
+    ).all()
+
+    return render_template(
+        "admin/feedback.html",
+        feedback_list=feedback_list
+    )
+
+
+@admin_bp.route("/feedback/<int:feedback_id>/approve", methods=["POST"])
+@admin_required
+def approve_feedback(feedback_id):
+
+    feedback = Feedback.query.get_or_404(feedback_id)
+
+    feedback.status = "Approved"
+
+    db.session.commit()
+
+    flash("Feedback approved successfully.", "success")
+
+    return redirect(url_for("admin.feedback"))
+
+
+@admin_bp.route("/feedback/<int:feedback_id>/reject", methods=["POST"])
+@admin_required
+def reject_feedback(feedback_id):
+
+    feedback = Feedback.query.get_or_404(feedback_id)
+
+    feedback.status = "Rejected"
+
+    db.session.commit()
+
+    flash("Feedback rejected successfully.", "warning")
+
+    return redirect(url_for("admin.feedback"))
 
 
 @admin_bp.route("/feedback/<int:feedback_id>")
 @admin_required
 def view_feedback(feedback_id):
+
     feedback = Feedback.query.get_or_404(feedback_id)
-    return render_template("admin/view_feedback.html", feedback=feedback)
+
+    return render_template(
+        "admin/view_feedback.html",
+        feedback=feedback
+    )
 
 
 @admin_bp.route("/feedback/<int:feedback_id>/delete", methods=["POST"])
 @admin_required
 def delete_feedback(feedback_id):
+
     feedback = Feedback.query.get_or_404(feedback_id)
+
     db.session.delete(feedback)
     db.session.commit()
-    flash("Feedback deleted successfully.", "success")
-    return redirect(url_for("admin.feedback"))
 
+    flash("Feedback deleted successfully.", "success")
+
+    return redirect(url_for("admin.feedback"))
 
 @admin_bp.route("/reports")
 @admin_required
