@@ -20,6 +20,7 @@ from app.models import (
     Course,
     Department,
     Feedback,
+    Notification,
 )
 
 admin_bp = Blueprint(
@@ -47,24 +48,35 @@ def get_dashboard_stats():
     total_departments = Department.query.count()
     total_feedback = Feedback.query.count()
 
-    avg_rating = db.session.query(func.avg(Feedback.rating)).scalar() or 0
+    avg_rating = db.session.query(
+        func.avg(Feedback.rating)
+    ).scalar() or 0
 
     rating_values = [
-        Feedback.query.filter_by(rating=1).count(),
-        Feedback.query.filter_by(rating=2).count(),
-        Feedback.query.filter_by(rating=3).count(),
-        Feedback.query.filter_by(rating=4).count(),
-        Feedback.query.filter_by(rating=5).count(),
+        Feedback.query.filter_by(rating=i).count()
+        for i in range(1, 6)
     ]
 
     distribution_values = [
         Feedback.query.filter_by(status="Pending").count(),
         Feedback.query.filter_by(status="Approved").count(),
-        Feedback.query.filter_by(status="Rejected").count(),
+        Feedback.query.filter_by(status="Rejected").count()
     ]
 
     recent_feedback = (
         Feedback.query.order_by(Feedback.created_at.desc())
+        .limit(10)
+        .all()
+    )
+
+    # ADD THIS HERE
+    unread_notifications = Notification.query.filter_by(
+        is_read=False
+    ).count()
+
+    notifications = (
+        Notification.query
+        .order_by(Notification.created_at.desc())
         .limit(10)
         .all()
     )
@@ -81,8 +93,11 @@ def get_dashboard_stats():
         "distribution_labels": ["Pending", "Approved", "Rejected"],
         "distribution_values": distribution_values,
         "recent_feedback": recent_feedback,
-    }
 
+        # ALSO ADD THESE TWO
+        "unread_notifications": unread_notifications,
+        "notifications": notifications,
+    }
 
 @admin_bp.route("/")
 @admin_bp.route("/dashboard")
@@ -673,6 +688,20 @@ def settings():
 @admin_required
 def profile():
     return render_template("admin/profile.html")
+
+@admin_bp.route("/notifications/read")
+@admin_required
+def read_notifications():
+
+    Notification.query.update(
+        {
+            Notification.is_read: True
+        }
+    )
+
+    db.session.commit()
+
+    return redirect(url_for("admin.dashboard"))
 
 
 @admin_bp.route("/logout")

@@ -14,5 +14,6 @@ __all__ = [
     "Department",
     "Course",
     "Feedback",
-    "Admin"
+    "Admin",
+    "Notification"
 ]
