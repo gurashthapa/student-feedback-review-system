@@ -3,16 +3,14 @@
     <div class="sidebar-top">
 
         <div class="logo">
-
             <div class="logo-icon">
                 <i class="fas fa-graduation-cap"></i>
             </div>
 
             <div class="logo-text">
                 <h4>Feedback</h4>
-                <small>Student Portal</small>
+                <small>Admin Panel</small>
             </div>
-
         </div>
 
     </div>
@@ -20,42 +18,42 @@
     <ul class="sidebar-menu">
 
         <li>
-            <a href="{{ url_for('student.dashboard') }}"
-               class="{% if request.endpoint=='student.dashboard' %}active{% endif %}">
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="{% if request.endpoint=='admin.dashboard' %}active{% endif %}">
                 <i class="fas fa-house"></i>
                 <span>Dashboard</span>
             </a>
         </li>
 
         <li>
-            <a href="{{ url_for('student.profile') }}"
-               class="{% if request.endpoint=='student.profile' %}active{% endif %}">
-                <i class="fas fa-user"></i>
-                <span>My Profile</span>
+            <a href="{{ url_for('admin.students') }}"
+               class="{% if request.endpoint=='admin.students' %}active{% endif %}">
+                <i class="fas fa-user-graduate"></i>
+                <span>Students</span>
             </a>
         </li>
 
         <li>
-            <a href="{{ url_for('student.feedback') }}"
-               class="{% if request.endpoint=='student.feedback' %}active{% endif %}">
-                <i class="fas fa-comment-dots"></i>
-                <span>Feedback</span>
+            <a href="{{ url_for('admin.faculty') }}"
+               class="{% if request.endpoint=='admin.faculty' %}active{% endif %}">
+                <i class="fas fa-user-tie"></i>
+                <span>Faculty</span>
             </a>
         </li>
 
         <li>
-            <a href="{{ url_for('student.history') }}"
-               class="{% if request.endpoint=='student.history' %}active{% endif %}">
-                <i class="fas fa-clock-rotate-left"></i>
-                <span>History</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ url_for('student.courses') }}"
-               class="{% if request.endpoint=='student.courses' %}active{% endif %}">
-                <i class="fas fa-book-open"></i>
+            <a href="{{ url_for('admin.courses') }}"
+               class="{% if request.endpoint=='admin.courses' %}active{% endif %}">
+                <i class="fas fa-book"></i>
                 <span>Courses</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('admin.feedback') }}"
+               class="{% if request.endpoint=='admin.feedback' %}active{% endif %}">
+                <i class="fas fa-comments"></i>
+                <span>Feedback</span>
             </a>
         </li>
 
