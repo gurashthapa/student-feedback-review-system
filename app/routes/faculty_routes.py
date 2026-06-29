@@ -61,3 +61,12 @@ def statistics():
         trend_labels=trend_labels,
         trend_values=trend_values,
     )
+
+@faculty_bp.route("/dashboard")
+def dashboard():
+    return render_template("faculty/dashboard.html")
+
+
+@faculty_bp.route("/profile")
+def profile():
+    return render_template("faculty/profile.html")

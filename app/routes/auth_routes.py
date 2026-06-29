@@ -31,7 +31,6 @@ def parse_date(dob):
             pass
     raise ValueError("Invalid date format")
 
-
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -41,6 +40,18 @@ def login():
         password = request.form.get("password")
 
         user = User.query.filter_by(email=email).first()
+
+        print("========== LOGIN DEBUG ==========")
+        print("Email entered:", email)
+        print("User found:", user)
+
+        if user:
+            print("User ID:", user.id)
+            print("Role:", user.role)
+            print("Active:", user.is_active)
+            print("Password correct:", user.check_password(password))
+
+        print("=================================")
 
         if user is None:
             flash("Invalid email or password.", "danger")
@@ -75,7 +86,6 @@ def login():
         return redirect(url_for("auth.login"))
 
     return render_template("auth/login.html")
-
 
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():

@@ -27,8 +27,6 @@ student_bp = Blueprint(
 )
 
 
-def get_logged_student():
-
     if "user_id" not in session:
         return None
 
@@ -179,10 +177,12 @@ def feedback():
         faculty = Faculty.query.get(course.faculty_id)
 
         notification = Notification(
-            title="New Feedback Submitted",
-            message=f"{student.full_name} submitted feedback for {faculty.full_name} ({course.course_name}).",
-            is_read=False
-        )
+    title="New Feedback Submitted",
+    message=f"{student.full_name} submitted feedback.",
+    recipient_role="admin",
+    student_id=student.id,
+    is_read=False
+)
 
         db.session.add(notification)
 

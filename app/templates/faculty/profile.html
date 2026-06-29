@@ -1,0 +1,48 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Faculty Profile{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h3>
+                <i class="fas fa-user"></i>
+                Faculty Profile
+            </h3>
+        </div>
+
+        <div class="card-body">
+
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/avatar.png') }}"
+                     class="rounded-circle"
+                     width="120"
+                     height="120"
+                     alt="Faculty">
+            </div>
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th width="30%">Username</th>
+                    <td>{{ session.get('username') }}</td>
+                </tr>
+
+                <tr>
+                    <th>Role</th>
+                    <td>{{ session.get('role')|title }}</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
