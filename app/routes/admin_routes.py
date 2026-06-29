@@ -169,12 +169,17 @@ def faculty():
 @admin_bp.route("/faculty/add", methods=["GET", "POST"])
 @admin_required
 def add_faculty():
-    departments = Department.query.order_by(Department.department_name).all()
+
+    departments = Department.query.order_by(
+        Department.department_name
+    ).all()
 
     if request.method == "POST":
+
         faculty = Faculty(
             full_name=request.form.get("name"),
             email=request.form.get("email"),
+            designation=request.form.get("designation"),
             department_id=int(request.form.get("department_id"))
         )
 
@@ -184,28 +189,45 @@ def add_faculty():
         flash("Faculty added successfully.", "success")
         return redirect(url_for("admin.faculty"))
 
+    faculty_list = Faculty.query.order_by(Faculty.full_name).all()
+
     return render_template(
-        "admin/add_faculty.html",
+        "admin/faculty.html",
+        faculty_list=faculty_list,
         departments=departments
     )
+
 
 @admin_bp.route("/faculty/<int:faculty_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_faculty(faculty_id):
+
     faculty = Faculty.query.get_or_404(faculty_id)
-    departments = Department.query.order_by(Department.department_name).all()
+
+    departments = Department.query.order_by(
+        Department.department_name
+    ).all()
 
     if request.method == "POST":
-        faculty.name = request.form.get("name")
+
+        faculty.full_name = request.form.get("name")
         faculty.email = request.form.get("email")
-        faculty.department_id = request.form.get("department_id")
+        faculty.designation = request.form.get("designation")
+        faculty.department_id = int(request.form.get("department_id"))
 
         db.session.commit()
+
         flash("Faculty updated successfully.", "success")
+
         return redirect(url_for("admin.faculty"))
 
-    return render_template("admin/edit_faculty.html", faculty=faculty, departments=departments)
+    faculty_list = Faculty.query.order_by(Faculty.full_name).all()
 
+    return render_template(
+        "admin/faculty.html",
+        faculty_list=faculty_list,
+        departments=departments
+    )
 
 @admin_bp.route("/faculty/<int:faculty_id>/delete", methods=["POST"])
 @admin_required
