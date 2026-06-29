@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,7 +17,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <!-- GLOBAL STYLES -->
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
@@ -26,19 +27,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 
     {% block extra_css %}{% endblock %}
+
 </head>
 
 <body>
 
-<div class="app-container">
+{% if session.get('role') %}
+
+    <!-- Sidebar -->
 
     {% if session.get('role') == 'admin' %}
-    {% include "layout/admin_sidebar.html" %}
-{% elif session.get('role') == 'student' %}
-    {% include "layout/student_sidebar.html" %}
-{% elif session.get('role') == 'faculty' %}
-    {% include "layout/faculty_sidebar.html" %}
-{% endif %}
+        {% include "layout/admin_sidebar.html" %}
+
+    {% elif session.get('role') == 'student' %}
+        {% include "layout/student_sidebar.html" %}
+
+    {% elif session.get('role') == 'faculty' %}
+        {% include "layout/faculty_sidebar.html" %}
+    {% endif %}
 
     <div class="main-wrapper">
 
@@ -46,22 +52,27 @@
 
         <main class="content-area">
 
-            <!-- FLASH MESSAGES (FIXED + SAFE UI) -->
+            <!-- Flash Messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                            <span>{{ message }}</span>
-                            <button type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
+
+                        <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+
+                            {{ message }}
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert">
+                            </button>
+
                         </div>
+
                     {% endfor %}
                 {% endif %}
             {% endwith %}
 
-            <!-- PAGE CONTENT -->
             {% block content %}{% endblock %}
 
         </main>
@@ -69,16 +80,56 @@
         {% include "layout/footer.html" %}
 
     </div>
-</div>
 
+{% else %}
+
+    <!-- Login/Register Pages -->
+
+    <main>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+
+                    <div class="container mt-3">
+
+                        <div class="alert alert-{{ category }} alert-dismissible fade show">
+
+                            {{ message }}
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert">
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+{% endif %}
+
+
+<!-- Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Chart JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Custom JS -->
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script src="{{ url_for('static', filename='js/search.js') }}"></script>
 <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 
 {% block extra_js %}{% endblock %}
+
 </body>
 </html>

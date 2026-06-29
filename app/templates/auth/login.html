@@ -1,70 +1,79 @@
 {% extends "layout/auth_base.html" %}
+
 {% block title %}Login{% endblock %}
 
 {% block content %}
 
-<div class="auth-container">
+<div class="auth-card">
 
-    <div class="auth-card">
+    <div class="auth-header text-center mb-4">
+        <h2>
+            <i class="fas fa-sign-in-alt"></i>
+            Login
+        </h2>
 
-        <div class="auth-header">
-            <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
-            <p>Student Feedback Review System</p>
-        </div>
+        <p class="text-muted">
+            Student Feedback Review System
+        </p>
+    </div>
 
-        <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm">
+    <form method="POST" action="{{ url_for('auth.login') }}">
 
-            <div class="form-group">
-                <label>Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter email"
-                    required>
-            </div>
+        <div class="mb-3">
 
-            <div class="form-group">
-                <label>Password</label>
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Enter password"
-                    required>
-            </div>
+            <label class="form-label">Email</label>
 
-            <button
-                type="submit"
-                class="btn btn-primary btn-block">
-
-                <i class="fas fa-lock"></i>
-                Login
-
-            </button>
-
-        </form>
-
-        <div class="auth-footer">
-
-            <p class="text-center">
-                <a href="{{ url_for('auth.forgot_password') }}">
-                    Forgot Password?
-                </a>
-            </p>
-
-            <hr>
-
-            <p class="text-center">
-                Don't have an account?
-            </p>
-
-            <p class="text-center">
-                <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-block">
-                    <i class="fas fa-user-plus"></i>
-                    Register Here
-                </a>
-            </p>
+            <input
+                type="email"
+                name="email"
+                class="form-control"
+                placeholder="Enter your email"
+                required>
 
         </div>
+
+        <div class="mb-4">
+
+            <label class="form-label">Password</label>
+
+            <input
+                type="password"
+                name="password"
+                class="form-control"
+                placeholder="Enter your password"
+                required>
+
+        </div>
+
+        <button
+            type="submit"
+            class="btn btn-primary w-100">
+
+            <i class="fas fa-lock"></i>
+            Login
+
+        </button>
+
+    </form>
+
+    <div class="text-center mt-4">
+
+        <a href="{{ url_for('auth.forgot_password') }}">
+            Forgot Password?
+        </a>
+
+        <hr>
+
+        <p>Don't have an account?</p>
+
+        <a
+            href="{{ url_for('auth.register') }}"
+            class="btn btn-success w-100">
+
+            <i class="fas fa-user-plus"></i>
+            Register Here
+
+        </a>
 
     </div>
 
