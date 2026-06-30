@@ -1,0 +1,17 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Admin Profile{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>Admin Profile</h2>
+</div>
+
+<div class="card p-4">
+    <p><strong>Name:</strong> {{ session.get('name') }}</p>
+    <p><strong>Username:</strong> {{ session.get('username') }}</p>
+    <p><strong>Role:</strong> {{ session.get('role') }}</p>
+</div>
+
+{% endblock %}

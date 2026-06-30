@@ -39,37 +39,38 @@
                 </tr>
             </thead>
             <tbody>
-    {% for s in students %}
-    <tr>
-        <td>{{ s.student_id }}</td>
-        <td>{{ s.full_name }}</td>
-        <td>{{ s.email }}</td>
-        <td>{{ s.department.department_name if s.department else "-" }}</td>
-        <td>{{ s.semester }}</td>
+    <tbody>
+{% for s in students %}
+<tr>
+    <td>{{ s.student_id }}</td>
+    <td>{{ s.full_name }}</td>
+    <td>{{ s.email }}</td>
+    <td>{{ s.department.department_name if s.department else "-" }}</td>
+    <td>{{ s.semester }}</td>
 
-                   <td>
+    <td>
 
-    <a href="{{ url_for('admin.edit_student', student_id=s.id) }}"
-       class="btn btn-edit">
-        <i class="fas fa-edit"></i>
-    </a>
+        <a href="{{ url_for('admin.edit_student', student_id=s.id) }}"
+           class="btn btn-primary btn-sm">
+            <i class="fas fa-edit"></i>
+        </a>
 
-    <form action="{{ url_for('admin.delete_student', student_id=s.id) }}"
-          method="POST"
-          style="display:inline;">
+        <form action="{{ url_for('admin.delete_student', student_id=s.id) }}"
+              method="POST"
+              style="display:inline;">
 
-        <button type="submit"
-                class="btn btn-delete"
-                onclick="return confirm('Delete this student?')">
-            <i class="fas fa-trash"></i>
-        </button>
+            <button type="submit"
+                    class="btn btn-danger btn-sm"
+                    onclick="return confirm('Delete this student?')">
+                <i class="fas fa-trash"></i>
+            </button>
 
-    </form>
+        </form>
 
-</td> 
-                </tr>
-                {% endfor %}
-            </tbody>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
 
         </table>
 

@@ -7,13 +7,14 @@ from flask import (
     redirect,
     url_for,
     flash,
-    session
+    session,
+    current_app
 )
-
 from app import db
 from app.models.user import User
 from app.models.student import Student
 from app.models.department import Department
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 
 auth_bp = Blueprint(
@@ -30,6 +31,28 @@ def parse_date(dob):
         except ValueError:
             pass
     raise ValueError("Invalid date format")
+def generate_reset_token(email):
+    serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+    return serializer.dumps(email, salt="password-reset")
+
+
+def verify_reset_token(token):
+    serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+
+    try:
+        email = serializer.loads(
+            token,
+            salt="password-reset",
+            max_age=1800      # 30 minutes
+        )
+        return email
+
+    except SignatureExpired:
+        return None
+
+    except BadSignature:
+        return None
+
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -174,14 +197,81 @@ def register():
         departments=departments
     )
 
-
-@auth_bp.route("/forgot-password")
+@auth_bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
+
+    if request.method == "POST":
+
+        email = request.form.get("email")
+
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+
+            token = generate_reset_token(user.email)
+
+            reset_link = url_for(
+                "auth.reset_password",
+                token=token,
+                _external=True
+            )
+
+            print("\n======================================")
+            print("PASSWORD RESET LINK")
+            print(reset_link)
+            print("======================================\n")
+
+            flash(
+                "Password reset link generated. Check your terminal.",
+                "success"
+            )
+
+        else:
+
+            flash("No account found with that email.", "danger")
+
+        return redirect(url_for("auth.forgot_password"))
+
     return render_template("auth/forgot_password.html")
-
-
 @auth_bp.route("/logout")
 def logout():
     session.clear()
     flash("You have been logged out.", "success")
     return redirect(url_for("auth.login"))
+
+@auth_bp.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+
+    email = verify_reset_token(token)
+
+    if email is None:
+        flash("Reset link is invalid or has expired.", "danger")
+        return redirect(url_for("auth.forgot_password"))
+
+    user = User.query.filter_by(email=email).first()
+
+    if user is None:
+        flash("User not found.", "danger")
+        return redirect(url_for("auth.login"))
+
+    if request.method == "POST":
+
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+
+        if password != confirm_password:
+            flash("Passwords do not match.", "danger")
+            return redirect(request.url)
+
+        user.set_password(password)
+
+        db.session.commit()
+
+        flash("Password has been reset successfully.", "success")
+
+        return redirect(url_for("auth.login"))
+
+    return render_template(
+        "auth/reset_password.html",
+        token=token
+    )

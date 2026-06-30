@@ -194,7 +194,6 @@ def add_student():
         students=Student.query.order_by(Student.full_name).all(),
         departments=departments
     )
-
 @admin_bp.route("/students/<int:student_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_student(student_id):
@@ -223,7 +222,6 @@ def edit_student(student_id):
         student=student,
         departments=departments
     )
-
 
 @admin_bp.route("/students/<int:student_id>/delete", methods=["POST"])
 @admin_required
@@ -339,7 +337,6 @@ def add_faculty():
         faculty_list=faculty_list,
         departments=departments
     )
-
 @admin_bp.route("/faculty/<int:faculty_id>/edit", methods=["GET", "POST"])
 @admin_required
 def edit_faculty(faculty_id):
@@ -408,6 +405,7 @@ def edit_faculty(faculty_id):
         faculty_list=faculty_list,
         departments=departments
     )
+
 @admin_bp.route("/faculty/<int:faculty_id>/delete", methods=["POST"])
 @admin_required
 def delete_faculty(faculty_id):
@@ -471,6 +469,7 @@ def add_department():
         return redirect(url_for("admin.departments"))
 
     return render_template("admin/add_department.html")
+
 
 @admin_bp.route("/departments/<int:department_id>/edit", methods=["GET", "POST"])
 @admin_required
@@ -539,6 +538,7 @@ def edit_department(department_id):
         "admin/edit_department.html",
         department=department
     )
+
 @admin_bp.route("/departments/<int:department_id>/delete", methods=["POST"])
 @admin_required
 def delete_department(department_id):
@@ -580,7 +580,6 @@ def add_course():
         return redirect(url_for("admin.courses"))
 
     return render_template("admin/add_course.html", departments=departments)
-
 
 @admin_bp.route("/courses/<int:course_id>/edit", methods=["GET", "POST"])
 @admin_required
@@ -646,6 +645,7 @@ def edit_course(course_id):
         departments=departments,
         faculty_list=faculty_list
     )
+
 @admin_bp.route("/courses/<int:course_id>/delete", methods=["POST"])
 @admin_required
 def delete_course(course_id):
@@ -680,7 +680,6 @@ def feedback_detail(feedback_id):
         feedback=feedback
     )
 
-
 @admin_bp.route("/feedback/<int:feedback_id>/approve", methods=["POST"])
 @admin_required
 def approve_feedback(feedback_id):
@@ -703,7 +702,6 @@ def approve_feedback(feedback_id):
     return redirect(url_for("admin.feedback"))
 
 
-
 @admin_bp.route("/feedback/<int:feedback_id>/reject", methods=["POST"])
 @admin_required
 def reject_feedback(feedback_id):
@@ -724,7 +722,6 @@ def reject_feedback(feedback_id):
     flash("Feedback rejected successfully.", "warning")
 
     return redirect(url_for("admin.feedback"))
-
 
 @admin_bp.route("/feedback/<int:feedback_id>/delete", methods=["POST"])
 @admin_required
