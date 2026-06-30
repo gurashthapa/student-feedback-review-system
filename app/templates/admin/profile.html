@@ -4,14 +4,216 @@
 
 {% block content %}
 
-<div class="page-header">
-    <h2>Admin Profile</h2>
+<div class="container-fluid py-4">
+
+    <div class="row">
+
+        <!-- Left Profile Card -->
+        <div class="col-lg-4">
+
+            <div class="profile-card text-center">
+
+    <div class="text-center">
+
+        <img
+            src="{{ url_for('static', filename='images/avatar.png') }}"
+            class="profile-image"
+            id="profilePreview"
+            alt="Profile">
+
+        <form
+            action="{{ url_for('admin.upload_profile_picture') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="mt-3">
+
+            <input
+                type="file"
+                class="form-control"
+                name="profile_picture"
+                accept="image/*">
+
+            <button
+                type="submit"
+                class="btn btn-success mt-2 w-100">
+
+                <i class="fas fa-upload"></i>
+                Upload Picture
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <h2>{{ session.get('name') or session.get('username') }}</h2>
+
+    <h5>Administrator</h5>
+
+    <hr>
+
+                <p>
+                    <i class="fas fa-user me-2 text-primary"></i>
+                    <strong>Username:</strong>
+                    {{ session.get('username') }}
+                </p>
+
+                <p>
+                    <i class="fas fa-envelope me-2 text-danger"></i>
+                    <strong>Email:</strong>
+                    {{ session.get('email') }}
+                </p>
+
+                <p>
+                    <i class="fas fa-user-shield me-2 text-success"></i>
+                    <strong>Role:</strong>
+                    {{ session.get('role') }}
+                </p>
+
+                <button
+type="button"
+class="btn btn-primary mt-3 w-100">
+
+    <i class="fas fa-user-edit"></i>
+    Edit Profile
+
+</button>
+
+            </div>
+
+        </div>
+
+        <!-- Right Side -->
+        <div class="col-lg-8">
+
+            <div class="card shadow border-0 rounded-4 p-4 mb-4">
+
+                <h3 class="mb-4">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard Statistics
+                </h3>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+
+    <a href="{{ url_for('admin.students') }}" class="text-decoration-none text-dark">
+
+        <div class="stat-card">
+
+            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+
+            <h2>245</h2>
+
+            <p>Total Students</p>
+
+        </div>
+
+    </a>
+
+</div>
+                    <div class="col-md-4">
+
+    <a href="{{ url_for('admin.courses') }}" class="text-decoration-none text-dark">
+
+        <div class="stat-card green">
+
+            <i class="fas fa-book fa-3x text-success mb-3"></i>
+
+            <h2>18</h2>
+
+            <p>Total Courses</p>
+
+        </div>
+
+    </a>
+
 </div>
 
-<div class="card p-4">
-    <p><strong>Name:</strong> {{ session.get('name') }}</p>
-    <p><strong>Username:</strong> {{ session.get('username') }}</p>
-    <p><strong>Role:</strong> {{ session.get('role') }}</p>
+                    <div class="col-md-4">
+
+    <a href="{{ url_for('admin.feedback') }}"
+       class="text-decoration-none text-dark">
+
+        <div class="stat-card yellow">
+
+            <i class="fas fa-comments fa-3x text-warning mb-3"></i>
+
+            <h2>965</h2>
+
+            <p>Feedback</p>
+
+        </div>
+
+    </a>
+
+</div>
+
+                </div>
+
+            </div>
+
+            <div class="card shadow border-0 rounded-4 p-4">
+
+                <h3 class="mb-4">
+                    <i class="fas fa-address-card"></i>
+                    Personal Information
+                </h3>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="fw-bold">Full Name</label>
+
+                        <input
+                            class="form-control"
+                            value="{{ session.get('name') }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="fw-bold">Username</label>
+
+                        <input
+                            class="form-control"
+                            value="{{ session.get('username') }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="fw-bold">Email</label>
+
+                        <input
+                            class="form-control"
+                            value="{{ session.get('email') }}"
+                            readonly>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="fw-bold">Role</label>
+
+                        <input
+                            class="form-control"
+                            value="{{ session.get('role') }}"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 {% endblock %}

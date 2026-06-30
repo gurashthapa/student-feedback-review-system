@@ -1,3 +1,4 @@
+import os
 from functools import wraps
 
 from flask import (
@@ -9,7 +10,7 @@ from flask import (
     session,
     url_for,
 )
-
+from werkzeug.utils import secure_filename
 from sqlalchemy import func
 
 from app import db
@@ -668,7 +669,6 @@ def feedback():
         "admin/feedback.html",
         feedback_list=feedback_list
     )
-
 @admin_bp.route("/feedback/<int:feedback_id>")
 @admin_required
 def feedback_detail(feedback_id):
@@ -772,6 +772,33 @@ def read_notifications():
 
     return redirect(url_for("admin.dashboard"))
 
+@admin_bp.route("/edit-profile")
+@admin_required
+def edit_profile():
+    return render_template("admin/edit_profile.html")
+
+
+@admin_bp.route("/upload-profile-picture", methods=["POST"])
+def upload_profile_picture():
+
+    file = request.files.get("profile_picture")
+
+    if file:
+
+        filename = secure_filename(file.filename)
+
+        upload_path = os.path.join(
+            current_app.config["UPLOAD_FOLDER"],
+            filename
+        )
+
+        file.save(upload_path)
+
+        # Save filename in database here
+
+        flash("Profile picture updated successfully", "success")
+
+    return redirect(url_for("admin.profile"))
 
 @admin_bp.route("/logout")
 @admin_required
