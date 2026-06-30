@@ -9,6 +9,7 @@ from flask import (
     request,
     session,
     url_for,
+    current_app,
 )
 from werkzeug.utils import secure_filename
 from sqlalchemy import func
@@ -756,8 +757,13 @@ def settings():
 @admin_bp.route("/profile")
 @admin_required
 def profile():
-    return render_template("admin/profile.html")
 
+    user = User.query.get(session["user_id"])
+
+    return render_template(
+        "admin/profile.html",
+        user=user
+    )
 @admin_bp.route("/notifications/read")
 @admin_required
 def read_notifications():
@@ -779,24 +785,34 @@ def edit_profile():
 
 
 @admin_bp.route("/upload-profile-picture", methods=["POST"])
+@admin_required
 def upload_profile_picture():
 
     file = request.files.get("profile_picture")
 
-    if file:
+    if file and file.filename:
 
         filename = secure_filename(file.filename)
+
+        os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
 
         upload_path = os.path.join(
             current_app.config["UPLOAD_FOLDER"],
             filename
         )
 
+        # Save image to uploads folder
         file.save(upload_path)
 
-        # Save filename in database here
+        # Get logged-in user
+        user = User.query.get(session["user_id"])
 
-        flash("Profile picture updated successfully", "success")
+        # Save filename in database
+        user.profile_picture = filename
+
+        db.session.commit()
+
+        flash("Profile picture updated successfully!", "success")
 
     return redirect(url_for("admin.profile"))
 

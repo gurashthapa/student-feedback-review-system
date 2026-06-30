@@ -36,6 +36,13 @@ class User(db.Model):
         nullable=False
     )
 
+    # NEW COLUMN
+    profile_picture = db.Column(
+        db.String(255),
+        nullable=False,
+        default="avatar.png"
+    )
+
     is_active = db.Column(
         db.Boolean,
         default=True,
@@ -92,6 +99,7 @@ class User(db.Model):
             "username": self.username,
             "email": self.email,
             "role": self.role,
+            "profile_picture": self.profile_picture,
             "is_active": self.is_active,
             "created_at": self.created_at,
             "updated_at": self.updated_at,

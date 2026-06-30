@@ -15,11 +15,7 @@
 
     <div class="text-center">
 
-        <img
-            src="{{ url_for('static', filename='images/avatar.png') }}"
-            class="profile-image"
-            id="profilePreview"
-            alt="Profile">
+        <img src="{{ url_for('static', filename='uploads/' + user.profile_picture) }}" class="profile-image" id="profilePreview" alt="Profile">
 
         <form
             action="{{ url_for('admin.upload_profile_picture') }}"
