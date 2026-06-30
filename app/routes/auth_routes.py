@@ -53,7 +53,6 @@ def verify_reset_token(token):
     except BadSignature:
         return None
 
-
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -63,18 +62,6 @@ def login():
         password = request.form.get("password")
 
         user = User.query.filter_by(email=email).first()
-
-        print("========== LOGIN DEBUG ==========")
-        print("Email entered:", email)
-        print("User found:", user)
-
-        if user:
-            print("User ID:", user.id)
-            print("Role:", user.role)
-            print("Active:", user.is_active)
-            print("Password correct:", user.check_password(password))
-
-        print("=================================")
 
         if user is None:
             flash("Invalid email or password.", "danger")
@@ -93,23 +80,28 @@ def login():
         session["user_id"] = user.id
         session["role"] = user.role
         session["username"] = user.username
+        session["email"] = user.email
+
+        if user.admin:
+            session["name"] = user.admin.full_name
 
         flash("Login successful.", "success")
 
         if user.role == "admin":
             return redirect(url_for("admin.dashboard"))
 
-        elif user.role == "faculty":
-            return redirect(url_for("faculty.statistics"))
-
         elif user.role == "student":
             return redirect(url_for("student.dashboard"))
+
+        elif user.role == "faculty":
+            return redirect(url_for("faculty.dashboard"))
 
         flash("Invalid user role.", "danger")
         return redirect(url_for("auth.login"))
 
+    # This is for GET request
     return render_template("auth/login.html")
-
+                
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
 
