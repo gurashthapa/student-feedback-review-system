@@ -35,12 +35,16 @@ admin_bp = Blueprint(
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+
+        print("SESSION IN ADMIN:", dict(session))
+
         if session.get("role") != "admin":
             flash("Unauthorized access. Please login as admin.", "danger")
             return redirect(url_for("auth.login"))
-        return f(*args, **kwargs)
-    return decorated_function
 
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 def get_dashboard_stats():
 
@@ -778,12 +782,27 @@ def read_notifications():
 
     return redirect(url_for("admin.dashboard"))
 
-@admin_bp.route("/edit-profile")
+@admin_bp.route("/edit-profile", methods=["GET", "POST"])
 @admin_required
 def edit_profile():
-    return render_template("admin/edit_profile.html")
 
+    user = User.query.get_or_404(session["user_id"])
 
+    if request.method == "POST":
+
+        user.username = request.form.get("username")
+        user.email = request.form.get("email")
+
+        db.session.commit()
+
+        flash("Profile updated successfully!", "success")
+
+        return redirect(url_for("admin.profile"))
+
+    return render_template(
+        "admin/edit_profile.html",
+        user=user
+    )
 @admin_bp.route("/upload-profile-picture", methods=["POST"])
 @admin_required
 def upload_profile_picture():
